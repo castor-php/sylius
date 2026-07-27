@@ -1,0 +1,87 @@
+name: Continuous Integration
+
+"on":
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
+        paths-ignore:
+          - "*.md"
+    schedule:
+        - cron: "0 0 * * MON"
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+    contents: read
+    packages: read
+
+env:
+    ANSICON: 1
+
+jobs:
+    tasks:
+        name: ${{ matrix.command.name }}
+        timeout-minutes: 20
+        strategy:
+            fail-fast: false
+            matrix:
+                command:
+                  - name: Symfony BugSnag Plugin
+                    value: "castor sylius:add bugsnag && castor sylius:remove bugsnag"
+                  - name: Sylius CMS Plugin
+                    value: "castor sylius:add cms && castor sylius:remove cms"
+                  - name: Synolia GDPR Plugin
+                    value: "castor sylius:add gdpr || true"
+                  - name: Sylius Invoicing Plugin
+                    value: "castor sylius:add invoicing && castor sylius:remove invoicing"
+                  - name: Sylius Refund Plugin
+                    value: "castor sylius:add refund"
+                  - name: Sylius Paypal Plugin
+                    value: "castor sylius:remove paypal && castor sylius:add paypal"
+                  - name: Sylius Stripe Plugin
+                    value: "castor sylius:remove stripe && castor sylius:add stripe"
+                  - name: Sylius Wishlist Plugin
+                    value: "castor sylius:add wishlist && castor sylius:remove wishlist"
+                  - name: Remove Menu items
+                    value: "castor sylius:menu:remove official_support sylius.ui.administration"
+        runs-on: ubuntu-latest
+        env:
+            DS_PHP_VERSION: "8.3"
+        steps:
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v4
+
+            - name: Log in to registry
+              shell: bash
+              run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+            - name: setup-castor
+              uses: castor-php/setup-castor@v1.0.0
+
+            - uses: actions/checkout@v6
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: "${{ matrix.php }}"
+                  extensions: xml, simplexml, dom, gd
+                  coverage: none
+                  tools: 'composer:v2, flex'
+
+            - name: Setup Sylius
+              run: |
+                cd tests
+                composer create-project sylius/sylius-standard app
+                sed -i 's#^DATABASE_URL.*#DATABASE_URL=postgresql://app:app@postgres:5432/app\\?serverVersion=16\\&charset=utf8#' app/.env 
+
+            - name: Build & Run Docker
+              run: |
+                  cd tests
+                  castor build
+                  castor up
+
+            - name: "Run '${{ matrix.command.name }}'"
+              run: "cd tests && ${{ matrix.command.value }}"

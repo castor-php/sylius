@@ -1,0 +1,27 @@
+{
+    "name": "castor-php/sylius",
+    "description": "Castor plugin for Sylius",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Castor\\Sylius\\": "src/"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Loïc Frémont",
+            "email": "lfremont@jolicode.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.3",
+        "castor-php/docker": "@dev"
+    },
+    "require-dev": {
+        "jolicode/castor": "^1.6"
+    }
+}

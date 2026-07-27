@@ -1,0 +1,23 @@
+<?php
+
+namespace Castor\Sylius\Plugin\Installer;
+
+use Castor\Sylius\App;
+use Castor\Sylius\Util\Composer;
+use Castor\Sylius\Util\Database;
+use Castor\Sylius\Util\Docker;
+use Castor\Sylius\Util\Symfony;
+use function Castor\io;
+
+final readonly class PaypalInstaller implements PluginInstallerInterface
+{
+    public function __invoke(App $app): void
+    {
+        io()->title('Adding Paypal plugin');
+
+        Composer::allowContribRecipes($app);
+        Docker::run($app, 'composer require sylius/paypal-plugin');
+        Database::migrate($app);
+        Symfony::cacheClear($app);
+    }
+}

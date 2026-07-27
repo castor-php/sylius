@@ -1,0 +1,61 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Castor\Sylius\Util;
+
+use Castor\Sylius\App;
+use function Castor\io;
+
+final readonly class Database
+{
+    public static function migrate(App $app): void
+    {
+        io()->title('Migrating the database schema');
+
+        Docker::run($app, 'bin/console doctrine:database:create --if-not-exists');
+        Docker::run($app, 'bin/console doctrine:migration:migrate -n --allow-no-migration --all-or-nothing');
+    }
+
+    public static function rollbackPluginMigrations(App $app, string $namespace): void
+    {
+        $output = Docker::run(
+            $app,
+            'bin/console doctrine:migrations:list --no-interaction --no-ansi',
+        )->getOutput();
+
+        preg_match_all(
+            \sprintf(
+                '/^\|\s*(%s\\\[^\s|]+)\s+\|\s+migrated\s+\|/m',
+                preg_quote($namespace, '/'),
+            ),
+            $output,
+            $matches,
+        );
+
+        $migrations = array_reverse($matches[1]);
+
+        if ([] === $migrations) {
+            io()->warning(\sprintf(
+                'No executed migrations found for "%s".',
+                $namespace,
+            ));
+
+            return;
+        }
+
+        foreach ($migrations as $migration) {
+            io()->info(\sprintf(
+                'Executing down for %s',
+                $migration,
+            ));
+
+            Docker::run($app, \sprintf(
+                'bin/console doctrine:migrations:execute --down --no-interaction %s',
+                escapeshellarg($migration),
+            ));
+        }
+
+        io()->success('Plugin migrations rolled back.');
+    }
+}

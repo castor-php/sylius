@@ -1,0 +1,16 @@
+{
+    "require": {
+        "castor-php/docker": "^0.2.0",
+        "castor-php/sylius": "@dev",
+        "nikic/php-parser": "^5.8"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../",
+            "options": {
+                "symlink": true
+            }
+        }
+    ]
+}

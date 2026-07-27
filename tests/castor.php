@@ -1,0 +1,36 @@
+<?php
+
+use Castor\Attribute\AsContext;
+
+use Castor\Attribute\AsListener;
+use Castor\Context;
+use Castor\Docker\Event\RegisterServiceEvent;
+use Castor\Docker\Service\PostgresService;
+use Castor\Sylius\Service\SyliusService;
+
+#[AsContext(default: true)]
+function default_context(): Context
+{
+    return new Context([
+        'root_domain' => 'app.test',
+    ]);
+}
+
+#[AsListener(RegisterServiceEvent::class)]
+function register_service(RegisterServiceEvent $event): void
+{
+    $postgresService = (new PostgresService())
+        ->withVersion('16')
+    ;
+    $event->addService($postgresService);
+
+    $event->addService(
+        (new SyliusService(name: 'app'))
+            ->withDirectory(__DIR__ . '/app')
+            ->withDockerfile(__DIR__ . '/infrastructure/docker/php/Dockerfile')
+            ->withDatabaseService($postgresService)
+            ->addExtension('gd')
+            ->withDomain('app.test')
+            ->withHttpAccess()
+    );
+}
