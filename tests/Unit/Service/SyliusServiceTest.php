@@ -33,7 +33,7 @@ final class SyliusServiceTest extends TestCase
             /** @var AsTask $task */
             $task = $task['task'];
 
-            if ('plugin:add' === $task->name && 'sylius' === $task->namespace) {
+            if ('add' === $task->name && 'sylius:plugin' === $task->namespace) {
                 $found = true;
 
                 break;
