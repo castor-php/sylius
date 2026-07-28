@@ -12,9 +12,4 @@ final readonly class Composer
     {
         Docker::run($app, 'composer config extra.symfony.allow-contrib true');
     }
-
-    public static function allowInsecurePackages(App $app): void
-    {
-        Docker::run($app, 'composer config audit.block-insecure false');
-    }
 }
