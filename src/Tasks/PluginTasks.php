@@ -27,7 +27,7 @@ final class PluginTasks
         $app = new App($this->name, $this->directory);
 
         yield [
-            'task' => new AsTask('plugin:add', 'sylius', 'Adds plugins', ['sylius:add']),
+            'task' => new AsTask('add', 'sylius:plugin', 'Adds plugins', ['sylius:add']),
             'function' => function (#[AsRawTokens] array $plugins = []) use ($app): void {
                 $installers = array_map(
                     function (callable $installer) use ($app): callable {
@@ -56,7 +56,7 @@ final class PluginTasks
         ];
 
         yield [
-            'task' => new AsTask('plugin:remove', 'sylius', 'Removes plugins', ['sylius:remove']),
+            'task' => new AsTask('remove', 'sylius:plugin', 'Removes plugins', ['sylius:remove']),
             'function' => function (#[AsRawTokens] array $plugins = []) use ($app): void {
 
                 $removers = array_map(
