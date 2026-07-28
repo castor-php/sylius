@@ -22,6 +22,7 @@
         "castor-php/docker": "@dev"
     },
     "require-dev": {
-        "jolicode/castor": "^1.6"
+        "jolicode/castor": "^1.6",
+        "phpunit/phpunit": "^13.2"
     }
 }

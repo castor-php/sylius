@@ -27,9 +27,7 @@ function register_service(RegisterServiceEvent $event): void
     $event->addService(
         (new SyliusService(name: 'app'))
             ->withDirectory(__DIR__ . '/app')
-            ->withDockerfile(__DIR__ . '/infrastructure/docker/php/Dockerfile')
             ->withDatabaseService($postgresService)
-            ->addExtension('gd')
             ->withDomain('app.test')
             ->withHttpAccess()
     );
