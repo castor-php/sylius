@@ -96,20 +96,16 @@ jobs:
 
             - name: Setup Sylius
               run: |
-                cd tests
                 composer create-project sylius/sylius-standard app
                 sed -i 's#^DATABASE_URL.*#DATABASE_URL=postgresql://app:app@postgres:5432/app\\?serverVersion=16\\&charset=utf8#' app/.env 
 
             - name: Build & Run Docker
               run: |
-                  cd tests
                   castor build
                   castor up
 
             - name: Run Database migrations
-              run: |
-                  cd tests
-                  castor app:db:migrate   
+              run: castor app:db:migrate
 
             - name: "Run '${{ matrix.command.name }}'"
-              run: "cd tests && ${{ matrix.command.value }}"
+              run: "${{ matrix.command.value }}"

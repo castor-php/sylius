@@ -1,9 +1,9 @@
-/tests/app
-/tests/.home
-/tests/.castor.stub.php
-/tests/.castor/vendor
-/tests/castor.composer.lock
-/tests/compose.generated.yaml
+/app
+/.home
+.castor.stub.php
+.castor/vendor
+castor.composer.lock
+compose.generated.yaml
 
 composer.lock
 .phpunit.cache
