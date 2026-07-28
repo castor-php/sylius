@@ -8,6 +8,7 @@ use Castor\Attribute\AsOption;
 use Castor\Attribute\AsRawTokens;
 use Castor\Attribute\AsTask;
 use Castor\Sylius\App;
+use Castor\Sylius\PhpFile;
 use function Castor\fs;
 use function Castor\io;
 
@@ -26,25 +27,129 @@ final class MenuTasks
         $app = new App($this->name, $this->directory);
 
         yield [
-            'task' => new AsTask('remove', 'sylius:menu', 'Remove admin menu items'),
+            'task' => new AsTask('remove', 'sylius:menu', 'Remove admin menu items (use --restore / -b to restore previously removed items)'),
             'function' => function (
                 #[AsRawTokens] array $items = [],
+                #[AsOption(description: 'Replace the removed-items list instead of merging', shortcut: 'r')]
+                bool $replace = false,
+                #[AsOption(description: 'Restore previously removed menu items', shortcut: 'b')]
+                bool $restore = false,
             ) use ($app): void {
+                // Remove options from the $items
+                $items = array_filter($items, static fn (string $item) => !str_starts_with($item, '--'));
+
+                if ($replace && $restore) {
+                    io()->error('The --replace and --restore options cannot be used together.');
+
+                    return;
+                }
+
                 if ([] === $items) {
                     $items = io()->choice('Choose menu items', self::getMenuItems(), multiSelect: true);
                 }
 
-                // Remove options from the $items
-                $items = array_filter($items, static fn (string $item) => !str_starts_with($item, '--'));
+                if ($restore) {
+                    $this->restoreMenuItems($app, $items);
 
-                $this->createListener($app, $items);
+                    return;
+                }
+
+                if (!fs()->exists($this->buildListenerFilename($app))) {
+                    $this->createListener($app, $items);
+
+                    return;
+                }
+
+                if ($replace) {
+                    $this->createListener($app, $items);
+
+                    return;
+                }
+
+                $this->mergeRemovedMenuItems($app, $items);
             },
         ];
     }
 
-    private function createListener(App $app, array $items): void
+    private function mergeRemovedMenuItems(App $app, array $items): void
     {
-        fs()->dumpFile($app->directory() . '/' . self::LISTENER_FILE, $this->buildListener($items));
+        $existing = (new PhpFile($this->buildListenerFilename($app)))
+            ->findClassConstant('REMOVED_MENU_ITEMS') ?? []
+        ;
+
+        $items = array_unique([
+            ...$existing,
+            ...$items,
+        ]);
+
+        $this->createListener($app, $items);
+    }
+
+    private function restoreMenuItems(App $app, array $items): void
+    {
+        $file = $this->buildListenerFilename($app);
+
+        if (!fs()->exists($file)) {
+            io()->error(\sprintf('No "%s" found; nothing to restore.', $file));
+
+            return;
+        }
+
+        $existing = (new PhpFile($this->buildListenerFilename($app)))
+            ->findClassConstant('REMOVED_MENU_ITEMS') ?? []
+        ;
+
+        $notFound = array_diff($items, $existing);
+
+        if ([] !== $notFound) {
+            io()->warning(\sprintf(
+                'The following items were not in the removed list: %s',
+                implode(', ', $notFound),
+            ));
+        }
+
+        $restored = array_intersect($items, $existing);
+
+        if ([] === $restored) {
+            io()->comment('No matching items to restore.');
+
+            return;
+        }
+
+        $remaining = array_values(array_diff($existing, $items));
+
+        if ([] === $remaining) {
+            fs()->remove($file);
+            io()->success(\sprintf(
+                'Menu items "%s" have been restored; listener removed.',
+                implode(', ', $restored),
+            ));
+
+            return;
+        }
+
+        $this->createListener(
+            $app,
+            $remaining,
+            \sprintf('Menu items "%s" have been restored.', implode(', ', $restored)),
+        );
+    }
+
+    private function createListener(App $app, array $items, ?string $successMessage = null): void
+    {
+        $successMessage ??= \sprintf(
+            'Menu items "%s" have been removed.',
+            implode(', ', $items)
+        );
+
+        fs()->dumpFile($this->buildListenerFilename($app), $this->buildListener($items));
+
+        io()->success($successMessage);
+    }
+
+    private function buildListenerFilename(App $app): string
+    {
+        return $app->directory() . '/' . self::LISTENER_FILE;
     }
 
     /**
