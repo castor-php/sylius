@@ -6,15 +6,13 @@ namespace Castor\Sylius\Util;
 
 use Castor\Sylius\App;
 use function Castor\io;
+use function Castor\run;
 
 final readonly class Database
 {
     public static function migrate(App $app): void
     {
-        io()->title('Migrating the database schema');
-
-        Docker::run($app, 'bin/console doctrine:database:create --if-not-exists');
-        Docker::run($app, 'bin/console doctrine:migration:migrate -n --allow-no-migration --all-or-nothing');
+        run(['castor', $app->name() . ':db:migrate']);
     }
 
     public static function rollbackPluginMigrations(App $app, string $namespace): void
