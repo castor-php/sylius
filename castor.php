@@ -7,6 +7,9 @@ use Castor\Context;
 use Castor\Docker\Event\RegisterServiceEvent;
 use Castor\Docker\Service\PostgresService;
 use Castor\Sylius\Service\SyliusService;
+use function Castor\io;
+
+\Castor\import(__DIR__ . '/.castor/app');
 
 #[AsContext(default: true)]
 function default_context(): Context
@@ -31,4 +34,10 @@ function register_service(RegisterServiceEvent $event): void
             ->withDomain('app.test')
             ->withHttpAccess()
     );
+}
+
+#[\Castor\Sylius\Attribute\AsPluginInstaller(name: 'test_function')]
+function test_installer(): void
+{
+    io()->success('New installer using a custom function is ok');
 }

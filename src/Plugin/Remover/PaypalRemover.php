@@ -11,6 +11,11 @@ use function Castor\io;
 
 final readonly class PaypalRemover implements PluginRemoverInterface
 {
+    public function name(): string
+    {
+        return 'paypal';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing Paypal plugin');

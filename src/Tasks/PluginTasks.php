@@ -86,13 +86,13 @@ final class PluginTasks
         ];
     }
 
-    public static function addInstaller(string $name, PluginInstallerInterface $installer): void
+    public static function addInstaller(PluginInstallerInterface $installer): void
     {
-        self::$installers[$name] = $installer;
+        self::$installers[$installer->name()] = $installer;
     }
 
-    public static function addRemover(string $name, PluginRemoverInterface $remover): void
+    public static function addRemover(PluginRemoverInterface $remover): void
     {
-        self::$removers[$name] = $remover;
+        self::$removers[$remover->name()] = $remover;
     }
 }

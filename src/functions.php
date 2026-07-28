@@ -14,6 +14,7 @@ use Castor\Sylius\Plugin\Installer\GdprInstaller;
 use Castor\Sylius\Plugin\Installer\InvoicingInstaller;
 use Castor\Sylius\Plugin\Installer\MediaInstaller;
 use Castor\Sylius\Plugin\Installer\PaypalInstaller;
+use Castor\Sylius\Plugin\Installer\PluginInstaller;
 use Castor\Sylius\Plugin\Installer\PluginInstallerDescriptor;
 use Castor\Sylius\Plugin\Installer\PluginInstallerInterface;
 use Castor\Sylius\Plugin\Installer\RefundInstaller;
@@ -31,23 +32,23 @@ use Castor\Sylius\Tasks\PluginTasks;
 #[AsListener(AfterBootEvent::class)]
 function initialize(AfterBootEvent $afterBootEvent): void
 {
-    PluginTasks::addInstaller('bugsnag', new BugSnagInstaller());
-    PluginTasks::addInstaller('cms', new CmsInstaller());
-    PluginTasks::addInstaller('gdpr', new GdprInstaller());
-    PluginTasks::addInstaller('invoicing', new InvoicingInstaller());
-    PluginTasks::addInstaller('media', new MediaInstaller());
-    PluginTasks::addInstaller('paypal', new PaypalInstaller());
-    PluginTasks::addInstaller('refund', new RefundInstaller());
-    PluginTasks::addInstaller('stripe', new StripeInstaller());
-    PluginTasks::addInstaller('wishlist', new WishlistInstaller());
+    PluginTasks::addInstaller(new BugSnagInstaller());
+    PluginTasks::addInstaller(new CmsInstaller());
+    PluginTasks::addInstaller(new GdprInstaller());
+    PluginTasks::addInstaller(new InvoicingInstaller());
+    PluginTasks::addInstaller(new MediaInstaller());
+    PluginTasks::addInstaller(new PaypalInstaller());
+    PluginTasks::addInstaller(new RefundInstaller());
+    PluginTasks::addInstaller(new StripeInstaller());
+    PluginTasks::addInstaller(new WishlistInstaller());
 
-    PluginTasks::addRemover('bugsnag', new BugSnagRemover());
-    PluginTasks::addRemover('cms', new CmsRemover());
-    PluginTasks::addRemover('gdpr', new GdprRemover());
-    PluginTasks::addRemover('invoicing', new InvoicingRemover());
-    PluginTasks::addRemover('paypal', new PaypalRemover());
-    PluginTasks::addRemover('stripe', new StripeRemover());
-    PluginTasks::addRemover('wishlist', new WishlistRemover());
+    PluginTasks::addRemover(new BugSnagRemover());
+    PluginTasks::addRemover(new CmsRemover());
+    PluginTasks::addRemover(new GdprRemover());
+    PluginTasks::addRemover(new InvoicingRemover());
+    PluginTasks::addRemover(new PaypalRemover());
+    PluginTasks::addRemover(new StripeRemover());
+    PluginTasks::addRemover(new WishlistRemover());
 
     $currentFunctions = get_defined_functions()['user'];
     $currentClasses = get_declared_classes();
@@ -60,9 +61,8 @@ function initialize(AfterBootEvent $afterBootEvent): void
             continue;
         }
 
-        $name = $descriptor->attribute->name;
-        $installer = new Plugin\Installer\PluginInstaller($descriptor->installer->getClosure());
-        PluginTasks::addInstaller($name, $installer);
+        $installer = new Plugin\Installer\PluginInstaller($descriptor->attribute->name, $descriptor->installer->getClosure());
+        PluginTasks::addInstaller($installer);
     }
 
     foreach ($currentClasses as $class) {
@@ -73,7 +73,7 @@ function initialize(AfterBootEvent $afterBootEvent): void
             continue;
         }
 
-        PluginTasks::addInstaller($descriptor->attribute->name, $descriptor->installer);
+        PluginTasks::addInstaller($descriptor->installer);
     }
 }
 
@@ -95,15 +95,15 @@ function resolve_plugin_installer(\ReflectionFunction|\ReflectionClass $reflecti
         return new PluginInstallerDescriptor($installerAttribute, $reflection);
     }
 
-    if (!is_a($reflection->name, PluginInstallerInterface::class, true)) {
-        throw new FunctionConfigurationException(\sprintf('"%s should be an instance of %s".', $reflection->name, PluginInstallerInterface::class), $reflection);
-    }
-
     try {
         $instance = $reflection->newInstance();
     } catch (\Throwable $e) {
         throw new FunctionConfigurationException(\sprintf('Could not instantiate the class "%s".', $reflection->name), $reflection, $e);
     }
 
-    return new PluginInstallerDescriptor($installerAttribute, $instance);
+    if (!is_callable($instance)) {
+        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, $instance);
+    }
+
+    return new PluginInstallerDescriptor($installerAttribute, new PluginInstaller($installerAttribute->name, fn() => $instance()));
 }

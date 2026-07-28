@@ -12,6 +12,11 @@ use function Castor\io;
 
 final readonly class CmsRemover implements PluginRemoverInterface
 {
+    public function name(): string
+    {
+        return 'cms';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing CMS plugin');

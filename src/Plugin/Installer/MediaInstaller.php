@@ -18,6 +18,11 @@ use function Castor\io;
 
 final readonly class MediaInstaller implements PluginInstallerInterface
 {
+    public function name(): string
+    {
+        return 'media';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Media plugin');

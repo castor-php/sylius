@@ -9,6 +9,11 @@ use function Castor\io;
 
 final readonly class BugSnagRemover implements PluginRemoverInterface
 {
+    public function name(): string
+    {
+        return 'bugsnag';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing BugSnag plugin');

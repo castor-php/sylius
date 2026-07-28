@@ -14,6 +14,11 @@ use function Castor\io;
 
 final readonly class CmsInstaller implements PluginInstallerInterface
 {
+    public function name(): string
+    {
+        return 'cms';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding CMS plugin');

@@ -12,6 +12,11 @@ use function Castor\io;
 
 final readonly class StripeInstaller implements PluginInstallerInterface
 {
+    public function name(): string
+    {
+        return 'stripe';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Stripe Plugin');

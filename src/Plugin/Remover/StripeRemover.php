@@ -11,6 +11,11 @@ use function Castor\io;
 
 final readonly class StripeRemover implements PluginRemoverInterface
 {
+    public function name(): string
+    {
+        return 'stripe';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing Stripe plugin');

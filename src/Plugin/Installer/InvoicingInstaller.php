@@ -14,6 +14,11 @@ use function Castor\io;
 
 final readonly class InvoicingInstaller implements PluginInstallerInterface
 {
+    public function name(): string
+    {
+        return 'invoicing';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Invoicing Plugin');

@@ -10,6 +10,11 @@ use function Castor\io;
 
 final readonly class InvoicingRemover implements PluginRemoverInterface
 {
+    public function name(): string
+    {
+        return 'invoicing';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing Invoicing plugin');
