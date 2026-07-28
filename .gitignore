@@ -4,3 +4,7 @@
 /tests/.castor/vendor
 /tests/castor.composer.lock
 /tests/compose.generated.yaml
+
+composer.lock
+.phpunit.cache
+/vendor

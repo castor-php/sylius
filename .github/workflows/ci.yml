@@ -22,6 +22,27 @@ env:
     ANSICON: 1
 
 jobs:
+    phpunit:
+        name: Run PHPUnit
+        timeout-minutes: 20
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v6
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: "${{ matrix.php }}"
+                    extensions: xml, simplexml, dom, gd
+                    coverage: none
+                    tools: 'composer:v2, flex'
+
+            -   name: Install packages
+                run: composer install
+
+            -   name: Run PHPUnit
+                run: vendor/bin/phpunit
+
     tasks:
         name: ${{ matrix.command.name }}
         timeout-minutes: 20

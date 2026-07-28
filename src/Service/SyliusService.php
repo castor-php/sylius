@@ -13,6 +13,13 @@ class SyliusService extends SymfonyService
 {
     private iterable $tasks = [];
 
+    public function __construct(string $name = 'app')
+    {
+        parent::__construct($name);
+
+        $this->addExtension('gd');
+    }
+
     public function getTasks(): iterable
     {
         yield from parent::getTasks();
