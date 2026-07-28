@@ -47,6 +47,8 @@ jobs:
                     value: "castor sylius:add wishlist && castor sylius:remove wishlist"
                   - name: Remove Menu items
                     value: "castor sylius:menu:remove official_support sylius.ui.administration"
+                  - name: Run Fixtures
+                    value: "castor sylius:fixtures -n"
         runs-on: ubuntu-latest
         env:
             DS_PHP_VERSION: "8.3"
@@ -82,6 +84,11 @@ jobs:
                   cd tests
                   castor build
                   castor up
+
+            - name: Run Database migrations
+              run: |
+                  cd tests
+                  castor app:db:migrate   
 
             - name: "Run '${{ matrix.command.name }}'"
               run: "cd tests && ${{ matrix.command.value }}"
