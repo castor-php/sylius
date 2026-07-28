@@ -6,16 +6,19 @@ namespace Castor\Sylius\Util;
 
 use Castor\Sylius\App;
 use function Castor\fs;
+use function Castor\run;
 
 final readonly class Symfony
 {
     public static function cacheClear(App $app, bool $warm = true): void
     {
-        Docker::run($app, 'rm -rf var/cache');
+        $commands = ['castor', $app->name() . ':cache-clear'];
 
         if ($warm) {
-            Docker::run($app, 'php bin/console cache:warm');
+            $commands[] = '--warm';
         }
+
+        run($commands);
     }
 
     /**
