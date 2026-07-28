@@ -18,7 +18,6 @@ final readonly class WishlistInstaller implements PluginInstallerInterface
         io()->title('Adding Wishlist Plugin');
 
         Composer::allowContribRecipes($app);
-        Composer::allowInsecurePackages($app);
         Docker::run($app, 'bin/console assets:install public');
         Docker::run($app, 'yarn install');
         Assets::build($app);
