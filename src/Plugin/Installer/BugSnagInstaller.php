@@ -14,6 +14,11 @@ use function Castor\io;
 
 final readonly class BugSnagInstaller implements PluginInstallerInterface
 {
+    public function name(): string
+    {
+        return 'bugsnag';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding BugSnag Plugin');

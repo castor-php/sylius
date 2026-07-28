@@ -12,6 +12,11 @@ use function Castor\io;
 
 final readonly class RefundInstaller implements PluginInstallerInterface
 {
+    public function name(): string
+    {
+        return 'refund';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Refund Plugin');

@@ -11,6 +11,11 @@ use function Castor\io;
 
 final readonly class GdprRemover implements PluginRemoverInterface
 {
+    public function name(): string
+    {
+        return 'gdpr';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing GDPR plugin');

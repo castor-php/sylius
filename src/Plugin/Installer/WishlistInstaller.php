@@ -13,6 +13,11 @@ use function Castor\io;
 
 final readonly class WishlistInstaller implements PluginInstallerInterface
 {
+    public function name(): string
+    {
+        return 'wishlist';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Wishlist Plugin');

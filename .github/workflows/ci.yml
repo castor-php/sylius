@@ -50,26 +50,28 @@ jobs:
             fail-fast: false
             matrix:
                 command:
-                  - name: Symfony BugSnag Plugin
-                    value: "castor sylius:add bugsnag && castor sylius:remove bugsnag"
-                  - name: Sylius CMS Plugin
-                    value: "castor sylius:add cms && castor sylius:remove cms"
-                  - name: Synolia GDPR Plugin
-                    value: "castor sylius:add gdpr || true"
-                  - name: Sylius Invoicing Plugin
-                    value: "castor sylius:add invoicing && castor sylius:remove invoicing"
-                  - name: Sylius Refund Plugin
-                    value: "castor sylius:add refund"
-                  - name: Sylius Paypal Plugin
-                    value: "castor sylius:remove paypal && castor sylius:add paypal"
-                  - name: Sylius Stripe Plugin
-                    value: "castor sylius:remove stripe && castor sylius:add stripe"
-                  - name: Sylius Wishlist Plugin
-                    value: "castor sylius:add wishlist && castor sylius:remove wishlist"
-                  - name: Remove Menu items
-                    value: "castor sylius:menu:remove official_support sylius.ui.administration"
-                  - name: Run Fixtures
-                    value: "castor sylius:fixtures -n"
+                    -   name: Symfony BugSnag Plugin
+                        value: "castor sylius:add bugsnag && castor sylius:remove bugsnag"
+                    -   name: Sylius CMS Plugin
+                        value: "castor sylius:add cms && castor sylius:remove cms"
+                    -   name: Synolia GDPR Plugin
+                        value: "castor sylius:add gdpr || true"
+                    -   name: Sylius Invoicing Plugin
+                        value: "castor sylius:add invoicing && castor sylius:remove invoicing"
+                    -   name: Sylius Refund Plugin
+                        value: "castor sylius:add refund"
+                    -   name: Sylius Paypal Plugin
+                        value: "castor sylius:remove paypal && castor sylius:add paypal"
+                    -   name: Sylius Stripe Plugin
+                        value: "castor sylius:remove stripe && castor sylius:add stripe"
+                    -   name: Sylius Wishlist Plugin
+                        value: "castor sylius:add wishlist && castor sylius:remove wishlist"
+                    -   name: Remove Menu items
+                        value: "castor sylius:menu:remove official_support sylius.ui.administration"
+                    -   name: Run Fixtures
+                        value: "castor sylius:fixtures -n"
+                    -   name: Run Custom installers
+                        value: "castor sylius:plugin:add test_function && castor sylius:plugin:add test_class"
         runs-on: ubuntu-latest
         env:
             DS_PHP_VERSION: "8.3"

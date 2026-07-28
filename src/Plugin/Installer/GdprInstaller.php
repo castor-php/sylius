@@ -13,6 +13,11 @@ use function Castor\io;
 
 final readonly class GdprInstaller implements PluginInstallerInterface
 {
+    public function name(): string
+    {
+        return 'gdpr';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding GDPR plugin');

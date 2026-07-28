@@ -11,6 +11,11 @@ use function Castor\io;
 
 final readonly class PaypalInstaller implements PluginInstallerInterface
 {
+    public function name(): string
+    {
+        return 'paypal';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Paypal plugin');

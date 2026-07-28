@@ -14,6 +14,11 @@ use function Castor\io;
 
 final readonly class WishlistRemover implements PluginRemoverInterface
 {
+    public function name(): string
+    {
+        return 'wishlist';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing Wishlist plugin');
