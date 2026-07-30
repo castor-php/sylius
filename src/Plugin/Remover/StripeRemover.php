@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Castor\Sylius\Plugin\Remover;
 
 use Castor\Sylius\App;
@@ -7,6 +9,7 @@ use Castor\Sylius\Util\Assets;
 use Castor\Sylius\Util\Composer;
 use Castor\Sylius\Util\Docker;
 use Castor\Sylius\Util\Symfony;
+
 use function Castor\io;
 
 final readonly class StripeRemover implements PluginRemoverInterface

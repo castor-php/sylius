@@ -11,6 +11,5 @@ final readonly class PluginRemoverDescriptor
     public function __construct(
         public AsPluginRemover $attribute,
         public \ReflectionFunction|PluginRemoverInterface $remover,
-    ) {
-    }
+    ) {}
 }

@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Castor\Sylius\Plugin\Remover;
 
 use Castor\Sylius\App;
 use Castor\Sylius\Util\Composer;
 use Castor\Sylius\Util\Docker;
+
 use function Castor\io;
 
 final readonly class BugSnagRemover implements PluginRemoverInterface

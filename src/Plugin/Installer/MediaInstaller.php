@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare (strict_types=1);
 
 namespace Castor\Sylius\Plugin\Installer;
 
@@ -13,6 +13,7 @@ use Castor\Sylius\Util\Docker;
 use Castor\Sylius\Util\Filesystem;
 use Castor\Sylius\Util\Symfony;
 use Castor\Sylius\Util\Yaml;
+
 use function Castor\fs;
 use function Castor\io;
 
@@ -35,39 +36,39 @@ final readonly class MediaInstaller implements PluginInstallerInterface
             $app,
             'config/packages/joli_media.yaml',
             <<<'YAML'
-            imports:
-                - { resource: '@JoliMediaSyliusBundle/config/app.php' }
-            YAML,
+                imports:
+                    - { resource: '@JoliMediaSyliusBundle/config/app.php' }
+                YAML,
         );
 
         Yaml::uncommentBlock(
             $app,
             'config/packages/joli_media.yaml',
             <<<'YAML'
-            libraries:
-                default:
-                    original:
-                        flysystem: "filesystem.original.storage"
-                        url_generator:
-                            strategy: folder
-                            path: /media/original/
-                    cache:
-                        flysystem: "filesystem.cache.storage"
-                        must_store_when_generating_url: false
-                        url_generator:
-                            strategy: folder
-                            path: /media/cache/
-            YAML,
+                libraries:
+                    default:
+                        original:
+                            flysystem: "filesystem.original.storage"
+                            url_generator:
+                                strategy: folder
+                                path: /media/original/
+                        cache:
+                            flysystem: "filesystem.cache.storage"
+                            must_store_when_generating_url: false
+                            url_generator:
+                                strategy: folder
+                                path: /media/cache/
+                YAML,
         );
 
         Yaml::uncommentBlock(
             $app,
             'config/routes/joli_media.yaml',
             <<<'YAML'
-            _joli_media_sylius_admin:
-                resource: "@JoliMediaSyliusBundle/src/Admin/Controller/"
-                prefix: /admin/media
-            YAML,
+                _joli_media_sylius_admin:
+                    resource: "@JoliMediaSyliusBundle/src/Admin/Controller/"
+                    prefix: /admin/media
+                YAML,
         );
 
         Yaml::appendToSection(
@@ -75,32 +76,32 @@ final readonly class MediaInstaller implements PluginInstallerInterface
             'config/services.yaml',
             'services',
             <<<'YAML'
-                # Filesystem Adapters for the Jolicode Media Bundle
-                filesystem.original.adapter:
-                    class: League\Flysystem\Local\LocalFilesystemAdapter
-                    arguments:
-                        '$location': '%kernel.project_dir%/public/media/original'
+                    # Filesystem Adapters for the Jolicode Media Bundle
+                    filesystem.original.adapter:
+                        class: League\Flysystem\Local\LocalFilesystemAdapter
+                        arguments:
+                            '$location': '%kernel.project_dir%/public/media/original'
 
-                filesystem.original.storage:
-                    class: League\Flysystem\Filesystem
-                    arguments:
-                        '$adapter': '@filesystem.original.adapter'
+                    filesystem.original.storage:
+                        class: League\Flysystem\Filesystem
+                        arguments:
+                            '$adapter': '@filesystem.original.adapter'
 
-                filesystem.cache.adapter:
-                    class: League\Flysystem\Local\LocalFilesystemAdapter
-                    arguments:
-                        '$location': '%kernel.project_dir%/public/media/cache'
+                    filesystem.cache.adapter:
+                        class: League\Flysystem\Local\LocalFilesystemAdapter
+                        arguments:
+                            '$location': '%kernel.project_dir%/public/media/cache'
 
-                filesystem.cache.storage:
-                    class: League\Flysystem\Filesystem
-                    arguments:
-                        '$adapter': '@filesystem.cache.adapter'
+                    filesystem.cache.storage:
+                        class: League\Flysystem\Filesystem
+                        arguments:
+                            '$adapter': '@filesystem.cache.adapter'
 
-                # Form extensions to use the Jolicode media choice
-                JoliCode\MediaBundle\Bridge\Sylius\Admin\Form\Extension\AvatarImageTypeExtension: null
-                JoliCode\MediaBundle\Bridge\Sylius\Admin\Form\Extension\ProductImageTypeExtension: null
-                JoliCode\MediaBundle\Bridge\Sylius\Admin\Form\Extension\TaxonImageTypeExtension: null
-            YAML,
+                    # Form extensions to use the Jolicode media choice
+                    JoliCode\MediaBundle\Bridge\Sylius\Admin\Form\Extension\AvatarImageTypeExtension: null
+                    JoliCode\MediaBundle\Bridge\Sylius\Admin\Form\Extension\ProductImageTypeExtension: null
+                    JoliCode\MediaBundle\Bridge\Sylius\Admin\Form\Extension\TaxonImageTypeExtension: null
+                YAML,
         );
 
         $this->createMediaLibraryMenu($app);
@@ -139,11 +140,11 @@ final readonly class MediaInstaller implements PluginInstallerInterface
             ->appendToMethod(
                 'up',
                 <<<'PHP'
-                // These lines synchronize the media with the current path.
-                $this->addSql('UPDATE sylius_avatar_image SET media = path');
-                $this->addSql('UPDATE sylius_product_image SET media = path');
-                $this->addSql('UPDATE sylius_taxon_image SET media = path');
-                PHP,
+                    // These lines synchronize the media with the current path.
+                    $this->addSql('UPDATE sylius_avatar_image SET media = path');
+                    $this->addSql('UPDATE sylius_product_image SET media = path');
+                    $this->addSql('UPDATE sylius_taxon_image SET media = path');
+                    PHP,
             )
             ->save()
         ;
@@ -162,42 +163,44 @@ final readonly class MediaInstaller implements PluginInstallerInterface
     {
         $listener = $app->directory() . '/src/Menu/Admin/AdminMenuListener.php';
 
-        fs()->dumpFile($listener, <<<'PHP'
-            <?php
+        fs()->dumpFile(
+            $listener,
+            <<<'PHP'
+                <?php
 
-            namespace App\Menu\Admin;
+                namespace App\Menu\Admin;
 
-            use Knp\Menu\ItemInterface;
-            use Sylius\Bundle\UiBundle\Menu\Event\MenuBuilderEvent;
-            use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+                use Knp\Menu\ItemInterface;
+                use Sylius\Bundle\UiBundle\Menu\Event\MenuBuilderEvent;
+                use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-            #[AsEventListener(event: 'sylius.menu.admin.main')]
-            final class AdminMenuListener
-            {
-                public function __invoke(MenuBuilderEvent $event): void
+                #[AsEventListener(event: 'sylius.menu.admin.main')]
+                final class AdminMenuListener
                 {
-                    $menu = $event->getMenu();
+                    public function __invoke(MenuBuilderEvent $event): void
+                    {
+                        $menu = $event->getMenu();
 
-                    $this->addContentsSubMenu($menu);
+                        $this->addContentsSubMenu($menu);
+                    }
+
+                    private function addContentsSubMenu(ItemInterface $menu): void
+                    {
+                        $library = $menu
+                            ->addChild('contents')
+                            ->setLabel('Contents')
+                            ->setLabelAttribute('icon', 'simple-icons:craftcms')
+                            ->setExtra('always_open', true)
+                        ;
+
+                        $library->addChild('media_library', ['route' => 'joli_media_sylius_admin_explore'])
+                            ->setLabel('media_library')
+                            ->setExtra('translation_domain', 'JoliMediaSyliusBundle')
+                        ;
+                    }
                 }
 
-                private function addContentsSubMenu(ItemInterface $menu): void
-                {
-                    $library = $menu
-                        ->addChild('contents')
-                        ->setLabel('Contents')
-                        ->setLabelAttribute('icon', 'simple-icons:craftcms')
-                        ->setExtra('always_open', true)
-                    ;
-
-                    $library->addChild('media_library', ['route' => 'joli_media_sylius_admin_explore'])
-                        ->setLabel('media_library')
-                        ->setExtra('translation_domain', 'JoliMediaSyliusBundle')
-                    ;
-                }
-            }
-
-            PHP
+                PHP
         );
     }
 }

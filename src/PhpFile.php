@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Castor\Sylius;
 
 use PhpParser\Node;
@@ -340,7 +342,7 @@ final class PhpFile
 
         $function = $finder->findFirst(
             $this->ast,
-            static fn (Node $node): bool => $node instanceof Node\Stmt\Function_
+            static fn(Node $node): bool => $node instanceof Node\Stmt\Function_
                 && $node->name->toString() === $name,
         );
 
@@ -357,7 +359,7 @@ final class PhpFile
 
         $method = $finder->findFirst(
             $this->ast,
-            static fn (Node $node): bool => $node instanceof ClassMethod
+            static fn(Node $node): bool => $node instanceof ClassMethod
                 && $node->name->toString() === $name,
         );
 
@@ -385,7 +387,7 @@ final class PhpFile
             },
 
             $node instanceof Node\Expr\Array_ => array_map(
-                fn (Node\ArrayItem $item): mixed => $this->normalizeNodeValue($item->value),
+                fn(Node\ArrayItem $item): mixed => $this->normalizeNodeValue($item->value),
                 $node->items,
             ),
 
@@ -446,7 +448,7 @@ final class PhpFile
 
         $node = $finder->findFirst(
             $this->ast,
-            static fn (Node $node): bool => (
+            static fn(Node $node): bool => (
                 $node instanceof Node\Stmt\Function_
                 || $node instanceof ClassMethod
             ) && $name === $node->name->toString(),

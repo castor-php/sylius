@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Castor\Sylius\Util;
 
 use Castor\Sylius\App;
+
 use function Castor\io;
 use function Castor\run;
 

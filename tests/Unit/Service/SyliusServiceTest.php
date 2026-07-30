@@ -20,7 +20,7 @@ final class SyliusServiceTest extends TestCase
             ->getValue($service)
         ;
 
-        $this->assertContains('gd', $extensions);
+        static::assertContains('gd', $extensions);
     }
 
     public function testAddsPluginTasks(): void
@@ -40,7 +40,7 @@ final class SyliusServiceTest extends TestCase
             }
         }
 
-        $this->assertTrue($found);
+        static::assertTrue($found);
     }
 
     public function testAddsMenuTasks(): void
@@ -60,6 +60,6 @@ final class SyliusServiceTest extends TestCase
             }
         }
 
-        $this->assertTrue($found);
+        static::assertTrue($found);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Castor\Sylius\Service;
 
 use Castor\Attribute\AsRawTokens;
@@ -7,6 +9,7 @@ use Castor\Attribute\AsTask;
 use Castor\Docker\Service\SymfonyService;
 use Castor\Sylius\Tasks\MenuTasks;
 use Castor\Sylius\Tasks\PluginTasks;
+
 use function Castor\Docker\docker_compose_run;
 
 class SyliusService extends SymfonyService
@@ -32,7 +35,7 @@ class SyliusService extends SymfonyService
         yield [
             'task' => new AsTask('fixtures', $this->name . ':db', 'Loads fixtures', ['sylius:fixtures']),
             'function' => function (#[AsRawTokens] array $rawTokens = []): void {
-                docker_compose_run(sprintf('php bin/console sylius:fixture:load %s', implode(' ', $rawTokens)), $this->name . '-builder');
+                docker_compose_run(\sprintf('php bin/console sylius:fixture:load %s', implode(' ', $rawTokens)), $this->name . '-builder');
             },
         ];
     }

@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare (strict_types=1);
 
 namespace Castor\Sylius;
 
@@ -117,7 +117,7 @@ function resolve_plugin_installer(\ReflectionFunction|\ReflectionClass $reflecti
         throw new FunctionConfigurationException(\sprintf('Could not instantiate the class "%s".', $reflection->name), $reflection, $e);
     }
 
-    if (!is_callable($instance)) {
+    if (!\is_callable($instance)) {
         throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, $instance);
     }
 
@@ -148,10 +148,9 @@ function resolve_plugin_remover(\ReflectionFunction|\ReflectionClass $reflection
         throw new FunctionConfigurationException(\sprintf('Could not instantiate the class "%s".', $reflection->name), $reflection, $e);
     }
 
-    if (!is_callable($instance)) {
+    if (!\is_callable($instance)) {
         throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, $instance);
     }
 
     return new PluginRemoverDescriptor($removerAttribute, new PluginRemover($removerAttribute->name, fn() => $instance()));
 }
-

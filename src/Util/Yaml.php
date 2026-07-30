@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Castor\Sylius\Util;
 
 use Castor\Sylius\App;
+
 use function Castor\fs;
 
 final readonly class Yaml
@@ -20,7 +21,7 @@ final readonly class Yaml
         $pattern = implode(
             '\R',
             array_map(
-                static fn (string $line): string => \sprintf(
+                static fn(string $line): string => \sprintf(
                     '[ \t]*#%s',
                     preg_quote($line, '/'),
                 ),
@@ -30,13 +31,11 @@ final readonly class Yaml
 
         $replaced = preg_replace_callback(
             \sprintf('/%s/m', $pattern),
-            static function (array $matches): string {
-                return preg_replace(
-                    '/^([ \t]*)#/m',
-                    '$1',
-                    $matches[0],
-                ) ?? $matches[0];
-            },
+            static fn(array $matches): string => preg_replace(
+                '/^([ \t]*)#/m',
+                '$1',
+                $matches[0],
+            ) ?? $matches[0],
             $content,
             1,
         );
@@ -77,14 +76,12 @@ final readonly class Yaml
 
         $replaced = preg_replace_callback(
             $pattern,
-            static function (array $matches) use ($section, $block): string {
-                return \sprintf(
-                    "%s:\n%s\n\n%s\n",
-                    $section,
-                    rtrim($matches[1]),
-                    $block,
-                );
-            },
+            static fn(array $matches): string => \sprintf(
+                "%s:\n%s\n\n%s\n",
+                $section,
+                rtrim($matches[1]),
+                $block,
+            ),
             $content,
             1,
         );

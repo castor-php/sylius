@@ -11,8 +11,7 @@ final readonly class PluginInstaller implements PluginInstallerInterface
     public function __construct(
         public string $name,
         public \Closure $code,
-    ) {
-    }
+    ) {}
 
     public function name(): string
     {

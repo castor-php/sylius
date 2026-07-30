@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare (strict_types=1);
 
 namespace Castor\Sylius\Plugin\Installer;
 
@@ -9,6 +9,7 @@ use Castor\Sylius\Util\Composer;
 use Castor\Sylius\Util\Database;
 use Castor\Sylius\Util\Docker;
 use Castor\Sylius\Util\Symfony;
+
 use function Castor\fs;
 use function Castor\io;
 

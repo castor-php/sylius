@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Castor\Sylius\Util;
 
 use Castor\Sylius\App;
+
 use function Castor\io;
 
 final readonly class Assets
@@ -13,7 +14,7 @@ final readonly class Assets
     {
         io()->title('Installing the assets');
 
-        Docker::run($app,'bin/console assets:install');
+        Docker::run($app, 'bin/console assets:install');
     }
 
     public static function build(App $app): void

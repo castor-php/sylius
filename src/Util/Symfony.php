@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Castor\Sylius\Util;
 
 use Castor\Sylius\App;
+
 use function Castor\fs;
 use function Castor\run;
 
@@ -27,8 +28,8 @@ final readonly class Symfony
     public static function addBundle(
         App $app,
         string $bundle,
-     array $envs = ['all' => true],
-     string $file = 'config/bundles.php',
+        array $envs = ['all' => true],
+        string $file = 'config/bundles.php',
     ): void {
         $realFile = $app->directory() . '/' . $file;
 
@@ -43,7 +44,7 @@ final readonly class Symfony
             implode(
                 ', ',
                 array_map(
-                    static fn (string $env, bool $enabled): string => \sprintf("'%s' => %s", $env, $enabled ? 'true' : 'false'),
+                    static fn(string $env, bool $enabled): string => \sprintf("'%s' => %s", $env, $enabled ? 'true' : 'false'),
                     array_keys($envs),
                     $envs,
                 ),
@@ -88,7 +89,7 @@ final readonly class Symfony
 
         $content = fs()->readFile($realFile);
 
-        $data = json_decode($content, true, flags: JSON_THROW_ON_ERROR);
+        $data = json_decode($content, true, flags: \JSON_THROW_ON_ERROR);
 
         $data['controllers'] ??= [];
         $data['controllers'][$package] ??= [];
@@ -98,8 +99,8 @@ final readonly class Symfony
             $realFile,
             json_encode(
                 $data,
-                JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES,
-            ) . PHP_EOL,
+                \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES,
+            ) . \PHP_EOL,
         );
     }
 }
