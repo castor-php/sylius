@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Castor\Sylius\Plugin\Installer;
 
 use Castor\Sylius\Attribute\AsPluginInstaller;
-use function Castor\fs;
-use function Castor\io;
 
 final readonly class PluginInstallerDescriptor
 {

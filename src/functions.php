@@ -8,6 +8,7 @@ use Castor\Attribute\AsListener;
 use Castor\Event\AfterBootEvent;
 use Castor\Exception\FunctionConfigurationException;
 use Castor\Sylius\Attribute\AsPluginInstaller;
+use Castor\Sylius\Attribute\AsPluginRemover;
 use Castor\Sylius\Plugin\Installer\BugSnagInstaller;
 use Castor\Sylius\Plugin\Installer\CmsInstaller;
 use Castor\Sylius\Plugin\Installer\GdprInstaller;
@@ -25,6 +26,8 @@ use Castor\Sylius\Plugin\Remover\CmsRemover;
 use Castor\Sylius\Plugin\Remover\GdprRemover;
 use Castor\Sylius\Plugin\Remover\InvoicingRemover;
 use Castor\Sylius\Plugin\Remover\PaypalRemover;
+use Castor\Sylius\Plugin\Remover\PluginRemover;
+use Castor\Sylius\Plugin\Remover\PluginRemoverDescriptor;
 use Castor\Sylius\Plugin\Remover\StripeRemover;
 use Castor\Sylius\Plugin\Remover\WishlistRemover;
 use Castor\Sylius\Tasks\PluginTasks;
@@ -57,23 +60,36 @@ function initialize(AfterBootEvent $afterBootEvent): void
         $reflectionFunction = new \ReflectionFunction($function);
         $descriptor = resolve_plugin_installer($reflectionFunction);
 
+        if (null !== $descriptor) {
+            $installer = new Plugin\Installer\PluginInstaller($descriptor->attribute->name, $descriptor->installer->getClosure());
+            PluginTasks::addInstaller($installer);
+        }
+
+        $descriptor = resolve_plugin_remover($reflectionFunction);
+
         if (null === $descriptor) {
             continue;
         }
 
-        $installer = new Plugin\Installer\PluginInstaller($descriptor->attribute->name, $descriptor->installer->getClosure());
-        PluginTasks::addInstaller($installer);
+        $remover = new Plugin\Remover\PluginRemover($descriptor->attribute->name, $descriptor->remover->getClosure());
+        PluginTasks::addRemover($remover);
     }
 
     foreach ($currentClasses as $class) {
         $reflectionClass = new \ReflectionClass($class);
         $descriptor = resolve_plugin_installer($reflectionClass);
 
+        if (null !== $descriptor) {
+            PluginTasks::addInstaller($descriptor->installer);
+        }
+
+        $descriptor = resolve_plugin_remover($reflectionClass);
+
         if (null === $descriptor) {
             continue;
         }
 
-        PluginTasks::addInstaller($descriptor->installer);
+        PluginTasks::addRemover($descriptor->remover);
     }
 }
 
@@ -107,3 +123,35 @@ function resolve_plugin_installer(\ReflectionFunction|\ReflectionClass $reflecti
 
     return new PluginInstallerDescriptor($installerAttribute, new PluginInstaller($installerAttribute->name, fn() => $instance()));
 }
+
+function resolve_plugin_remover(\ReflectionFunction|\ReflectionClass $reflection): ?PluginRemoverDescriptor
+{
+    $attributes = $reflection->getAttributes(AsPluginRemover::class, \ReflectionAttribute::IS_INSTANCEOF);
+    if (!\count($attributes)) {
+        return null;
+    }
+
+    try {
+        /** @var AsPluginRemover $removerAttribute */
+        $removerAttribute = $attributes[0]->newInstance();
+    } catch (\Throwable $e) {
+        throw new FunctionConfigurationException(\sprintf('Could not instantiate the attribute "%s".', AsPluginRemover::class), $reflection, $e);
+    }
+
+    if ($reflection instanceof \ReflectionFunction) {
+        return new PluginRemoverDescriptor($removerAttribute, $reflection);
+    }
+
+    try {
+        $instance = $reflection->newInstance();
+    } catch (\Throwable $e) {
+        throw new FunctionConfigurationException(\sprintf('Could not instantiate the class "%s".', $reflection->name), $reflection, $e);
+    }
+
+    if (!is_callable($instance)) {
+        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, $instance);
+    }
+
+    return new PluginRemoverDescriptor($removerAttribute, new PluginRemover($removerAttribute->name, fn() => $instance()));
+}
+

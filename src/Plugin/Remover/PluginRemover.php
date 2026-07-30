@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Castor\Sylius\Plugin\Installer;
+namespace Castor\Sylius\Plugin\Remover;
 
 use Castor\Sylius\App;
 
-final readonly class PluginInstaller implements PluginInstallerInterface
+final readonly class PluginRemover implements PluginRemoverInterface
 {
     public function __construct(
         public string $name,
