@@ -11,8 +11,7 @@ final readonly class PluginRemover implements PluginRemoverInterface
     public function __construct(
         public string $name,
         public \Closure $code,
-    ) {
-    }
+    ) {}
 
     public function name(): string
     {

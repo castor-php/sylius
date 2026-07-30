@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Castor\Sylius\Tasks;
 
 use Castor\Attribute\AsRawTokens;
@@ -8,6 +10,7 @@ use Castor\Sylius\App;
 use Castor\Sylius\Plugin\Installer\PluginInstaller;
 use Castor\Sylius\Plugin\Installer\PluginInstallerInterface;
 use Castor\Sylius\Plugin\Remover\PluginRemoverInterface;
+
 use function Castor\io;
 
 final class PluginTasks
@@ -19,8 +22,7 @@ final class PluginTasks
     public function __construct(
         private readonly string $name,
         private readonly string $directory,
-    ) {
-    }
+    ) {}
 
     public function __invoke(): iterable
     {
@@ -30,9 +32,7 @@ final class PluginTasks
             'task' => new AsTask('add', 'sylius:plugin', 'Adds plugins', ['sylius:add']),
             'function' => function (#[AsRawTokens] array $plugins = []) use ($app): void {
                 $installers = array_map(
-                    function (callable $installer) use ($app): callable {
-                        return fn() => $installer($app);
-                    },
+                    fn(callable $installer): callable => fn() => $installer($app),
                     self::$installers,
                 );
 
@@ -60,9 +60,7 @@ final class PluginTasks
             'function' => function (#[AsRawTokens] array $plugins = []) use ($app): void {
 
                 $removers = array_map(
-                    function (callable $remover) use ($app): callable {
-                        return fn() => $remover($app);
-                    },
+                    fn(callable $remover): callable => fn() => $remover($app),
                     self::$removers,
                 );
 

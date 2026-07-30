@@ -8,5 +8,7 @@ compose.override.yaml
 compose.generated.yaml
 
 composer.lock
-.phpunit.cache
 /vendor
+
+.phpunit.cache
+.php-cs-fixer.cache

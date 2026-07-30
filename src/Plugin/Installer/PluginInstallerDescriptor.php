@@ -11,6 +11,5 @@ final readonly class PluginInstallerDescriptor
     public function __construct(
         public AsPluginInstaller $attribute,
         public \ReflectionFunction|PluginInstallerInterface $installer,
-    ) {
-    }
+    ) {}
 }

@@ -9,6 +9,7 @@ use Castor\Attribute\AsRawTokens;
 use Castor\Attribute\AsTask;
 use Castor\Sylius\App;
 use Castor\Sylius\PhpFile;
+
 use function Castor\fs;
 use function Castor\io;
 
@@ -19,8 +20,7 @@ final class MenuTasks
     public function __construct(
         private readonly string $name,
         private readonly string $directory,
-    ) {
-    }
+    ) {}
 
     public function __invoke(): iterable
     {
@@ -29,14 +29,15 @@ final class MenuTasks
         yield [
             'task' => new AsTask('remove', 'sylius:menu', 'Remove admin menu items (use --restore / -b to restore previously removed items)'),
             'function' => function (
-                #[AsRawTokens] array $items = [],
+                #[AsRawTokens]
+                array $items = [],
                 #[AsOption(description: 'Replace the removed-items list instead of merging', shortcut: 'r')]
                 bool $replace = false,
                 #[AsOption(description: 'Restore previously removed menu items', shortcut: 'b')]
                 bool $restore = false,
             ) use ($app): void {
                 // Remove options from the $items
-                $items = array_filter($items, static fn (string $item) => !str_starts_with($item, '--'));
+                $items = array_filter($items, static fn(string $item) => !str_starts_with($item, '--'));
 
                 if ($replace && $restore) {
                     io()->error('The --replace and --restore options cannot be used together.');
@@ -162,50 +163,50 @@ final class MenuTasks
             implode(
                 ",\n",
                 array_map(
-                    static fn (string $item): string => \sprintf("        '%s'", $item),
+                    static fn(string $item): string => \sprintf("        '%s'", $item),
                     $items,
                 ),
             ),
         );
 
         return <<<PHP
-        <?php
+            <?php
 
-        declare(strict_types=1);
+            declare(strict_types=1);
 
-        namespace App\\Menu\\Admin;
+            namespace App\\Menu\\Admin;
 
-        use Sylius\\Bundle\\UiBundle\\Menu\\Event\\MenuBuilderEvent;
-        use Symfony\\Component\\EventDispatcher\\Attribute\\AsEventListener;
+            use Sylius\\Bundle\\UiBundle\\Menu\\Event\\MenuBuilderEvent;
+            use Symfony\\Component\\EventDispatcher\\Attribute\\AsEventListener;
 
-        #[AsEventListener(event: 'sylius.menu.admin.main')]
-        final class RemoveMenuItemsListener
-        {
-            private const array REMOVED_MENU_ITEMS = {$hiddenItems};
-
-            public function __invoke(MenuBuilderEvent \$event): void
+            #[AsEventListener(event: 'sylius.menu.admin.main')]
+            final class RemoveMenuItemsListener
             {
-                \$menu = \$event->getMenu();
+                private const array REMOVED_MENU_ITEMS = {$hiddenItems};
 
-                foreach (self::REMOVED_MENU_ITEMS as \$item) {
-                    \$parts = explode('/', \$item);
+                public function __invoke(MenuBuilderEvent \$event): void
+                {
+                    \$menu = \$event->getMenu();
 
-                    if (1 === count(\$parts)) {
-                        \$menu->removeChild(\$parts[0]);
+                    foreach (self::REMOVED_MENU_ITEMS as \$item) {
+                        \$parts = explode('/', \$item);
 
-                        continue;
-                    }
+                        if (1 === count(\$parts)) {
+                            \$menu->removeChild(\$parts[0]);
 
-                    \$parent = \$menu->getChild(\$parts[0]);
+                            continue;
+                        }
 
-                    if (null !== \$parent) {
-                        \$parent->removeChild(\$parts[1]);
+                        \$parent = \$menu->getChild(\$parts[0]);
+
+                        if (null !== \$parent) {
+                            \$parent->removeChild(\$parts[1]);
+                        }
                     }
                 }
             }
-        }
 
-        PHP;
+            PHP;
     }
 
     /**

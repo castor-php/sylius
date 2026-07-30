@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Castor\Sylius\Plugin\Remover;
 
 use Castor\Sylius\App;

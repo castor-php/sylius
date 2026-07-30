@@ -6,6 +6,7 @@ namespace Castor\Sylius\Util;
 
 use Castor\Sylius\App;
 use Symfony\Component\Process\Process;
+
 use function Castor\Docker\docker_compose_run;
 
 final readonly class Docker

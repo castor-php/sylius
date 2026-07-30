@@ -22,6 +22,17 @@ env:
     ANSICON: 1
 
 jobs:
+    cs-fixer:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup Castor
+              uses: castor-php/setup-castor@v1.0.0
+
+            - name: PHP CS Fixer
+              run: castor qa:cs --dry-run
+
     phpunit:
         name: Run PHPUnit
         timeout-minutes: 20
@@ -32,13 +43,13 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: "${{ matrix.php }}"
+                    php-version: "8.4"
                     extensions: xml, simplexml, dom, gd
                     coverage: none
                     tools: 'composer:v2, flex'
 
             -   name: Install packages
-                run: composer install
+                run: composer install --prefer-dist --no-progress
 
             -   name: Run PHPUnit
                 run: vendor/bin/phpunit
@@ -75,8 +86,6 @@ jobs:
                     -   name: Run Custom removers
                         value: "castor sylius:plugin:remove test_remover_with_function test_remover_with_class"
         runs-on: ubuntu-latest
-        env:
-            DS_PHP_VERSION: "8.3"
         steps:
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v4
@@ -93,7 +102,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: "${{ matrix.php }}"
+                  php-version: "8.3"
                   extensions: xml, simplexml, dom, gd
                   coverage: none
                   tools: 'composer:v2, flex'

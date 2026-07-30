@@ -69,46 +69,46 @@ final class MenuTasksTest extends TestCase
         $dir = \dirname($this->listenerFilePath());
         $this->filesystem->mkdir($dir);
 
-        $hiddenItems = "[\n" . implode(",\n", array_map(static fn (string $item): string => "        '{$item}'", $items)) . "\n    ]";
+        $hiddenItems = "[\n" . implode(",\n", array_map(static fn(string $item): string => "        '{$item}'", $items)) . "\n    ]";
 
         $content = <<<PHP
-        <?php
+            <?php
 
-        declare(strict_types=1);
+            declare(strict_types=1);
 
-        namespace App\Menu\Admin;
+            namespace App\Menu\Admin;
 
-        use Sylius\Bundle\UiBundle\Menu\Event\MenuBuilderEvent;
-        use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
+            use Sylius\Bundle\UiBundle\Menu\Event\MenuBuilderEvent;
+            use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-        #[AsEventListener(event: 'sylius.menu.admin.main')]
-        final class RemoveMenuItemsListener
-        {
-            private const array REMOVED_MENU_ITEMS = {$hiddenItems};
-
-            public function __invoke(MenuBuilderEvent \$event): void
+            #[AsEventListener(event: 'sylius.menu.admin.main')]
+            final class RemoveMenuItemsListener
             {
-                \$menu = \$event->getMenu();
+                private const array REMOVED_MENU_ITEMS = {$hiddenItems};
 
-                foreach (self::REMOVED_MENU_ITEMS as \$item) {
-                    \$parts = explode('/', \$item);
+                public function __invoke(MenuBuilderEvent \$event): void
+                {
+                    \$menu = \$event->getMenu();
 
-                    if (1 === count(\$parts)) {
-                        \$menu->removeChild(\$parts[0]);
+                    foreach (self::REMOVED_MENU_ITEMS as \$item) {
+                        \$parts = explode('/', \$item);
 
-                        continue;
-                    }
+                        if (1 === count(\$parts)) {
+                            \$menu->removeChild(\$parts[0]);
 
-                    \$parent = \$menu->getChild(\$parts[0]);
+                            continue;
+                        }
 
-                    if (null !== \$parent) {
-                        \$parent->removeChild(\$parts[1]);
+                        \$parent = \$menu->getChild(\$parts[0]);
+
+                        if (null !== \$parent) {
+                            \$parent->removeChild(\$parts[1]);
+                        }
                     }
                 }
             }
-        }
 
-        PHP;
+            PHP;
 
         $this->filesystem->dumpFile($this->listenerFilePath(), $content);
     }
@@ -134,10 +134,10 @@ final class MenuTasksTest extends TestCase
         $menuTasks = new MenuTasks('test-app', $this->tempDir);
         $tasks = iterator_to_array($menuTasks->__invoke());
 
-        $this->assertCount(1, $tasks);
-        $this->assertArrayHasKey('task', $tasks[0]);
-        $this->assertArrayHasKey('function', $tasks[0]);
-        $this->assertInstanceOf(\Closure::class, $tasks[0]['function']);
+        static::assertCount(1, $tasks);
+        static::assertArrayHasKey('task', $tasks[0]);
+        static::assertArrayHasKey('function', $tasks[0]);
+        static::assertInstanceOf(\Closure::class, $tasks[0]['function']);
     }
 
     public function testRemoveCreatesListenerWhenNoExistingFile(): void
@@ -147,8 +147,8 @@ final class MenuTasksTest extends TestCase
 
         $remove(['catalog/products']);
 
-        $this->assertTrue($this->filesystem->exists($this->listenerFilePath()));
-        $this->assertSame(['catalog/products'], $this->readRemovedMenuItems());
+        static::assertTrue($this->filesystem->exists($this->listenerFilePath()));
+        static::assertSame(['catalog/products'], $this->readRemovedMenuItems());
     }
 
     public function testRemoveMergesWithExistingItems(): void
@@ -159,8 +159,8 @@ final class MenuTasksTest extends TestCase
 
         $remove(['sales/orders']);
 
-        $this->assertTrue($this->filesystem->exists($this->listenerFilePath()));
-        $this->assertSame(['catalog/products', 'sales/orders'], $this->readRemovedMenuItems());
+        static::assertTrue($this->filesystem->exists($this->listenerFilePath()));
+        static::assertSame(['catalog/products', 'sales/orders'], $this->readRemovedMenuItems());
     }
 
     public function testRemoveWithReplaceOverwritesExistingItems(): void
@@ -171,8 +171,8 @@ final class MenuTasksTest extends TestCase
 
         $remove(['sales/orders'], true);
 
-        $this->assertTrue($this->filesystem->exists($this->listenerFilePath()));
-        $this->assertSame(['sales/orders'], $this->readRemovedMenuItems());
+        static::assertTrue($this->filesystem->exists($this->listenerFilePath()));
+        static::assertSame(['sales/orders'], $this->readRemovedMenuItems());
     }
 
     public function testReplaceAndRestoreTogetherShowsError(): void
@@ -183,8 +183,8 @@ final class MenuTasksTest extends TestCase
 
         $remove(['catalog/products'], true, true);
 
-        $this->assertStringContainsString('The --replace and --restore options cannot be used together.', $this->getOutput());
-        $this->assertSame(['catalog/products'], $this->readRemovedMenuItems());
+        static::assertStringContainsString('The --replace and --restore options cannot be used together.', $this->getOutput());
+        static::assertSame(['catalog/products'], $this->readRemovedMenuItems());
     }
 
     public function testRestoreAllItemsRemovesListener(): void
@@ -195,7 +195,7 @@ final class MenuTasksTest extends TestCase
 
         $remove(['catalog/products', 'sales/orders'], false, true);
 
-        $this->assertFalse($this->filesystem->exists($this->listenerFilePath()));
+        static::assertFalse($this->filesystem->exists($this->listenerFilePath()));
     }
 
     public function testRestoreSomeItemsKeepsListenerWithRemaining(): void
@@ -206,8 +206,8 @@ final class MenuTasksTest extends TestCase
 
         $remove(['catalog/products'], false, true);
 
-        $this->assertTrue($this->filesystem->exists($this->listenerFilePath()));
-        $this->assertSame(['sales/orders'], $this->readRemovedMenuItems());
+        static::assertTrue($this->filesystem->exists($this->listenerFilePath()));
+        static::assertSame(['sales/orders'], $this->readRemovedMenuItems());
     }
 
     public function testRestoreWhenNoListenerShowsError(): void
@@ -217,7 +217,7 @@ final class MenuTasksTest extends TestCase
 
         $remove(['catalog/products'], false, true);
 
-        $this->assertStringContainsString('nothing to restore', $this->getOutput());
+        static::assertStringContainsString('nothing to restore', $this->getOutput());
     }
 
     public function testRestoreNonMatchingItemsShowsWarning(): void
@@ -228,7 +228,7 @@ final class MenuTasksTest extends TestCase
 
         $remove(['catalog/products'], false, true);
 
-        $this->assertStringContainsString('The following items were not in the removed list: catalog/products', $this->getOutput());
+        static::assertStringContainsString('The following items were not in the removed list: catalog/products', $this->getOutput());
     }
 
     public function testRestoreWhenNoMatchingItemsShowsComment(): void
@@ -239,8 +239,8 @@ final class MenuTasksTest extends TestCase
 
         $remove(['catalog'], false, true);
 
-        $this->assertStringContainsString('No matching items to restore.', $this->getOutput());
-        $this->assertSame(['sales/orders'], $this->readRemovedMenuItems());
+        static::assertStringContainsString('No matching items to restore.', $this->getOutput());
+        static::assertSame(['sales/orders'], $this->readRemovedMenuItems());
     }
 
     public function testRestoreSingleItemFromListKeepsRemaining(): void
@@ -251,8 +251,8 @@ final class MenuTasksTest extends TestCase
 
         $remove(['sales/orders'], false, true);
 
-        $this->assertTrue($this->filesystem->exists($this->listenerFilePath()));
-        $this->assertSame(['catalog/products', 'customers/customers'], $this->readRemovedMenuItems());
+        static::assertTrue($this->filesystem->exists($this->listenerFilePath()));
+        static::assertSame(['catalog/products', 'customers/customers'], $this->readRemovedMenuItems());
     }
 
     public function testRemoveWithEmptyItemsAsksForChoice(): void
