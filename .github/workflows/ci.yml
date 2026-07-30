@@ -71,7 +71,9 @@ jobs:
                     -   name: Run Fixtures
                         value: "castor sylius:fixtures -n"
                     -   name: Run Custom installers
-                        value: "castor sylius:plugin:add test_function && castor sylius:plugin:add test_class"
+                        value: "castor sylius:plugin:add test_installer_with_function test_installer_with_class"
+                    -   name: Run Custom removers
+                        value: "castor sylius:plugin:remove test_remover_with_function test_remover_with_class"
         runs-on: ubuntu-latest
         env:
             DS_PHP_VERSION: "8.3"

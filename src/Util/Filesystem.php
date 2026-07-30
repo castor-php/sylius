@@ -17,6 +17,7 @@ final readonly class Filesystem
             return null;
         }
 
+
         $finder = new Finder();
         $finder->files()
             ->in($directory)

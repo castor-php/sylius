@@ -6,6 +6,8 @@ use Castor\Attribute\AsListener;
 use Castor\Context;
 use Castor\Docker\Event\RegisterServiceEvent;
 use Castor\Docker\Service\PostgresService;
+use Castor\Sylius\Attribute\AsPluginInstaller;
+use Castor\Sylius\Attribute\AsPluginRemover;
 use Castor\Sylius\Service\SyliusService;
 use function Castor\io;
 
@@ -36,8 +38,14 @@ function register_service(RegisterServiceEvent $event): void
     );
 }
 
-#[\Castor\Sylius\Attribute\AsPluginInstaller(name: 'test_function')]
+#[AsPluginInstaller(name: 'test_installer_with_function')]
 function test_installer(): void
 {
     io()->success('New installer using a custom function is ok');
+}
+
+#[AsPluginRemover(name: 'test_remover_with_function')]
+function test_remover(): void
+{
+    io()->success('New remover using a custom function is ok');
 }
