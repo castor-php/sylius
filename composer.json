@@ -8,7 +8,11 @@
             "Castor\\Sylius\\": "src/"
         },
         "files": [
-            "src/functions.php"
+            "src/functions.php",
+            "src/Import/constants.php",
+            "src/Import/ImportContext.php",
+            "src/Import/ImportBootstrap.php",
+            "src/Import/bootstrap.php"
         ]
     },
     "authors": [
@@ -19,10 +23,19 @@
     ],
     "require": {
         "php": ">=8.3",
-        "castor-php/docker": "@dev"
+        "castor-php/docker": "@dev",
+        "symfony/ai-ollama-platform": "^0.12.0",
+        "symfony/ai-open-router-platform": "^0.12.0",
+        "symfony/ai-platform": "^0.12.0",
+        "symfony/dotenv": "^7.4|^8.0",
+        "symfony/http-client": "^7.4|^8.0",
+        "symfony/yaml": "^7.4|^8.0"
     },
     "require-dev": {
         "jolicode/castor": "^1.6",
         "phpunit/phpunit": "^13.2"
+    },
+    "suggest": {
+        "jolicode/castor-api": "Expose import tasks over HTTP"
     }
 }
