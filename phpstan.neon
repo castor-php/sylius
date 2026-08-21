@@ -1,0 +1,8 @@
+parameters:
+    level: 8
+    paths:
+        - castor.php
+        - .castor/app
+    scanFiles:
+        - .castor.stub.php
+        - .phpstan/AsApi.php

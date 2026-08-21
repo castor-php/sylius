@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+
+
 use Castor\Attribute\AsContext;
 use Castor\Attribute\AsListener;
 use Castor\Attribute\AsTask;
@@ -12,10 +14,11 @@ use Castor\Sylius\Attribute\AsPluginInstaller;
 use Castor\Sylius\Attribute\AsPluginRemover;
 use Castor\Sylius\Service\SyliusService;
 
+use function Castor\import;
 use function Castor\io;
 use function Castor\PHPQa\php_cs_fixer;
 
-\Castor\import(__DIR__ . '/.castor/app');
+import(__DIR__ . '/.castor/app');
 
 #[AsContext(default: true)]
 function default_context(): Context
@@ -51,7 +54,7 @@ function qa_phpcsfixer(bool $dryRun = false): int
         $args = ['fix', '--dry-run'];
     }
 
-    return php_cs_fixer(arguments: $args, version: '3.92.4')->getExitCode();
+    return php_cs_fixer(arguments: $args, version: '3.92.4')->getExitCode() ?? 0;
 }
 
 #[AsPluginInstaller(name: 'test_installer_with_function')]
