@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types=1);
-
 namespace Castor\Sylius\Plugin\Installer;
 
 use Castor\Sylius\Attribute\AsPluginInstaller;

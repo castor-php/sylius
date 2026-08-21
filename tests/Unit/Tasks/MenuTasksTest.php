@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Unit\Tasks;
 
 use Castor\Container;
@@ -41,7 +39,7 @@ final class MenuTasksTest extends TestCase
     {
         $container = (new \ReflectionClass(Container::class))->newInstanceWithoutConstructor();
 
-        $setProperty = function (Container $container, string $property, mixed $value): void {
+        $setProperty = static function (Container $container, string $property, mixed $value): void {
             $prop = new \ReflectionProperty(Container::class, $property);
             $prop->setValue($container, $value);
         };

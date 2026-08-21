@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Castor\Sylius\Tasks;
 
 use Castor\Attribute\AsOption;

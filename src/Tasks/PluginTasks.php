@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Castor\Sylius\Tasks;
 
 use Castor\Attribute\AsRawTokens;
@@ -30,9 +28,9 @@ final class PluginTasks
 
         yield [
             'task' => new AsTask('add', 'sylius:plugin', 'Adds plugins', ['sylius:add']),
-            'function' => function (#[AsRawTokens] array $plugins = []) use ($app): void {
+            'function' => static function (#[AsRawTokens] array $plugins = []) use ($app): void {
                 $installers = array_map(
-                    fn(callable $installer): callable => fn() => $installer($app),
+                    static fn(callable $installer): callable => static fn() => $installer($app),
                     self::$installers,
                 );
 
@@ -57,10 +55,10 @@ final class PluginTasks
 
         yield [
             'task' => new AsTask('remove', 'sylius:plugin', 'Removes plugins', ['sylius:remove']),
-            'function' => function (#[AsRawTokens] array $plugins = []) use ($app): void {
+            'function' => static function (#[AsRawTokens] array $plugins = []) use ($app): void {
 
                 $removers = array_map(
-                    fn(callable $remover): callable => fn() => $remover($app),
+                    static fn(callable $remover): callable => static fn() => $remover($app),
                     self::$removers,
                 );
 
