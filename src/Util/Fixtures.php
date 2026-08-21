@@ -10,9 +10,9 @@ use function Castor\fs;
 
 final readonly class Fixtures
 {
-    public static function load(App $app, ?string $suite = null): void
+    public static function load(App $app, ?string ...$args): void
     {
-        Docker::run($app, \sprintf('php bin/console sylius:fixtures:load %s -n', $suite));
+        Docker::run($app, \sprintf('php bin/console sylius:fixtures:load %s -n', implode(' ', $args)));
     }
 
     public static function createSuite(App $app, ?string $name = null): void

@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
 
 namespace Castor\Sylius;
 
@@ -132,7 +132,7 @@ function resolve_plugin_installer(\ReflectionFunction|\ReflectionClass $reflecti
         throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, $instance);
     }
 
-    return new PluginInstallerDescriptor($installerAttribute, new PluginInstaller($installerAttribute->name, fn() => $instance()));
+    return new PluginInstallerDescriptor($installerAttribute, new PluginInstaller($installerAttribute->name, static fn() => $instance()));
 }
 
 function resolve_plugin_remover(\ReflectionFunction|\ReflectionClass $reflection): ?PluginRemoverDescriptor
@@ -163,5 +163,5 @@ function resolve_plugin_remover(\ReflectionFunction|\ReflectionClass $reflection
         throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, $instance);
     }
 
-    return new PluginRemoverDescriptor($removerAttribute, new PluginRemover($removerAttribute->name, fn() => $instance()));
+    return new PluginRemoverDescriptor($removerAttribute, new PluginRemover($removerAttribute->name, static fn() => $instance()));
 }
