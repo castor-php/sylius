@@ -13,9 +13,12 @@ use Castor\Sylius\Attribute\AsPluginRemover;
 use Castor\Sylius\Service\SyliusService;
 
 use function Castor\io;
+use function Castor\context;
+use function Castor\import;
+use function Castor\PHPQa\phpstan;
 use function Castor\PHPQa\php_cs_fixer;
 
-\Castor\import(__DIR__ . '/.castor/app');
+import(__DIR__ . '/.castor/app');
 
 #[AsContext(default: true)]
 function default_context(): Context
@@ -52,6 +55,18 @@ function qa_phpcsfixer(bool $dryRun = false): int
     }
 
     return php_cs_fixer(arguments: $args, version: '3.92.4')->getExitCode();
+}
+
+#[AsTask(description: 'Run PHPStan', namespace: 'qa', name: 'phpstan', aliases: ['phpstan'])]
+function qa_phpstan(bool $generateBaseline = false): int
+{
+    $args = ['analyze', context()->workingDirectory . '/src'];
+
+    if ($generateBaseline) {
+        $args[] = '-b';
+    }
+
+    return phpstan(arguments: $args, version: '2.1.32')->getExitCode();
 }
 
 #[AsPluginInstaller(name: 'test_installer_with_function')]
