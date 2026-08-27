@@ -25,6 +25,7 @@ use Castor\Sylius\Plugin\Remover\BugSnagRemover;
 use Castor\Sylius\Plugin\Remover\CmsRemover;
 use Castor\Sylius\Plugin\Remover\GdprRemover;
 use Castor\Sylius\Plugin\Remover\InvoicingRemover;
+use Castor\Sylius\Plugin\Remover\MollieRemover;
 use Castor\Sylius\Plugin\Remover\PaypalRemover;
 use Castor\Sylius\Plugin\Remover\PluginRemover;
 use Castor\Sylius\Plugin\Remover\PluginRemoverDescriptor;
@@ -49,6 +50,7 @@ function initialize(AfterBootEvent $afterBootEvent): void
     PluginTasks::addRemover(new CmsRemover());
     PluginTasks::addRemover(new GdprRemover());
     PluginTasks::addRemover(new InvoicingRemover());
+    PluginTasks::addRemover(new MollieRemover());
     PluginTasks::addRemover(new PaypalRemover());
     PluginTasks::addRemover(new StripeRemover());
     PluginTasks::addRemover(new WishlistRemover());

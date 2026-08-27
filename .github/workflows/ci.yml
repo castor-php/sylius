@@ -85,6 +85,8 @@ jobs:
                         value: "castor sylius:add gdpr || true"
                     -   name: Sylius Invoicing Plugin
                         value: "castor sylius:add invoicing && castor sylius:remove invoicing"
+                    -   name: Sylius Mollie Plugin
+                        value: "castor sylius:remove mollie"
                     -   name: Sylius Refund Plugin
                         value: "castor sylius:add refund"
                     -   name: Sylius Paypal Plugin

@@ -205,8 +205,13 @@ final class PhpFile
             if ($stmt instanceof Node\Stmt\TraitUse) {
                 foreach ($stmt->traits as $j => $trait) {
                     if ($trait->toString() === $traitName) {
-                        unset($class->stmts[$i]);
-                        $class->stmts = array_values($class->stmts);
+                        unset($stmt->traits[$j]);
+                        $stmt->traits = array_values($stmt->traits);
+
+                        if ([] === $stmt->traits) {
+                            unset($class->stmts[$i]);
+                            $class->stmts = array_values($class->stmts);
+                        }
 
                         return $this->removeImport($fqcn);
                     }

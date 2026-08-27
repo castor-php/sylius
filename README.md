@@ -95,6 +95,7 @@ castor sylius:remove mollie paypal
 | cms       | Remove the Sylius CMS plugin                         |
 | gdpr      | Remove the Synolia GDPR plugin                       |
 | invoicing | Remove the Sylius Invoicing plugin                   |
+| mollie    | Remove the Sylius Mollie Plugin                      |
 | paypal    | Remove the Sylius Paypal plugin                      |
 | stripe    | Remove the Sylius Stripe plugin                      |
 | wishlist  | Remove the Sylius Wishlist plugin                    |
