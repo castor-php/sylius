@@ -36,10 +36,13 @@ final class PluginTasks
                     self::$installers,
                 );
 
+                $keys = array_keys($installers);
+                sort($keys);
+
                 if ([] === $plugins) {
                     $plugins = io()->choice(
                         'Which plugins would you like to install?',
-                        array_keys($installers),
+                        $keys,
                         multiSelect: true,
                     );
                 }
@@ -58,16 +61,32 @@ final class PluginTasks
         yield [
             'task' => new AsTask('remove', 'sylius:plugin', 'Removes plugins', ['sylius:remove']),
             'function' => function (#[AsRawTokens] array $plugins = []) use ($app): void {
-
                 $removers = array_map(
                     fn(callable $remover): callable => fn() => $remover($app),
                     self::$removers,
                 );
 
+                $shortcuts = [
+                    'payments' => ['mollie', 'paypal', 'stripe'],
+                ];
+
+                $expanded = [];
+                foreach ($plugins as $plugin) {
+                    if (isset($shortcuts[$plugin])) {
+                        $expanded = array_merge($expanded, $shortcuts[$plugin]);
+                    } else {
+                        $expanded[] = $plugin;
+                    }
+                }
+                $plugins = $expanded;
+
                 if ([] === $plugins) {
+                    $keys = [...array_keys($removers), ...array_keys($shortcuts)];
+                    sort($keys);
+
                     $plugins = io()->choice(
                         'Which plugins would you like to remove?',
-                        array_keys($removers),
+                        $keys,
                         multiSelect: true,
                     );
                 }
