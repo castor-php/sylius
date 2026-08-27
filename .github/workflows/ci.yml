@@ -33,6 +33,22 @@ jobs:
             - name: PHP CS Fixer
               run: castor qa:cs --dry-run
 
+    phpstan:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.4'
+                  tools: composer, castor
+
+            - name: Install packages
+              run: composer install --prefer-dist --no-progress
+
+            - name: Run PHPStan
+              run: castor qa:phpstan
+
     phpunit:
         name: Run PHPUnit
         timeout-minutes: 20

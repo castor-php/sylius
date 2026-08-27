@@ -30,7 +30,7 @@ final readonly class MediaInstaller implements PluginInstallerInterface
 
         Composer::allowContribRecipes($app);
         Docker::run($app, 'composer require jolicode/media-bundle');
-        Symfony::addBundle('JoliCode\MediaBundle\Bridge\Sylius\JoliMediaSyliusBundle');
+        Symfony::addBundle($app, 'JoliCode\MediaBundle\Bridge\Sylius\JoliMediaSyliusBundle');
 
         Yaml::uncommentBlock(
             $app,
@@ -109,17 +109,17 @@ final readonly class MediaInstaller implements PluginInstallerInterface
         $baseDir = $app->directory();
 
         (new PhpFile($baseDir . '/src/Entity/Product/ProductImage.php'))
-            ->addTrait(\JoliCode\MediaBundle\Bridge\Sylius\Doctrine\ORM\EntityWithMediaImageTrait::class)
+            ->addTrait(\JoliCode\MediaBundle\Bridge\Sylius\Doctrine\ORM\EntityWithMediaImageTrait::class) // @phpstan-ignore class.notFound
             ->save()
         ;
 
         (new PhpFile($baseDir . '/src/Entity/Product/TaxonImage.php'))
-            ->addTrait(\JoliCode\MediaBundle\Bridge\Sylius\Doctrine\ORM\EntityWithMediaImageTrait::class)
+            ->addTrait(\JoliCode\MediaBundle\Bridge\Sylius\Doctrine\ORM\EntityWithMediaImageTrait::class) // @phpstan-ignore class.notFound
             ->save()
         ;
 
         (new PhpFile($baseDir . '/src/Entity/Product/AvatarImage.php'))
-            ->addTrait(\JoliCode\MediaBundle\Bridge\Sylius\Doctrine\ORM\EntityWithMediaImageTrait::class)
+            ->addTrait(\JoliCode\MediaBundle\Bridge\Sylius\Doctrine\ORM\EntityWithMediaImageTrait::class) // @phpstan-ignore class.notFound
             ->save()
         ;
 
