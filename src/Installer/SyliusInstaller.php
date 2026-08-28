@@ -19,6 +19,7 @@ use Castor\Sylius\Service\SyliusService;
 use Castor\Sylius\Util\Assets;
 use Castor\Sylius\Util\Database;
 use Castor\Sylius\Util\Docker;
+use Castor\Sylius\Util\Fixtures;
 
 use function Castor\context;
 use function Castor\Docker\docker_compose_run;
@@ -95,7 +96,11 @@ final class SyliusInstaller extends AbstractServiceInstaller implements NeedsDat
             workDir: '/var/www',
         );
 
-        $app = new App($answers['name'], $answers['directory']);
+        $app = new App($answers['name'], $answers['directory'], $answers['domain']);
+
+        Fixtures::createSuite($app);
+        Fixtures::createDefaultChannel($app);
+        Fixtures::load($app);
 
         Docker::run($app, 'yarn install');
         Assets::build($app);
