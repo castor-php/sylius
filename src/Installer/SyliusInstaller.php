@@ -89,9 +89,14 @@ final class SyliusInstaller extends AbstractServiceInstaller implements NeedsDat
         $version = (string) $answers['sylius_version'];
         $package = 'sylius/sylius-standard' . ($version !== '' ? ':' . $version : '');
 
+        docker_compose_run(
+            \sprintf('composer create-project %s . --no-interaction', $package),
+            service: $answers['name'] . '-builder',
+            workDir: '/var/www',
+        );
+
         $app = new App($answers['name'], $answers['directory']);
 
-        Docker::run($app, \sprintf('composer create-project %s . --no-interaction', $package));
         Docker::run($app, 'yarn install');
         Assets::build($app);
         Database::migrate($app);
