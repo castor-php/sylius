@@ -5,13 +5,20 @@ declare(strict_types=1);
 namespace Castor\Sylius\Installer;
 
 use Castor\Docker\Installer\AbstractServiceInstaller;
+use Castor\Docker\Installer\Ast\Ast;
 use Castor\Docker\Installer\Ast\ServiceStatementBuilder;
 use Castor\Docker\Installer\Input;
 use Castor\Docker\Installer\InputType;
 use Castor\Docker\Installer\NeedsDatabase;
+use Castor\Docker\Service\DatabaseServiceInterface;
 use Castor\Docker\Service\PhpMode;
 use Castor\Docker\Service\ServiceInterface;
+use Castor\Docker\Service\SymfonyService;
+use Castor\Sylius\App;
 use Castor\Sylius\Service\SyliusService;
+use Castor\Sylius\Util\Assets;
+use Castor\Sylius\Util\Database;
+use Castor\Sylius\Util\Docker;
 
 use function Castor\context;
 use function Castor\Docker\docker_compose_run;
@@ -42,14 +49,39 @@ final class SyliusInstaller extends AbstractServiceInstaller implements NeedsDat
 
     public function buildStatements(ServiceStatementBuilder $builder, array $answers): void
     {
-        // TODO: Implement buildStatements() method.
+        $expression = $builder->addNewServiceAst(SyliusService::class, [(string) $answers['name']])
+            ->callMethod('withDirectory', [Ast::raw(\sprintf("__DIR__ . '/%s'", $answers['directory']))])
+            ->callMethod('withVersion', [(string) $answers['version']])
+            ->callMethod('withMode', [Ast::raw('PhpMode::' . PhpMode::from((string) $answers['mode'])->name)])
+            ->callMethod('withPhpIni', [['memory_limit' => '1G']])
+            ->callMethod('withHttpAccess')
+        ;
+        $builder->addImport(PhpMode::class);
+
+        if (($answers['domain'] ?? '') !== '') {
+            $expression->callMethod('withDomain', [(string) $answers['domain']]);
+        }
+
+        if (($answers['database'] ?? null) !== null) {
+            $expression->callMethod('withDatabaseService', [Ast::var((string) $answers['database'])]);
+        }
     }
 
     public function createInstance(array $answers): ServiceInterface
     {
-        return (new SyliusService((string) $answers['name']))
+        $service = (new SyliusService((string) $answers['name']))
             ->withDirectory(context()->workingDirectory . '/' . $answers['directory'])
         ;
+
+        if (($answers['domain'] ?? '') !== '') {
+            $service->withDomain((string) $answers['domain']);
+        }
+
+        if (($answers['database_instance'] ?? null) instanceof DatabaseServiceInterface) {
+            $service->withDatabaseService($answers['database_instance']);
+        }
+
+        return $service;
     }
 
     public function scaffold(array $answers): void
@@ -57,10 +89,11 @@ final class SyliusInstaller extends AbstractServiceInstaller implements NeedsDat
         $version = (string) $answers['sylius_version'];
         $package = 'sylius/sylius-standard' . ($version !== '' ? ':' . $version : '');
 
-        docker_compose_run(
-            \sprintf('composer create-project %s . --no-interaction', $package),
-            service: $answers['name'] . '-builder',
-            workDir: '/var/www',
-        );
+        $app = new App($answers['name'], $answers['directory']);
+
+        Docker::run($app, \sprintf('composer create-project %s . --no-interaction', $package));
+        Docker::run($app, 'yarn install');
+        Assets::build($app);
+        Database::migrate($app);
     }
 }

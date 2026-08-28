@@ -19,7 +19,7 @@
     ],
     "require": {
         "php": ">=8.3",
-        "castor-php/docker": "@dev"
+        "castor-php/docker": "^0.4.0"
     },
     "require-dev": {
         "jolicode/castor": "^1.6",
