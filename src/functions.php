@@ -5,10 +5,12 @@ declare (strict_types=1);
 namespace Castor\Sylius;
 
 use Castor\Attribute\AsListener;
+use Castor\Docker\Event\RegisterServiceInstallerEvent;
 use Castor\Event\AfterBootEvent;
 use Castor\Exception\FunctionConfigurationException;
 use Castor\Sylius\Attribute\AsPluginInstaller;
 use Castor\Sylius\Attribute\AsPluginRemover;
+use Castor\Sylius\Installer\SyliusInstaller;
 use Castor\Sylius\Plugin\Installer\BugSnagInstaller;
 use Castor\Sylius\Plugin\Installer\CmsInstaller;
 use Castor\Sylius\Plugin\Installer\GdprInstaller;
@@ -17,7 +19,6 @@ use Castor\Sylius\Plugin\Installer\MediaInstaller;
 use Castor\Sylius\Plugin\Installer\PaypalInstaller;
 use Castor\Sylius\Plugin\Installer\PluginInstaller;
 use Castor\Sylius\Plugin\Installer\PluginInstallerDescriptor;
-use Castor\Sylius\Plugin\Installer\PluginInstallerInterface;
 use Castor\Sylius\Plugin\Installer\RefundInstaller;
 use Castor\Sylius\Plugin\Installer\StripeInstaller;
 use Castor\Sylius\Plugin\Installer\WishlistInstaller;
@@ -32,6 +33,12 @@ use Castor\Sylius\Plugin\Remover\PluginRemoverDescriptor;
 use Castor\Sylius\Plugin\Remover\StripeRemover;
 use Castor\Sylius\Plugin\Remover\WishlistRemover;
 use Castor\Sylius\Tasks\PluginTasks;
+
+#[AsListener(RegisterServiceInstallerEvent::class)]
+function register_builtin_installers(RegisterServiceInstallerEvent $event): void
+{
+    $event->addInstaller(new SyliusInstaller());
+}
 
 #[AsListener(AfterBootEvent::class)]
 function initialize(AfterBootEvent $afterBootEvent): void
