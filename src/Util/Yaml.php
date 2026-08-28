@@ -10,6 +10,43 @@ use function Castor\fs;
 
 final readonly class Yaml
 {
+    public static function import(App $app, string $file, string $resource): void
+    {
+        $realFile = $app->directory() . '/' . $file;
+
+        $content = fs()->readFile($realFile);
+
+        $import = \sprintf(
+            "    - { resource: '%s' }",
+            $resource,
+        );
+
+        if (str_contains($content, $import)) {
+            return;
+        }
+
+        if (preg_match('/^imports:\R/m', $content)) {
+            $replaced = preg_replace(
+                '/(^imports:\R(?:^[ \t]+.*\R?)*)/m',
+                "$1{$import}\n",
+                $content,
+                1,
+            );
+
+            if (null !== $replaced) {
+                $content = $replaced;
+            }
+        } else {
+            $content
+                = "imports:\n"
+                . $import
+                . "\n\n"
+                . ltrim($content);
+        }
+
+        fs()->dumpFile($realFile, $content);
+    }
+
     public static function uncommentBlock(App $app, string $file, string $block): void
     {
         $realFile = $app->directory() . '/' . $file;

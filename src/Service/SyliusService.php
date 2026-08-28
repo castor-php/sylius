@@ -21,6 +21,8 @@ class SyliusService extends SymfonyService
         parent::__construct($name);
 
         $this->addExtension('gd');
+        $this->addExtension('imagick');
+        $this->addExtension('exif');
     }
 
     public function getTasks(): iterable
