@@ -129,7 +129,7 @@ jobs:
 
             - name: Setup Sylius
               run: |
-                composer create-project sylius/sylius-standard app
+                castor docker:service:install sylius -n
                 sed -i 's#^DATABASE_URL.*#DATABASE_URL=postgresql://app:app@postgres:5432/app\\?serverVersion=16\\&charset=utf8#' app/.env 
 
             - name: Build & Run Docker
