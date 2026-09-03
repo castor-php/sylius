@@ -21,6 +21,7 @@ use Castor\Sylius\Util\Assets;
 use Castor\Sylius\Util\Database;
 use Castor\Sylius\Util\Docker;
 use Castor\Sylius\Util\Fixtures;
+use Castor\Sylius\Util\Symfony;
 
 use function Castor\context;
 use function Castor\Docker\docker_compose_run;
@@ -115,6 +116,10 @@ final class SyliusInstaller extends AbstractServiceInstaller implements NeedsDat
 
         Fixtures::createSuite($app);
         Fixtures::createDefaultChannel($app);
+
+        // New fixtures files need to be detected
+        Symfony::cacheClear($app);
+
         Fixtures::load($app);
 
         Docker::run($app, 'yarn install');
