@@ -120,7 +120,6 @@ final class SyliusInstaller extends AbstractServiceInstaller implements NeedsDat
         // New fixtures files need to be detected
         Symfony::cacheClear($app);
 
-
         Docker::run($app, 'yarn install');
         Assets::build($app);
         Database::migrate($app);

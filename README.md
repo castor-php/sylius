@@ -16,7 +16,7 @@ echo '{}' > castor.composer.json
 3. Install the Castor plugin for Sylius
 
 ```shell
-castor composer require castor-php/sylius
+castor composer require castor-php/sylius "@dev"
 ```
 
 4. Setup a new Sylius application
