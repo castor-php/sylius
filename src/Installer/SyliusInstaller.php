@@ -15,6 +15,7 @@ use Castor\Docker\Service\PhpMode;
 use Castor\Docker\Service\ServiceInterface;
 use Castor\Docker\Service\SymfonyService;
 use Castor\Sylius\App;
+use Castor\Sylius\EnvFile;
 use Castor\Sylius\Service\SyliusService;
 use Castor\Sylius\Util\Assets;
 use Castor\Sylius\Util\Database;
@@ -23,6 +24,7 @@ use Castor\Sylius\Util\Fixtures;
 
 use function Castor\context;
 use function Castor\Docker\docker_compose_run;
+use function Castor\run;
 
 final class SyliusInstaller extends AbstractServiceInstaller implements NeedsDatabase
 {
@@ -87,16 +89,29 @@ final class SyliusInstaller extends AbstractServiceInstaller implements NeedsDat
 
     public function scaffold(array $answers): void
     {
+        $name = (string) $answers['name'];
+        $domain = (string) $answers['domain'];
         $version = (string) $answers['sylius_version'];
+        $directory = (string) $answers['directory'];
         $package = 'sylius/sylius-standard' . ($version !== '' ? ':' . $version : '');
 
         docker_compose_run(
             \sprintf('composer create-project %s . --no-interaction', $package),
-            service: $answers['name'] . '-builder',
+            service: $name . '-builder',
             workDir: '/var/www',
         );
 
-        $app = new App($answers['name'], $answers['directory'], $answers['domain']);
+        $app = new App($name, $directory, $domain);
+
+        $envFile = \sprintf('%s/.env', $directory);
+
+        (new EnvFile($envFile))
+            ->set('SYMFONY_TRUSTED_PROXIES', 'PRIVATE_SUBNETS')
+            ->set('SYMFONY_TRUSTED_HEADERS', 'forwarded,x-forwarded-for,x-forwarded-host,x-forwarded-proto,x-forwarded-port')
+            ->save()
+        ;
+
+        run('castor up');
 
         Fixtures::createSuite($app);
         Fixtures::createDefaultChannel($app);
