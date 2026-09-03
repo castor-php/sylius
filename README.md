@@ -5,48 +5,23 @@ your stack into a Sylius app, and gives you the tasks to drive it.
 
 ## Installation
 
-```bash
+1. Create a `castor.php` file in your project root:
+
+2. Create a composer file for Castor:
+
+```shell
+echo '{}' > castor.composer.json
+```
+
+3. Install the Castor plugin for Sylius
+
+```shell
 castor composer require castor-php/sylius
 ```
 
-## Usage
-
-1. Create a `castor.php` file in your project root:
-
-```php
-<?php
-
-use Castor\Attribute\AsContext;
-
-use Castor\Attribute\AsListener;
-use Castor\Context;
-use Castor\Docker\Event\RegisterServiceEvent;
-use Castor\Docker\Service\PostgresService;
-use Castor\Sylius\Service\SyliusService;
-
-#[AsContext(default: true)]
-function default_context(): Context
-{
-    return new Context([
-        'root_domain' => 'app.test',
-    ]);
-}
-
-#[AsListener(RegisterServiceEvent::class)]
-function register_service(RegisterServiceEvent $event): void
-{
-    $postgresService = new PostgresService();
-    $event->addService($postgresService);
-
-    $event->addService(
-        (new SyliusService(name: 'app'))
-            ->withDirectory(__DIR__ . '/app')
-            ->withDockerfile(__DIR__ . '/infrastructure/docker/php/Dockerfile')
-            ->withDatabaseService($postgresService)
-            ->withDomain('app.test')
-            ->withHttpAccess()
-    );
-}
+4. Setup a new Sylius application
+```shell
+castor docker:service:install sylius
 ```
 
 ## 🦫 Available commands
