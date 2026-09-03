@@ -95,6 +95,8 @@ jobs:
                         value: "castor sylius:remove payments"
                     -   name: Sylius Paypal Plugin
                         value: "castor sylius:remove paypal && castor sylius:add paypal"
+                    -   name: Sylius Product Bundle Plugin
+                        value: "castor sylius:add product_bundle"
                     -   name: Sylius Stripe Plugin
                         value: "castor sylius:remove stripe && castor sylius:add stripe"
                     -   name: Sylius Wishlist Plugin

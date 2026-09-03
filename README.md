@@ -65,17 +65,18 @@ castor sylius:add cms invoicing refund
 
 #### Available plugins
 
-| Plugin          | Description                           |
-|-----------------|---------------------------------------|
-| bugsnag         | Add the Symfony BugSnag plugin        |
-| cms             | Add the Sylius CMS plugin             |
-| gdpr            | Add the Synolia GDPR plugin           |
-| invoicing       | Add the Sylius Invoicing plugin       |
-| media           | Add the Jolicode Media plugin         |
-| paypal          | Add the Sylius Paypal plugin          |
-| refund          | Add the Sylius Refund plugin          |
-| stripe          | Add the Sylius Stripe plugin          |
-| wishlist        | Add the Sylius Wishlist plugin        |
+| Plugin         | Description                          |
+|----------------|--------------------------------------|
+| bugsnag        | Add the Symfony BugSnag plugin       |
+| cms            | Add the Sylius CMS plugin            |
+| gdpr           | Add the Synolia GDPR plugin          |
+| invoicing      | Add the Sylius Invoicing plugin      |
+| media          | Add the Jolicode Media plugin        |
+| paypal         | Add the Sylius Paypal plugin         |
+| product_bundle | Add the Sylius Product Bundle plugin |
+| refund         | Add the Sylius Refund plugin         |
+| stripe         | Add the Sylius Stripe plugin         |
+| wishlist       | Add the Sylius Wishlist plugin       |
 
 #### ❌ Remove plugins
 
@@ -155,53 +156,53 @@ castor sylius:menu:remove -b customers
 
 Top-level items:
 
-| Name                     | Description                  |
-|--------------------------|------------------------------|
-| dashboard                | Dashboard                    |
-| catalog                  | Catalog                      |
-| sales                    | Sales                        |
-| customers                | Customers                    |
-| marketing                | Marketing                    |
-| configuration            | Configuration                |
-| official_support         | Official Support             |
-| sylius.ui.administration | Administration               |
+| Name                     | Description      |
+|--------------------------|------------------|
+| dashboard                | Dashboard        |
+| catalog                  | Catalog          |
+| sales                    | Sales            |
+| customers                | Customers        |
+| marketing                | Marketing        |
+| configuration            | Configuration    |
+| official_support         | Official Support |
+| sylius.ui.administration | Administration   |
 
 Sub-items (use `parent/child` syntax):
 
-| Name                                    | Description            |
-|-----------------------------------------|------------------------|
-| catalog/taxons                          | Taxons                 |
-| catalog/products                        | Products               |
-| catalog/inventory                       | Inventory              |
-| catalog/attributes                      | Attributes             |
-| catalog/options                         | Options                |
-| catalog/association_types               | Association Types      |
-| sales/orders                            | Orders                 |
-| sales/payments                          | Payments               |
-| sales/shipments                         | Shipments              |
-| customers/customers                     | Customers              |
-| customers/groups                        | Groups                 |
-| marketing/promotions                    | Promotions             |
-| marketing/catalog_promotions            | Catalog Promotions     |
-| marketing/product_reviews               | Product Reviews        |
-| configuration/channels                  | Channels               |
-| configuration/countries                 | Countries              |
-| configuration/zones                     | Zones                  |
-| configuration/currencies                | Currencies             |
-| configuration/exchange_rates            | Exchange Rates         |
-| configuration/locales                   | Locales                |
-| configuration/payment_methods           | Payment Methods        |
-| configuration/shipping_methods          | Shipping Methods       |
-| configuration/shipping_categories       | Shipping Categories    |
-| configuration/tax_categories            | Tax Categories         |
-| configuration/tax_rates                 | Tax Rates              |
-| configuration/admin_users               | Admin Users            |
-| official_support/sylius_plus            | Sylius Plus            |
-| official_support/browse_plugins         | Browse Plugins         |
-| official_support/professional_services  | Professional Services  |
-| official_support/find_a_partner         | Find a Partner         |
-| official_support/sylius_certification   | Sylius Certification   |
-| sylius.ui.administration/roles          | Roles                  |
+| Name                                   | Description           |
+|----------------------------------------|-----------------------|
+| catalog/taxons                         | Taxons                |
+| catalog/products                       | Products              |
+| catalog/inventory                      | Inventory             |
+| catalog/attributes                     | Attributes            |
+| catalog/options                        | Options               |
+| catalog/association_types              | Association Types     |
+| sales/orders                           | Orders                |
+| sales/payments                         | Payments              |
+| sales/shipments                        | Shipments             |
+| customers/customers                    | Customers             |
+| customers/groups                       | Groups                |
+| marketing/promotions                   | Promotions            |
+| marketing/catalog_promotions           | Catalog Promotions    |
+| marketing/product_reviews              | Product Reviews       |
+| configuration/channels                 | Channels              |
+| configuration/countries                | Countries             |
+| configuration/zones                    | Zones                 |
+| configuration/currencies               | Currencies            |
+| configuration/exchange_rates           | Exchange Rates        |
+| configuration/locales                  | Locales               |
+| configuration/payment_methods          | Payment Methods       |
+| configuration/shipping_methods         | Shipping Methods      |
+| configuration/shipping_categories      | Shipping Categories   |
+| configuration/tax_categories           | Tax Categories        |
+| configuration/tax_rates                | Tax Rates             |
+| configuration/admin_users              | Admin Users           |
+| official_support/sylius_plus           | Sylius Plus           |
+| official_support/browse_plugins        | Browse Plugins        |
+| official_support/professional_services | Professional Services |
+| official_support/find_a_partner        | Find a Partner        |
+| official_support/sylius_certification  | Sylius Certification  |
+| sylius.ui.administration/roles         | Roles                 |
 
 ## License
 

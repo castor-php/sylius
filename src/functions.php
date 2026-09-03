@@ -19,6 +19,7 @@ use Castor\Sylius\Plugin\Installer\MediaInstaller;
 use Castor\Sylius\Plugin\Installer\PaypalInstaller;
 use Castor\Sylius\Plugin\Installer\PluginInstaller;
 use Castor\Sylius\Plugin\Installer\PluginInstallerDescriptor;
+use Castor\Sylius\Plugin\Installer\ProductBundleInstaller;
 use Castor\Sylius\Plugin\Installer\RefundInstaller;
 use Castor\Sylius\Plugin\Installer\StripeInstaller;
 use Castor\Sylius\Plugin\Installer\WishlistInstaller;
@@ -49,6 +50,7 @@ function initialize(AfterBootEvent $afterBootEvent): void
     PluginTasks::addInstaller(new InvoicingInstaller());
     PluginTasks::addInstaller(new MediaInstaller());
     PluginTasks::addInstaller(new PaypalInstaller());
+    PluginTasks::addInstaller(new ProductBundleInstaller());
     PluginTasks::addInstaller(new RefundInstaller());
     PluginTasks::addInstaller(new StripeInstaller());
     PluginTasks::addInstaller(new WishlistInstaller());
