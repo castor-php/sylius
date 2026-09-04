@@ -137,7 +137,7 @@ final class ImportTasks
                 int $limit = 20,
             ): void {
                 if (null === $name) {
-                    $name = io()->askQuestion(new Question('Enter the name of your project:', 'Organic Kids'));
+                    $name = io()->askQuestion(new Question('Enter the name of your project:', 'App'));
                 }
 
                 if (null === $description) {
@@ -200,9 +200,7 @@ final class ImportTasks
                     }
 
                     if (null === $project || '' === trim($project)) {
-                        io()->error('Project slug is required. Pass --project.');
-
-                        return;
+                        $project = io()->askQuestion(new Question('Enter the name of your project:', 'App'));
                     }
 
                     $projectSlug = trim($project);
