@@ -10,6 +10,7 @@ use Castor\Attribute\AsTask;
 use Castor\Sylius\App;
 use Castor\Sylius\Import\ImportContext;
 use Jolicode\CastorApi\Attribute\AsApi;
+use Symfony\Component\Console\Question\Question;
 
 use function Castor\io;
 use function Castor\Sylius\Import\build_ai_import_data;
@@ -135,6 +136,14 @@ final class ImportTasks
                 #[AsOption]
                 int $limit = 20,
             ): void {
+                if (null === $name) {
+                    $name = io()->askQuestion(new Question('Enter the name of your project:', 'Organic Kids'));
+                }
+
+                if (null === $description) {
+                    $description = io()->askQuestion(new Question('Enter the description of your project:', 'An online store selling organic clothes for children'));
+                }
+
                 $this->withContext(static function () use ($project, $name, $description, $url, $limit): void {
                     try {
                         $resolved = resolve_import_project('ai', $project, $name, $description, $url);
