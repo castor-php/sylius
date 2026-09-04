@@ -3,24 +3,46 @@
 A [Castor](https://castor.jolicode.com/) plugin that turns a PHP description of
 your stack into a Sylius app, and gives you the tasks to drive it.
 
+<!-- TOC -->
+* [Installation](#installation)
+* [🦫 Available commands](#-available-commands)
+    * [Add or Remove plugins](#add-or-remove-plugins)
+        * [✚ Add plugins](#-add-plugins)
+        * [Available plugins](#available-plugins)
+        * [❌ Remove plugins](#-remove-plugins)
+        * [Available plugins](#available-plugins-1)
+    * [☰ Remove menu items from the Admin panel](#-remove-menu-items-from-the-admin-panel)
+        * [Available options](#available-options)
+        * [Default menu items](#default-menu-items)
+* [E-commerce import](#e-commerce-import)
+    * [Prerequisites](#prerequisites)
+    * [AI Generated Catalog](#ai-generated-catalog)
+        * [Generate a catalog from a description](#generate-a-catalog-from-a-description)
+        * [Generate the Sylius fixtures files](#generate-the-sylius-fixtures-files)
+        * [Load the fixture suite](#load-the-fixture-suite)
+    * [Using data from an existing website](#using-data-from-an-existing-website)
+  * [License](#license)
+<!-- TOC -->
+
 ## Installation
 
 1. Create a `castor.php` file in your project root:
 
 2. Create a composer file for Castor:
 
-```shell
+```bash
 echo '{}' > castor.composer.json
 ```
 
 3. Install the Castor plugin for Sylius
 
-```shell
+```bash
 castor composer require castor-php/sylius "@dev"
 ```
 
 4. Setup a new Sylius application
-```shell
+
+```bash
 castor docker:service:install sylius
 ```
 
@@ -34,7 +56,7 @@ A single command to add all the Sylius plugins you need.
 
 **Example:**
 
-```shell
+```bash
 castor sylius:add cms invoicing refund
 ```
 
@@ -59,7 +81,7 @@ A single command to remove the Sylius plugins you do not need.
 
 **Example:**
 
-```shell
+```bash
 castor sylius:remove mollie paypal
 ```
 
@@ -89,7 +111,7 @@ Pass one or more menu item names as arguments. Use `parent/child` syntax for sub
 
 **Example:**
 
-```shell
+```bash
 castor sylius:menu:remove official_support sylius.ui.administration
 castor sylius:menu:remove marketing/product_reviews
 ```
@@ -103,20 +125,20 @@ castor sylius:menu:remove marketing/product_reviews
 
 **Replace the removed-items list:**
 
-```shell
+```bash
 castor sylius:menu:remove customers orders --replace
 ```
 
 **Restore previously removed items:**
 
-```shell
+```bash
 castor sylius:menu:remove --restore customers
 castor sylius:menu:remove -b customers orders
 ```
 
 **Example workflow:**
 
-```shell
+```bash
 # Hide customers and orders from the admin menu
 castor sylius:menu:remove customers orders
 
@@ -187,16 +209,11 @@ Import products, collections, images and prices from an **AI-generated catalog**
 
 #### Prerequisites
 
-1. Create the Sylius app and start the stack:
+1. Make sure you have already set up your Sylius application using the `castor docker:service:install sylius` command.
 
-```bash
-composer create-project sylius/sylius-standard app
-castor build && castor up
-castor app:db:migrate
-castor app:db:fixtures app
-```
+2. Configure AI in .castor/.env (created automatically when you run the first import command). You can copy the default values from .castor/.env.example.
 
-2. Configure AI in `.castor/.env` (created automatically on first import command). Copy from `.castor/.env.example`.
+You can also create a .castor/.env.local file for your sensitive values or local overrides.
 
 | Variable         | Default                  | Description                             |
 |------------------|--------------------------|-----------------------------------------|
@@ -206,34 +223,41 @@ castor app:db:fixtures app
 | `AI_BASE_URL`    | `http://127.0.0.1:11434` | Ollama URL (ignored for OpenRouter)     |
 | `AI_API_KEY`     | —                        | Required when `AI_PROVIDER=openrouter`  |
 
-#### Commands
+#### AI Generated Catalog
 
-| Command                                           | Role                                   |
-|---------------------------------------------------|----------------------------------------|
-| `sylius:import:ai:build`                          | AI description → YAML catalog          |
-| `sylius:import:fixtures:generate existing\|ai`    | YAML → PHP fixtures + images           |
-| `sylius:import:fixtures:load`                     | Load `import` fixture suite            |
+##### Generate a catalog from a description
 
-#### Workflow — existing site
+Generate a complete product catalog from a natural-language description using AI. The generated catalog is saved as YAML and can then be used to generate Sylius fixtures.
 
-Requires import YAML under `.castor/import/var/{project-slug}/` (products + collections). If you use the private `castor-php/sylius-import-fetch` plugin, run `sylius:import:existing:fetch` first; otherwise prepare the YAML yourself.
+```bash
+castor sylius:import:ai:build \
+    --name="Organic Kids" \
+    --description="An online store selling organic clothes for children"
+```
+
+This will generate a catalog for Organic Kids, including products and collections, based on the provided description.
+Import data is stored per project slug under `.castor/import/var/{project-slug}/`.
+
+##### Generate the Sylius fixtures files
+
+```bash
+castor sylius:import:fixtures:generate ai --project="Organic Kids" --limit=100
+```
+
+##### Load the fixture suite
+
+```bash
+castor sylius:import:fixtures:load --project="Organic Kids"
+```
+
+#### Using data from an existing website
+
+It requires a YAML import under `.castor/import/var/{project-slug}/` (products + collections). If you use the private `castor-php/sylius-import-fetch` plugin, run `sylius:import:existing:fetch` first; otherwise prepare the YAML yourself.
 
 ```bash
 castor sylius:import:fixtures:generate existing --project=example --limit=100
 castor sylius:import:fixtures:load --project=example
 ```
-
-#### Workflow — AI-generated catalog
-
-```bash
-castor sylius:import:ai:build --name="My Store" --description="Organic kids clothing boutique"
-castor sylius:import:fixtures:generate ai --project=my-store
-castor sylius:import:fixtures:load --project=my-store
-```
-
-Import data is stored per project slug under `.castor/import/var/{project-slug}/`.
-
-See [agents.md](agents.md) for detailed agent guidelines.
 
 ## License
 
