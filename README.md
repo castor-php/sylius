@@ -179,6 +179,62 @@ Sub-items (use `parent/child` syntax):
 | official_support/sylius_certification  | Sylius Certification  |
 | sylius.ui.administration/roles         | Roles                 |
 
+The package autoloads via Composer. Do **not** `import('composer://castor-php/sylius')` — that would load the package's local `castor.php` and conflict with your own context. Register `SyliusService` as shown above to expose all tasks (`sylius:*`, `app:*`, `sylius:import:*`).
+
+## E-commerce import
+
+Import products, collections, images and prices from an **AI-generated catalog**, or load YAML produced by an external fetch step into Sylius fixtures.
+
+#### Prerequisites
+
+1. Create the Sylius app and start the stack:
+
+```bash
+composer create-project sylius/sylius-standard app
+castor build && castor up
+castor app:db:migrate
+castor app:db:fixtures app
+```
+
+2. Configure AI in `.castor/.env` (created automatically on first import command). Copy from `.castor/.env.example`.
+
+| Variable         | Default                  | Description                             |
+|------------------|--------------------------|-----------------------------------------|
+| `AI_PROVIDER`    | `openrouter`             | `ollama` (local) or `openrouter`        |
+| `AI_MODEL`       | provider-specific        | Text / structured-output model          |
+| `AI_IMAGE_MODEL` | provider-specific        | Image generation model (AI import only) |
+| `AI_BASE_URL`    | `http://127.0.0.1:11434` | Ollama URL (ignored for OpenRouter)     |
+| `AI_API_KEY`     | —                        | Required when `AI_PROVIDER=openrouter`  |
+
+#### Commands
+
+| Command                                           | Role                                   |
+|---------------------------------------------------|----------------------------------------|
+| `sylius:import:ai:build`                          | AI description → YAML catalog          |
+| `sylius:import:fixtures:generate existing\|ai`    | YAML → PHP fixtures + images           |
+| `sylius:import:fixtures:load`                     | Load `import` fixture suite            |
+
+#### Workflow — existing site
+
+Requires import YAML under `.castor/import/var/{project-slug}/` (products + collections). If you use the private `castor-php/sylius-import-fetch` plugin, run `sylius:import:existing:fetch` first; otherwise prepare the YAML yourself.
+
+```bash
+castor sylius:import:fixtures:generate existing --project=example --limit=100
+castor sylius:import:fixtures:load --project=example
+```
+
+#### Workflow — AI-generated catalog
+
+```bash
+castor sylius:import:ai:build --name="My Store" --description="Organic kids clothing boutique"
+castor sylius:import:fixtures:generate ai --project=my-store
+castor sylius:import:fixtures:load --project=my-store
+```
+
+Import data is stored per project slug under `.castor/import/var/{project-slug}/`.
+
+See [agents.md](agents.md) for detailed agent guidelines.
+
 ## License
 
 This plugin is part of the Castor project, released under the MIT license.
