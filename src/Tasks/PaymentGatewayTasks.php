@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Castor\Sylius\Tasks;
 
+use Castor\Attribute\AsOption;
 use Castor\Attribute\AsRawTokens;
 use Castor\Attribute\AsTask;
 use Castor\Sylius\App;
 use Castor\Sylius\PaymentGateway\PaymentGateways;
-use Castor\Sylius\Plugin\Installer\PluginInstallerInterface;
-use Castor\Sylius\Plugin\Remover\PluginRemoverInterface;
 
 use function Castor\io;
 
@@ -25,12 +24,9 @@ final class PaymentGatewayTasks
         $app = new App($this->name, $this->directory);
 
         yield [
-            'task' => new AsTask('choose', 'sylius:payment-gateways', 'Choose payment gateways', ['choose-payment-gateways']),
-            'function' => static function (#[AsRawTokens] array $paymentGateways = []) use ($app): void {
-                $availableGateways = array_intersect(
-                    array_map(fn(PluginInstallerInterface $installer) => $installer->name(), PaymentGateways::installers()),
-                    array_map(fn(PluginRemoverInterface $remover) => $remover->name(), PaymentGateways::removers()),
-                );
+            'task' => new AsTask('setup', 'sylius:payment-gateways', 'Setup payment gateways', ['setup-payment-gateways']),
+            'function' => static function (#[AsRawTokens] array $paymentGateways = [], #[AsOption(description: 'Remove unselected payment gateways')] bool $only = false) use ($app): void {
+                $availableGateways = array_keys(PaymentGateways::installers());
                 sort($availableGateways);
 
                 $installers = array_map(
@@ -45,19 +41,17 @@ final class PaymentGatewayTasks
 
                 if ([] === $paymentGateways) {
                     $paymentGateways = io()->choice(
-                        'Which payement gateways would you like to use?',
+                        'Which payment gateways would you like to use?',
                         $availableGateways,
                         multiSelect: true,
                     );
                 }
 
                 if ([] === ($paymentGateways ?? [])) {
-                    io()->error('Please choose at least one payment gateway');
+                    io()->error('Please select at least one payment gateway');
 
                     return;
                 }
-
-                $paymentGatewaysToRemove = array_diff($availableGateways, $paymentGateways ?? []);
 
                 foreach ($paymentGateways ?? [] as $paymentGateway) {
                     if (!isset($installers[$paymentGateway])) {
@@ -68,13 +62,17 @@ final class PaymentGatewayTasks
                     $installers[$paymentGateway]();
                 }
 
-                foreach ($paymentGatewaysToRemove as $paymentGateway) {
-                    if (!isset($removers[$paymentGateway])) {
-                        io()->warning(\sprintf('Unknown payment gateway remover "%s", skipping.', $paymentGateway));
+                if ($only) {
+                    $paymentGatewaysToRemove = array_diff($availableGateways, $paymentGateways ?? []);
 
-                        continue;
+                    foreach ($paymentGatewaysToRemove as $paymentGateway) {
+                        if (!isset($removers[$paymentGateway])) {
+                            io()->warning(\sprintf('Unknown payment gateway remover "%s", skipping.', $paymentGateway));
+
+                            continue;
+                        }
+                        $removers[$paymentGateway]();
                     }
-                    $removers[$paymentGateway]();
                 }
             },
         ];
