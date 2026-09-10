@@ -26,6 +26,9 @@ final class PaymentGatewayTasks
         yield [
             'task' => new AsTask('setup', 'sylius:payment-gateways', 'Setup payment gateways', ['setup-payment-gateways']),
             'function' => static function (#[AsRawTokens] array $paymentGateways = [], #[AsOption(description: 'Remove unselected payment gateways')] bool $only = false) use ($app): void {
+                // Remove options from the $items
+                $paymentGateways = array_filter($paymentGateways, static fn(string $item) => !str_starts_with($item, '--'));
+
                 $availableGateways = array_keys(PaymentGateways::installers());
                 sort($availableGateways);
 
