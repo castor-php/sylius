@@ -66,22 +66,8 @@ final class PluginTasks
                     self::$removers,
                 );
 
-                $shortcuts = [
-                    'payments' => ['mollie', 'paypal', 'stripe'],
-                ];
-
-                $expanded = [];
-                foreach ($plugins as $plugin) {
-                    if (isset($shortcuts[$plugin])) {
-                        $expanded = array_merge($expanded, $shortcuts[$plugin]);
-                    } else {
-                        $expanded[] = $plugin;
-                    }
-                }
-                $plugins = $expanded;
-
                 if ([] === $plugins) {
-                    $keys = [...array_keys($removers), ...array_keys($shortcuts)];
+                    $keys = array_keys($removers);
                     sort($keys);
 
                     $plugins = io()->choice(

@@ -13,7 +13,6 @@ use Castor\Docker\Installer\NeedsDatabase;
 use Castor\Docker\Service\DatabaseServiceInterface;
 use Castor\Docker\Service\PhpMode;
 use Castor\Docker\Service\ServiceInterface;
-use Castor\Docker\Service\SymfonyService;
 use Castor\Sylius\App;
 use Castor\Sylius\EnvFile;
 use Castor\Sylius\Service\SyliusService;

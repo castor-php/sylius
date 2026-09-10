@@ -87,28 +87,29 @@ jobs:
                         value: "castor sylius:add gdpr || true"
                     -   name: Sylius Invoicing Plugin
                         value: "castor sylius:add invoicing && castor sylius:remove invoicing"
-                    -   name: Sylius Mollie Plugin
-                        value: "castor sylius:remove mollie"
                     -   name: Sylius Refund Plugin
                         value: "castor sylius:add refund"
-                    -   name: Sylius Payments Plugins
-                        value: "castor sylius:remove payments"
-                    -   name: Sylius Paypal Plugin
-                        value: "castor sylius:remove paypal && castor sylius:add paypal"
                     -   name: Sylius Product Bundle Plugin
                         value: "castor sylius:add product_bundle"
-                    -   name: Sylius Stripe Plugin
-                        value: "castor sylius:remove stripe && castor sylius:add stripe"
                     -   name: Sylius Wishlist Plugin
                         value: "castor sylius:add wishlist && castor sylius:remove wishlist"
+                    ### TODO
+                    #-   name: Sylius Mollie Payment Gateway
+                    #    value: "castor sylius:payment-gateways:choose mollie"
+                    -   name: Sylius Paypal Payment Gateway
+                        value: "castor sylius:payment-gateways:choose paypal"
+                    -   name: Sylius Stripe Payment Gateway
+                        value: "castor sylius:payment-gateways:choose stripe"
                     -   name: Remove Menu items
                         value: "castor sylius:menu:remove official_support sylius.ui.administration"
                     -   name: Run Fixtures
                         value: "castor sylius:fixtures -n"
-                    -   name: Run Custom installers
+                    -   name: Custom plugin installers
                         value: "castor sylius:plugin:add test_installer_with_function test_installer_with_class"
-                    -   name: Run Custom removers
+                    -   name: Custom plugin removers
                         value: "castor sylius:plugin:remove test_remover_with_function test_remover_with_class"
+                    -   name: Custom payment gateways
+                        value: "castor sylius:payment-gateways:choose test_payment_gateway_with_function test_payment_gateway_with_class"
         runs-on: ubuntu-latest
         steps:
             - name: Set up Docker Buildx

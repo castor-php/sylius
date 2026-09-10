@@ -7,6 +7,8 @@ use Castor\Attribute\AsListener;
 use Castor\Docker\Event\RegisterServiceEvent;
 use Castor\Docker\Service\PostgresService;
 use Castor\Docker\Service\PhpMode;
+use Castor\Sylius\Attribute\AsPaymentGatewayInstaller;
+use Castor\Sylius\Attribute\AsPaymentGatewayRemover;
 use Castor\Sylius\Attribute\AsPluginInstaller;
 use Castor\Sylius\Attribute\AsPluginRemover;
 use Castor\Sylius\Service\SyliusService;
@@ -55,10 +57,24 @@ function test_remover(): void
     io()->success('New remover using a custom function is ok');
 }
 
+#[AsPaymentGatewayInstaller(name: 'test_payment_gateway_with_function')]
+function test_payment_gateway_installer(): void
+{
+    io()->success('New payment gateway installer using a custom function is ok');
+}
+
+#[AsPaymentGatewayRemover(name: 'test_payment_gateway_with_function')]
+function test_payment_gateway_remover(): void
+{
+    io()->success('New payment gateway remover using a custom function is ok');
+}
+
 #[AsListener(RegisterServiceEvent::class)]
 function register_service(RegisterServiceEvent $event): void
 {
     $postgres = (new PostgresService())->withVersion('16');
     $event->addService($postgres);
     $event->addService((new SyliusService('app'))->withDirectory(__DIR__ . '/app')->withVersion('8.5')->withMode(PhpMode::FrankenPhp)->withPhpIni(['memory_limit' => '1G'])->withHttpAccess()->withDomain('app.test')->withDatabaseService($postgres));
+    $event->addService((new SyliusService('app'))->withDirectory(__DIR__ . '/app')->withVersion('8.5')->withMode(PhpMode::FrankenPhp)->withPhpIni(['memory_limit' => '1G'])->withHttpAccess()->withDomain('app.castor.local')->withDatabaseService($postgres));
+    $event->addService((new SyliusService('app'))->withDirectory(__DIR__ . '/app')->withVersion('8.5')->withMode(PhpMode::FrankenPhp)->withPhpIni(['memory_limit' => '1G'])->withHttpAccess()->withDomain('app.castor.local')->withDatabaseService($postgres));
 }
