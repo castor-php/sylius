@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Castor\Sylius\Plugin\Remover;
+namespace Castor\Sylius\PaymentGateway\Remover;
 
 use Castor\Sylius\App;
-use Castor\Sylius\Plugin\Installer\PluginInstallerInterface;
+use Castor\Sylius\Plugin\Remover\PluginRemoverInterface;
 use Castor\Sylius\Util\Composer;
 use Castor\Sylius\Util\Database;
 use Castor\Sylius\Util\Docker;

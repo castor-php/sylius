@@ -10,6 +10,7 @@ use Castor\Docker\Service\SymfonyService;
 use Castor\Sylius\App;
 use Castor\Sylius\Tasks\ImportTasks;
 use Castor\Sylius\Tasks\MenuTasks;
+use Castor\Sylius\Tasks\PaymentGatewayTasks;
 use Castor\Sylius\Tasks\PluginTasks;
 use Castor\Sylius\Util\Fixtures;
 
@@ -31,6 +32,7 @@ class SyliusService extends SymfonyService
         yield from parent::getTasks();
 
         yield from (new PluginTasks($this->name, $this->getDirectory()))();
+        yield from (new PaymentGatewayTasks($this->name, $this->getDirectory()))();
         yield from (new MenuTasks($this->name, $this->getDirectory()))();
         yield from (new ImportTasks($this->name, $this->getDirectory()))();
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Castor\Sylius;
+namespace Castor\Sylius\Plugin;
 
 use Castor\Attribute\AsListener;
 use Castor\Docker\Event\RegisterServiceInstallerEvent;
@@ -16,22 +16,17 @@ use Castor\Sylius\Plugin\Installer\CmsInstaller;
 use Castor\Sylius\Plugin\Installer\GdprInstaller;
 use Castor\Sylius\Plugin\Installer\InvoicingInstaller;
 use Castor\Sylius\Plugin\Installer\MediaInstaller;
-use Castor\Sylius\Plugin\Installer\PaypalInstaller;
 use Castor\Sylius\Plugin\Installer\PluginInstaller;
 use Castor\Sylius\Plugin\Installer\PluginInstallerDescriptor;
 use Castor\Sylius\Plugin\Installer\ProductBundleInstaller;
 use Castor\Sylius\Plugin\Installer\RefundInstaller;
-use Castor\Sylius\Plugin\Installer\StripeInstaller;
 use Castor\Sylius\Plugin\Installer\WishlistInstaller;
 use Castor\Sylius\Plugin\Remover\BugSnagRemover;
 use Castor\Sylius\Plugin\Remover\CmsRemover;
 use Castor\Sylius\Plugin\Remover\GdprRemover;
 use Castor\Sylius\Plugin\Remover\InvoicingRemover;
-use Castor\Sylius\Plugin\Remover\MollieRemover;
-use Castor\Sylius\Plugin\Remover\PaypalRemover;
 use Castor\Sylius\Plugin\Remover\PluginRemover;
 use Castor\Sylius\Plugin\Remover\PluginRemoverDescriptor;
-use Castor\Sylius\Plugin\Remover\StripeRemover;
 use Castor\Sylius\Plugin\Remover\WishlistRemover;
 use Castor\Sylius\Tasks\PluginTasks;
 
@@ -49,19 +44,14 @@ function initialize(AfterBootEvent $afterBootEvent): void
     PluginTasks::addInstaller(new GdprInstaller());
     PluginTasks::addInstaller(new InvoicingInstaller());
     PluginTasks::addInstaller(new MediaInstaller());
-    PluginTasks::addInstaller(new PaypalInstaller());
     PluginTasks::addInstaller(new ProductBundleInstaller());
     PluginTasks::addInstaller(new RefundInstaller());
-    PluginTasks::addInstaller(new StripeInstaller());
     PluginTasks::addInstaller(new WishlistInstaller());
 
     PluginTasks::addRemover(new BugSnagRemover());
     PluginTasks::addRemover(new CmsRemover());
     PluginTasks::addRemover(new GdprRemover());
     PluginTasks::addRemover(new InvoicingRemover());
-    PluginTasks::addRemover(new MollieRemover());
-    PluginTasks::addRemover(new PaypalRemover());
-    PluginTasks::addRemover(new StripeRemover());
     PluginTasks::addRemover(new WishlistRemover());
 
     $currentFunctions = get_defined_functions()['user'];
@@ -72,7 +62,7 @@ function initialize(AfterBootEvent $afterBootEvent): void
         $descriptor = resolve_plugin_installer($reflectionFunction);
 
         if (null !== $descriptor) {
-            $installer = new Plugin\Installer\PluginInstaller($descriptor->attribute->name, $descriptor->installer->getClosure());
+            $installer = new PluginInstaller($descriptor->attribute->name, $descriptor->installer->getClosure());
             PluginTasks::addInstaller($installer);
         }
 
@@ -82,7 +72,7 @@ function initialize(AfterBootEvent $afterBootEvent): void
             continue;
         }
 
-        $remover = new Plugin\Remover\PluginRemover($descriptor->attribute->name, $descriptor->remover->getClosure());
+        $remover = new PluginRemover($descriptor->attribute->name, $descriptor->remover->getClosure());
         PluginTasks::addRemover($remover);
     }
 

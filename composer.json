@@ -8,11 +8,13 @@
             "Castor\\Sylius\\": "src/"
         },
         "files": [
-            "src/functions.php",
             "src/Import/constants.php",
             "src/Import/ImportContext.php",
             "src/Import/ImportBootstrap.php",
-            "src/Import/bootstrap.php"
+            "src/Import/bootstrap.php",
+            "src/Installer/functions.php",
+            "src/PaymentGateway/functions.php",
+            "src/Plugin/functions.php"
         ]
     },
     "authors": [

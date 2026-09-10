@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Castor\Sylius\Plugin\Installer;
+namespace Castor\Sylius\PaymentGateway\Installer;
 
 use Castor\Sylius\App;
+use Castor\Sylius\Plugin\Installer\PluginInstallerInterface;
 use Castor\Sylius\Util\Composer;
 use Castor\Sylius\Util\Database;
 use Castor\Sylius\Util\Docker;

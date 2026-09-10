@@ -4,6 +4,7 @@ A [Castor](https://castor.jolicode.com/) plugin that turns a PHP description of
 your stack into a Sylius app, and gives you the tasks to drive it.
 
 <!-- TOC -->
+
 * [Installation](#installation)
 * [🦫 Available commands](#-available-commands)
     * [Add or Remove plugins](#add-or-remove-plugins)
@@ -11,6 +12,8 @@ your stack into a Sylius app, and gives you the tasks to drive it.
         * [Available plugins](#available-plugins)
         * [❌ Remove plugins](#-remove-plugins)
         * [Available plugins](#available-plugins-1)
+    * [💳 Choose payment gateways](#-choose-payment-gateways)
+        * [Available payment gateways](#available-payment-gateways)
     * [☰ Remove menu items from the Admin panel](#-remove-menu-items-from-the-admin-panel)
         * [Available options](#available-options)
         * [Default menu items](#default-menu-items)
@@ -21,7 +24,8 @@ your stack into a Sylius app, and gives you the tasks to drive it.
         * [Generate the Sylius fixtures files](#generate-the-sylius-fixtures-files)
         * [Load the fixture suite](#load-the-fixture-suite)
     * [Using data from an existing website](#using-data-from-an-existing-website)
-  * [License](#license)
+    * [License](#license)
+
 <!-- TOC -->
 
 ## Installation
@@ -69,20 +73,18 @@ castor sylius:add cms invoicing refund
 | gdpr           | Add the Synolia GDPR plugin          |
 | invoicing      | Add the Sylius Invoicing plugin      |
 | media          | Add the Jolicode Media plugin        |
-| paypal         | Add the Sylius Paypal plugin         |
 | product_bundle | Add the Sylius Product Bundle plugin |
 | refund         | Add the Sylius Refund plugin         |
-| stripe         | Add the Sylius Stripe plugin         |
 | wishlist       | Add the Sylius Wishlist plugin       |
 
 #### ❌ Remove plugins
 
-A single command to remove the Sylius plugins you do not need.
+A single command to remove the Sylius plugins you do not need anymore.
 
 **Example:**
 
 ```bash
-castor sylius:remove mollie paypal
+castor sylius:remove invoicing cms
 ```
 
 #### Available plugins
@@ -93,11 +95,34 @@ castor sylius:remove mollie paypal
 | cms       | Remove the Sylius CMS plugin                         |
 | gdpr      | Remove the Synolia GDPR plugin                       |
 | invoicing | Remove the Sylius Invoicing plugin                   |
-| mollie    | Remove the Sylius Mollie Plugin                      |
-| payments  | Remove all payment plugins (Mollie, Paypal & Stripe) |
-| paypal    | Remove the Sylius Paypal plugin                      |
-| stripe    | Remove the Sylius Stripe plugin                      |
 | wishlist  | Remove the Sylius Wishlist plugin                    |
+
+### 💳 Choose payment gateways
+
+A single command to choose which payment gateways you want to use in your Sylius application. Unselected gateways will
+be removed.
+
+**Example:**
+
+```bash
+castor sylius:payment-gateways:choose stripe
+```
+
+You can also pass multiple gateways:
+
+```bash
+castor sylius:payment-gateways:choose paypal stripe
+```
+
+If no arguments are provided, an interactive prompt will ask you to choose the payment gateways.
+
+#### Available payment gateways
+
+| Gateway | Description                         |
+|---------|-------------------------------------|
+| mollie  | Setup Sylius Mollie payment gateway |
+| paypal  | Setup Sylius Paypal payment gateway |
+| stripe  | Setup Sylius Stripe payment gateway |
 
 ### ☰ Remove menu items from the Admin panel
 
@@ -201,17 +226,21 @@ Sub-items (use `parent/child` syntax):
 | official_support/sylius_certification  | Sylius Certification  |
 | sylius.ui.administration/roles         | Roles                 |
 
-The package autoloads via Composer. Do **not** `import('composer://castor-php/sylius')` — that would load the package's local `castor.php` and conflict with your own context. Register `SyliusService` as shown above to expose all tasks (`sylius:*`, `app:*`, `sylius:import:*`).
+The package autoloads via Composer. Do **not** `import('composer://castor-php/sylius')` — that would load the package's
+local `castor.php` and conflict with your own context. Register `SyliusService` as shown above to expose all tasks (
+`sylius:*`, `app:*`, `sylius:import:*`).
 
 ## E-commerce import
 
-Import products, collections, images and prices from an **AI-generated catalog**, or load YAML produced by an external fetch step into Sylius fixtures.
+Import products, collections, images and prices from an **AI-generated catalog**, or load YAML produced by an external
+fetch step into Sylius fixtures.
 
 #### Prerequisites
 
 1. Make sure you have already set up your Sylius application using the `castor docker:service:install sylius` command.
 
-2. Configure AI in .castor/.env (created automatically when you run the first import command). You can copy the default values from .castor/.env.example.
+2. Configure AI in .castor/.env (created automatically when you run the first import command). You can copy the default
+   values from .castor/.env.example.
 
 You can also create a .castor/.env.local file for your sensitive values or local overrides.
 
@@ -227,7 +256,8 @@ You can also create a .castor/.env.local file for your sensitive values or local
 
 ##### Generate a catalog from a description
 
-Generate a complete product catalog from a natural-language description using AI. The generated catalog is saved as YAML and can then be used to generate Sylius fixtures.
+Generate a complete product catalog from a natural-language description using AI. The generated catalog is saved as YAML
+and can then be used to generate Sylius fixtures.
 
 ```bash
 castor sylius:import:ai:build \
@@ -252,7 +282,8 @@ castor sylius:import:fixtures:load --project="Organic Kids"
 
 #### Using data from an existing website
 
-It requires a YAML import under `.castor/import/var/{project-slug}/` (products + collections). If you use the private `castor-php/sylius-import-fetch` plugin, run `sylius:import:existing:fetch` first; otherwise prepare the YAML yourself.
+It requires a YAML import under `.castor/import/var/{project-slug}/` (products + collections). If you use the private
+`castor-php/sylius-import-fetch` plugin, run `sylius:import:existing:fetch` first; otherwise prepare the YAML yourself.
 
 ```bash
 castor sylius:import:fixtures:generate existing --project=example --limit=100

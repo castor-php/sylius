@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Castor\Sylius\Plugin\Installer;
+namespace Castor\Sylius\PaymentGateway\Installer;
 
 use Castor\Sylius\App;
+use Castor\Sylius\Plugin\Installer\PluginInstallerInterface;
 use Castor\Sylius\Util\Assets;
 use Castor\Sylius\Util\Composer;
 use Castor\Sylius\Util\Docker;
 use Castor\Sylius\Util\Symfony;
 
-use function Castor\fs;
 use function Castor\io;
 
 final readonly class StripeInstaller implements PluginInstallerInterface
