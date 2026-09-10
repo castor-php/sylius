@@ -12,7 +12,7 @@ your stack into a Sylius app, and gives you the tasks to drive it.
         * [Available plugins](#available-plugins)
         * [❌ Remove plugins](#-remove-plugins)
         * [Available plugins](#available-plugins-1)
-    * [💳 Choose payment gateways](#-choose-payment-gateways)
+    * [💳 Setup payment gateways](#-setup-payment-gateways)
         * [Available payment gateways](#available-payment-gateways)
     * [☰ Remove menu items from the Admin panel](#-remove-menu-items-from-the-admin-panel)
         * [Available options](#available-options)
@@ -97,24 +97,30 @@ castor sylius:remove invoicing cms
 | invoicing | Remove the Sylius Invoicing plugin                   |
 | wishlist  | Remove the Sylius Wishlist plugin                    |
 
-### 💳 Choose payment gateways
+### 💳 Setup payment gateways
 
-A single command to choose which payment gateways you want to use in your Sylius application. Unselected gateways will
-be removed.
+A single command to setup which payment gateways you want to use in your Sylius application. By default, only installs the
+selected gateways. Pass `--only` to also remove unselected gateways.
 
 **Example:**
 
 ```bash
-castor sylius:payment-gateways:choose stripe
+castor sylius:payment-gateways:setup stripe
 ```
 
 You can also pass multiple gateways:
 
 ```bash
-castor sylius:payment-gateways:choose paypal stripe
+castor sylius:payment-gateways:setup paypal stripe
 ```
 
 If no arguments are provided, an interactive prompt will ask you to choose the payment gateways.
+
+**Remove unselected gateways:**
+
+```bash
+castor sylius:payment-gateways:setup --only stripe
+```
 
 #### Available payment gateways
 
