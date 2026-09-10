@@ -54,6 +54,10 @@ castor docker:service:install sylius
 
 ### Add or Remove plugins
 
+Install or uninstall Sylius plugins with simple commands.
+
+> **Note:** Payment gateways are managed separately with `sylius:payment-gateways:setup`.
+
 #### ✚ Add plugins
 
 A single command to add all the Sylius plugins you need.
@@ -98,6 +102,11 @@ castor sylius:remove invoicing cms
 | wishlist  | Remove the Sylius Wishlist plugin                    |
 
 ### 💳 Setup payment gateways
+
+Configure which payment gateways are active in your Sylius application.
+
+> **Note:** Payment gateways have their own dedicated command and are not managed through
+> `sylius:add` / `sylius:remove` by design.
 
 A single command to setup which payment gateways you want to use in your Sylius application. By default, only installs the
 selected gateways. Pass `--only` to also remove unselected gateways.
