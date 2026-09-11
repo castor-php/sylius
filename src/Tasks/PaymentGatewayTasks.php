@@ -29,8 +29,7 @@ final class PaymentGatewayTasks
                 // Remove options from the $items
                 $paymentGateways = array_filter($paymentGateways, static fn(string $item) => !str_starts_with($item, '--'));
 
-                $availableGateways = array_keys(PaymentGateways::installers());
-                sort($availableGateways);
+                $availableGateways = PaymentGateways::names();
 
                 $installers = array_map(
                     static fn(callable $installer): callable => static fn() => $installer($app),
