@@ -13,6 +13,14 @@ final class PaymentGateways
 
     private static array $removers = [];
 
+    public static function names(): array
+    {
+        $names = array_keys(self::$installers);
+        sort($names);
+
+        return $names;
+    }
+
     public static function installers(): array
     {
         return self::$installers;
