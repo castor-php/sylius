@@ -93,9 +93,8 @@ jobs:
                         value: "castor sylius:add product_bundle"
                     -   name: Sylius Wishlist Plugin
                         value: "castor sylius:add wishlist && castor sylius:remove wishlist"
-                    ### TODO
-                    #-   name: Sylius Mollie Payment Gateway
-                    #    value: "castor sylius:payment-gateways:setup mollie"
+                    -   name: Sylius Mollie Payment Gateway
+                        value: "castor sylius:payment-gateways:setup --only test_payment_gateway_with_function && castor sylius:payment-gateways:setup mollie"
                     -   name: Sylius Paypal Payment Gateway
                         value: "castor sylius:payment-gateways:setup paypal"
                     -   name: Sylius Stripe Payment Gateway

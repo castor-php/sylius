@@ -10,6 +10,7 @@ use Castor\Exception\FunctionConfigurationException;
 use Castor\Sylius\Attribute\AsPaymentGatewayInstaller;
 use Castor\Sylius\Attribute\AsPaymentGatewayRemover;
 use Castor\Sylius\PaymentGateway\Installer\PaymentGatewayInstallerDescriptor;
+use Castor\Sylius\PaymentGateway\Installer\MollieInstaller;
 use Castor\Sylius\PaymentGateway\Installer\PaypalInstaller;
 use Castor\Sylius\PaymentGateway\Installer\StripeInstaller;
 use Castor\Sylius\PaymentGateway\Remover\MollieRemover;
@@ -22,6 +23,7 @@ use Castor\Sylius\Plugin\Remover\PluginRemover;
 #[AsListener(AfterBootEvent::class)]
 function initialize(AfterBootEvent $afterBootEvent): void
 {
+    PaymentGateways::addInstaller(new MollieInstaller());
     PaymentGateways::addInstaller(new PaypalInstaller());
     PaymentGateways::addInstaller(new StripeInstaller());
 
