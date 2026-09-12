@@ -4,12 +4,6 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-$syliusAdminPassword = trim((string) (getenv('SYLIUS_ADMIN_PASSWORD') ?: $_ENV['SYLIUS_ADMIN_PASSWORD'] ?? ''));
-
-if ('' === $syliusAdminPassword) {
-    throw new \RuntimeException('SYLIUS_ADMIN_PASSWORD must be set in the environment before loading app fixtures.');
-}
-
 return App::config([
     'sylius_fixtures' => [
         'suites' => [
@@ -21,7 +15,7 @@ return App::config([
                                 'admin' => [
                                     'email' => 'sylius@example.com',
                                     'username' => 'sylius',
-                                    'password' => $syliusAdminPassword,
+                                    'password' => '%env(default:sylius:SYLIUS_ADMIN_PASSWORD)',
                                     'locale_code' => 'en_US',
                                     'avatar' => '@SyliusCoreBundle/Resources/fixtures/adminAvatars/luke.webp',
                                 ],
