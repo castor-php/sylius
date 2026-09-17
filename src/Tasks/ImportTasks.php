@@ -30,6 +30,7 @@ final class ImportTasks
     public function __construct(
         private readonly string $name,
         private readonly string $directory,
+        private readonly ?string $domain = null,
     ) {}
 
     /**
@@ -193,7 +194,9 @@ final class ImportTasks
                 #[AsOption]
                 int $limit = 100,
             ): void {
-                $this->withContext(static function () use ($mode, $project, $limit, $subdomain): void {
+                $app = new App($this->name, $this->directory, $this->domain);
+
+                $this->withContext(static function () use ($app, $mode, $project, $limit, $subdomain): void {
                     $mode = strtolower(trim($mode));
 
                     if (!\in_array($mode, ['existing', 'ai'], true)) {
@@ -207,19 +210,19 @@ final class ImportTasks
                     }
 
                     if (null === $subdomain) {
-                        $exampleHostname = shop_hostname('example');
+                        $exampleHostname = shop_hostname($app->domain(), 'example');
                         $subdomain = io()->askQuestion(new Question(\sprintf('Enter the name of your subdomain (optional). The "example" subdomain will generate "%s" as hostname', $exampleHostname), null));
                     }
 
                     $projectSlug = trim($project);
 
                     if ('existing' === $mode) {
-                        generate_existing_import_fixtures($projectSlug, $limit, $subdomain);
+                        generate_existing_import_fixtures($projectSlug, $limit, $app->domain(), $subdomain);
 
                         return;
                     }
 
-                    generate_ai_import_fixtures($projectSlug, $subdomain);
+                    generate_ai_import_fixtures($projectSlug, $app->domain(), $subdomain);
                 });
             },
         ];
