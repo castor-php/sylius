@@ -231,9 +231,7 @@ final class ImportTasks
             ): void {
                 $this->withContext(static function () use ($project): void {
                     if (null === $project || '' === trim($project)) {
-                        io()->error('Project slug is required. Pass --project.');
-
-                        return;
+                        $project = io()->askQuestion(new Question('Enter the name of your project:', 'App'));
                     }
 
                     try {
