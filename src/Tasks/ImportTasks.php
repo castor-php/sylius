@@ -22,6 +22,7 @@ use function Castor\Sylius\Import\list_import_shops;
 use function Castor\Sylius\Import\load_import_fixture_suite;
 use function Castor\Sylius\Import\resolve_cli_project_slug;
 use function Castor\Sylius\Import\resolve_import_project;
+use function Castor\Sylius\Import\shop_hostname;
 use function Castor\Sylius\Import\write_import_shop_list;
 
 final class ImportTasks
@@ -188,9 +189,11 @@ final class ImportTasks
                 #[AsOption]
                 ?string $project = null,
                 #[AsOption]
+                ?string $subdomain = null,
+                #[AsOption]
                 int $limit = 100,
             ): void {
-                $this->withContext(static function () use ($mode, $project, $limit): void {
+                $this->withContext(static function () use ($mode, $project, $limit, $subdomain): void {
                     $mode = strtolower(trim($mode));
 
                     if (!\in_array($mode, ['existing', 'ai'], true)) {
@@ -203,15 +206,20 @@ final class ImportTasks
                         $project = io()->askQuestion(new Question('Enter the name of your project:', 'App'));
                     }
 
+                    if (null === $subdomain) {
+                        $exampleHostname = shop_hostname('example');
+                        $subdomain = io()->askQuestion(new Question(\sprintf('Enter the name of your subdomain (optional). The "example" subdomain will generate "%s" as hostname', $exampleHostname), null));
+                    }
+
                     $projectSlug = trim($project);
 
                     if ('existing' === $mode) {
-                        generate_existing_import_fixtures($projectSlug, $limit);
+                        generate_existing_import_fixtures($projectSlug, $limit, $subdomain);
 
                         return;
                     }
 
-                    generate_ai_import_fixtures($projectSlug);
+                    generate_ai_import_fixtures($projectSlug, $subdomain);
                 });
             },
         ];
