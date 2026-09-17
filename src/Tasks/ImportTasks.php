@@ -194,9 +194,8 @@ final class ImportTasks
                 #[AsOption]
                 int $limit = 100,
             ): void {
-                $app = ImportContext::current()->app();
-
-                $this->withContext(static function () use ($app, $mode, $project, $limit, $subdomain): void {
+                $this->withContext(static function () use ($mode, $project, $limit, $subdomain): void {
+                    $context = ImportContext::current();
                     $mode = strtolower(trim($mode));
 
                     if (!\in_array($mode, ['existing', 'ai'], true)) {
@@ -206,23 +205,23 @@ final class ImportTasks
                     }
 
                     if (null === $project || '' === trim($project)) {
-                        $project = io()->askQuestion(new Question('Enter the name of your project:', 'App'));
+                        $project = io()->choice('Which fixtures would you like to generate?', $context->importProjectNames());
                     }
 
                     if (null === $subdomain) {
-                        $exampleHostname = shop_hostname($app->domain(), 'example');
+                        $exampleHostname = shop_hostname($context->app()->domain(), 'example');
                         $subdomain = io()->askQuestion(new Question(\sprintf('Enter the name of your subdomain (optional). The "example" subdomain will generate "%s" as hostname', $exampleHostname), null));
                     }
 
                     $projectSlug = trim($project);
 
                     if ('existing' === $mode) {
-                        generate_existing_import_fixtures($projectSlug, $limit, $app->domain(), $subdomain);
+                        generate_existing_import_fixtures($projectSlug, $limit, $context->app()->domain(), $subdomain);
 
                         return;
                     }
 
-                    generate_ai_import_fixtures($projectSlug, $app->domain(), $subdomain);
+                    generate_ai_import_fixtures($projectSlug, $context->app()->domain(), $subdomain);
                 });
             },
         ];
