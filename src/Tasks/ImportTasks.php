@@ -47,7 +47,7 @@ final class ImportTasks
 
     private function withContext(callable $callback): void
     {
-        ImportContext::setCurrent(new ImportContext(new App($this->name, $this->directory), $this->name));
+        ImportContext::setCurrent(new ImportContext(new App($this->name, $this->directory, $this->domain), $this->name));
         $callback();
     }
 
@@ -194,7 +194,7 @@ final class ImportTasks
                 #[AsOption]
                 int $limit = 100,
             ): void {
-                $app = new App($this->name, $this->directory, $this->domain);
+                $app = ImportContext::current()->app();
 
                 $this->withContext(static function () use ($app, $mode, $project, $limit, $subdomain): void {
                     $mode = strtolower(trim($mode));
@@ -242,7 +242,9 @@ final class ImportTasks
             ): void {
                 $this->withContext(static function () use ($project): void {
                     if (null === $project || '' === trim($project)) {
-                        $project = io()->askQuestion(new Question('Enter the name of your project:', 'App'));
+                        $context = ImportContext::current();
+
+                        $project = io()->choice('Which fixtures would you like to load?', $context->importProjectNames());
                     }
 
                     try {
