@@ -1,0 +1,47 @@
+header {
+  background-color: $white;
+  border-bottom: 1px solid $border;
+}
+
+header a {
+  color: $text;
+
+  &:hover {
+    color: $black-hover;
+  }
+}
+
+header .navbar {
+  background-color: $white;
+}
+
+header .navbar-brand {
+  color: $black;
+  font-weight: 500;
+}
+
+header .nav-link {
+  color: $text;
+
+  &:hover,
+  &:focus {
+    color: $black;
+  }
+}
+
+header .dropdown-menu {
+  border-radius: 0;
+  border-color: $border;
+  background-color: $white;
+  box-shadow: 0 8px 24px rgba($black, 0.08);
+}
+
+header .dropdown-item {
+  color: $text;
+
+  &:hover,
+  &:focus {
+    background-color: $surface-soft;
+    color: $black;
+  }
+}

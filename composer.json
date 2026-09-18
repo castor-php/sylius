@@ -14,7 +14,8 @@
             "src/Import/bootstrap.php",
             "src/Installer/functions.php",
             "src/PaymentGateway/functions.php",
-            "src/Plugin/functions.php"
+            "src/Plugin/functions.php",
+            "src/Theme/functions.php"
         ]
     },
     "authors": [
