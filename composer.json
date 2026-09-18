@@ -25,7 +25,7 @@
     ],
     "require": {
         "php": ">=8.3",
-        "castor-php/docker": "^0.5.0",
+        "castor-php/docker": "^0.6.0",
         "symfony/ai-ollama-platform": "^0.12.0",
         "symfony/ai-open-router-platform": "^0.12.0",
         "symfony/ai-platform": "^0.12.0",
