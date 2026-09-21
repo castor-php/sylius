@@ -8,6 +8,9 @@ return App::config([
     'sylius_twig_hooks' => [
         'hooks' => [
             'sylius_shop.base.header' => [
+                'top_bar' => [
+                    'enabled' => false,
+                ],
                 'navbar' => [
                     'enabled' => false,
                 ],

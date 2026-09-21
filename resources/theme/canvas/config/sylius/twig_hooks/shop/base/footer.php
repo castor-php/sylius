@@ -7,9 +7,9 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 return App::config([
     'sylius_twig_hooks' => [
         'hooks' => [
-            'sylius_shop.base.header' => [
-                'top_bar' => [
-                    'enabled' => false,
+            'sylius_shop.base.footer' => [
+                'content' => [
+                    'template' => 'shop/shared/layout/base/footer/content.html.twig',
                 ],
             ],
         ],
