@@ -7,11 +7,22 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 return App::config([
     'sylius_twig_hooks' => [
         'hooks' => [
-            'sylius_shop.base.footer' => [
-                'content' => [
-                    'template' => 'shop/shared/layout/base/footer/content.html.twig',
+            'sylius_shop.base.header' => [
+                'navbar' => [
+                    'enabled' => false,
                 ],
             ],
+
+            'sylius_shop.base.header.content' => [
+                'taxon_menu' => [
+                    'component' => 'sylius_shop:common:taxon_menu',
+                    'props' => [
+                        'template' => 'shop/shared/layout/base/header/content/taxon_menu.html.twig',
+                    ],
+                    'priority' => 250,
+                ],
+            ],
+
         ],
     ],
 ]);
