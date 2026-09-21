@@ -19,16 +19,16 @@
 
 .btn-primary {
   --bs-btn-color: #{$white};
-  --bs-btn-bg: #{$black};
-  --bs-btn-border-color: #{$black};
+  --bs-btn-bg: #B75D17;
+  --bs-btn-border-color: #B75D17;
 
-  --bs-btn-hover-color: #{$white};
-  --bs-btn-hover-bg: #{$black-hover};
-  --bs-btn-hover-border-color: #{$black-hover};
+  --bs-btn-hover-color: #B75D17;
+  --bs-btn-hover-bg: #{$white};
+  --bs-btn-hover-border-color: #B75D17;
 
   --bs-btn-active-color: #{$white};
-  --bs-btn-active-bg: #{$black};
-  --bs-btn-active-border-color: #{$black};
+  --bs-btn-active-bg: #B75D17;
+  --bs-btn-active-border-color: #B75D17;
 }
 
 .btn-secondary {
