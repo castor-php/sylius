@@ -14,6 +14,8 @@ your stack into a Sylius app, and gives you the tasks to drive it.
         * [Available plugins](#available-plugins-1)
     * [💳 Setup payment gateways](#-setup-payment-gateways)
         * [Available payment gateways](#available-payment-gateways)
+    * [🎨 Setup a theme](#-setup-a-theme)
+        * [Available themes](#available-themes)
     * [☰ Remove menu items from the Admin panel](#-remove-menu-items-from-the-admin-panel)
         * [Available options](#available-options)
         * [Default menu items](#default-menu-items)
@@ -138,6 +140,26 @@ castor sylius:payment-gateways:setup --only stripe
 | mollie  | Setup Sylius Mollie payment gateway |
 | paypal  | Setup Sylius Paypal payment gateway |
 | stripe  | Setup Sylius Stripe payment gateway |
+
+### 🎨 Setup a theme
+
+Install a storefront theme in your Sylius application. Only one theme can be active:
+installing a theme automatically removes any other previously installed theme.
+
+If no argument is provided, an interactive prompt will ask you to choose the theme.
+
+**Example:**
+
+```bash
+castor sylius:theme:setup canvas
+```
+
+#### Available themes
+
+| Theme   | Description                                       |
+|---------|---------------------------------------------------|
+| canvas  | Install the Canvas storefront theme               |
+| default | No theme applied; rebuilds the application assets |
 
 ### ☰ Remove menu items from the Admin panel
 
