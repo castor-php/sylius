@@ -99,6 +99,8 @@ jobs:
                         value: "castor sylius:payment-gateways:setup paypal"
                     -   name: Sylius Stripe Payment Gateway
                         value: "castor sylius:payment-gateways:setup stripe"
+                    -   name: Canvas theme
+                        value: "castor sylius:theme:setup canvas"
                     -   name: Remove Menu items
                         value: "castor sylius:menu:remove official_support sylius.ui.administration"
                     -   name: Run Fixtures

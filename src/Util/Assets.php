@@ -14,6 +14,7 @@ final readonly class Assets
     {
         io()->title('Installing the assets');
 
+        Docker::run($app, 'yarn install');
         Docker::run($app, 'bin/console assets:install');
     }
 

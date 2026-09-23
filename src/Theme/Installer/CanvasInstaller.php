@@ -7,6 +7,7 @@ namespace Castor\Sylius\Theme\Installer;
 use Castor\Sylius\App;
 use Castor\Sylius\Plugin\Installer\PluginInstallerInterface;
 use Castor\Sylius\Util\Assets;
+use Castor\Sylius\Util\Docker;
 use Castor\Sylius\Util\Javascript;
 use Castor\Sylius\Util\Symfony;
 use Castor\Sylius\Util\Yaml;
@@ -33,6 +34,7 @@ final class CanvasInstaller implements PluginInstallerInterface
 
         Javascript::addImport($app, 'assets/shop/entrypoint.js', './styles/app.scss');
 
+        Assets::install($app);
         Assets::build($app);
         Symfony::cacheClear($app);
     }
