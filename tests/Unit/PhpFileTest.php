@@ -146,6 +146,53 @@ final class PhpFileTest extends TestCase
         static::assertStringContainsString('private string $state = self::STATE_NEW;', $content);
     }
 
+    public function testAddPropertyWithMultipleProperties(): void
+    {
+        $filePath = $this->createFilePath();
+
+        (new PhpFile($filePath))
+            ->addProperty(<<<'PHP'
+                #[ORM\Column(type: Types::STRING, length: 30, options: ['default' => self::STATE_NEW])]
+                private string $state = self::STATE_NEW;
+
+                #[ORM\Column(type: Types::STRING, length: 255)]
+                private string $comment = '';
+                PHP)
+            ->save();
+
+        $content = file_get_contents($filePath);
+
+        static::assertIsString($content);
+        static::assertStringContainsString('#[ORM\Column(type: Types::STRING, length: 30, options: [\'default\' => self::STATE_NEW])]', $content);
+        static::assertStringContainsString('private string $state = self::STATE_NEW;', $content);
+        static::assertStringContainsString('#[ORM\Column(type: Types::STRING, length: 255)]', $content);
+        static::assertStringContainsString('private string $comment = \'\';', $content);
+    }
+
+    public function testAddPropertyWithDuplicateAmongMultipleIsIdempotent(): void
+    {
+        $filePath = $this->createFilePath();
+
+        (new PhpFile($filePath))
+            ->addProperty(<<<'PHP'
+                private string $state = self::STATE_NEW;
+                PHP)
+            ->addProperty(<<<'PHP'
+                private string $state = self::STATE_ACCEPTED;
+
+                private string $comment = '';
+                PHP)
+            ->save();
+
+        $content = file_get_contents($filePath);
+
+        static::assertIsString($content);
+        static::assertSame(1, substr_count($content, '$state'));
+        static::assertStringContainsString('private string $state = self::STATE_NEW;', $content);
+        static::assertStringNotContainsString('self::STATE_ACCEPTED', $content);
+        static::assertStringContainsString('private string $comment = \'\';', $content);
+    }
+
     public function testAddPropertyIsIdempotent(): void
     {
         $filePath = $this->createFilePath();
@@ -182,6 +229,81 @@ final class PhpFileTest extends TestCase
 
         static::assertIsString($saved);
         static::assertStringNotContainsString('$state', $saved);
+    }
+
+    public function testAddAttribute(): void
+    {
+        $filePath = $this->createFilePath();
+
+        (new PhpFile($filePath))
+            ->addImport('Sylius\Resource\Metadata\ApplyStateMachineTransition')
+            ->addImport('Sylius\Resource\Metadata\AsResource')
+            ->addAttribute(<<<'PHP'
+                #[AsResource(
+                    section: 'admin',
+                    routePrefix: '/%sylius_admin.path_name%',
+                    operations: [
+                        new ApplyStateMachineTransition(
+                            redirectToRoute: 'sylius_admin_customer_update',
+                            stateMachineTransition: 'accept',
+                        ),
+                        new ApplyStateMachineTransition(
+                            redirectToRoute: 'sylius_admin_customer_update',
+                            stateMachineTransition: 'reject',
+                        ),
+                    ],
+                )]
+                PHP)
+            ->save();
+
+        $content = file_get_contents($filePath);
+
+        static::assertIsString($content);
+        static::assertStringContainsString('use Sylius\Resource\Metadata\ApplyStateMachineTransition;', $content);
+        static::assertStringContainsString('use Sylius\Resource\Metadata\AsResource;', $content);
+        static::assertStringContainsString('#[AsResource(', $content);
+        static::assertStringContainsString("routePrefix: '/%sylius_admin.path_name%'", $content);
+        static::assertStringContainsString("stateMachineTransition: 'accept'", $content);
+        static::assertStringContainsString("stateMachineTransition: 'reject'", $content);
+    }
+
+    public function testAddAttributeIsIdempotent(): void
+    {
+        $filePath = $this->createFilePath();
+
+        (new PhpFile($filePath))
+            ->addAttribute(<<<'PHP'
+                #[AsResource(section: 'admin')]
+                PHP)
+            ->addAttribute(<<<'PHP'
+                #[AsResource(section: 'shop')]
+                PHP)
+            ->save();
+
+        $content = file_get_contents($filePath);
+
+        static::assertIsString($content);
+        static::assertSame(1, substr_count($content, '#[AsResource('));
+        static::assertStringContainsString("#[AsResource(section: 'admin')]", $content);
+        static::assertStringNotContainsString("section: 'shop'", $content);
+    }
+
+    public function testAddAttributeWithNoClassReturnsThis(): void
+    {
+        $filePath = $this->tempDir . '/no_class.php';
+
+        $this->filesystem->dumpFile($filePath, "<?php\n\n\$foo = 'bar';\n");
+
+        $file = new PhpFile($filePath);
+
+        static::assertSame($file, $file->addAttribute("#[AsResource(section: 'admin')]"));
+
+        $file->save();
+
+        $saved = file_get_contents($filePath);
+
+        static::assertIsString($saved);
+        static::assertStringNotContainsString('AsResource', $saved);
     }
 
     public function testAddMethod(): void
