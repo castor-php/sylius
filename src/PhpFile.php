@@ -49,7 +49,7 @@ final class PhpFile
         );
     }
 
-    public function addImport(string $fqcn): static
+    public function addImport(string $fqcn, ?string $alias = null): static
     {
         $namespace = $this->findNamespace();
 
@@ -72,7 +72,7 @@ final class PhpFile
         }
 
         $useStmt = new Use_([
-            new Node\UseItem(new Node\Name\FullyQualified($fqcn)),
+            new Node\UseItem(new Node\Name($fqcn), $alias),
         ]);
 
         array_splice($target, $insertPos, 0, [$useStmt]);
@@ -270,6 +270,114 @@ final class PhpFile
         return $this;
     }
 
+    public function addClassConstant(string $code): static
+    {
+        $class = $this->findClass();
+
+        if (null === $class) {
+            return $this;
+        }
+
+        $parser = (new ParserFactory())->createForNewestSupportedVersion();
+        $bodyAst = $parser->parse('<?php class __TEMP__ {' . "\n" . $code . "\n" . '}');
+
+        if (null === $bodyAst || !$bodyAst[0] instanceof Class_) {
+            return $this;
+        }
+
+        foreach ($bodyAst[0]->stmts as $classConst) {
+            if (!$classConst instanceof Node\Stmt\ClassConst) {
+                continue;
+            }
+
+            $alreadyAdded = false;
+
+            foreach ($classConst->consts as $const) {
+                if ($this->hasClassConstant($class, $const->name->toString())) {
+                    $alreadyAdded = true;
+
+                    break;
+                }
+            }
+
+            if ($alreadyAdded) {
+                continue;
+            }
+
+            $class->stmts[] = $classConst;
+        }
+
+        return $this;
+    }
+
+    public function addProperty(string $code): static
+    {
+        $class = $this->findClass();
+
+        if (null === $class) {
+            return $this;
+        }
+
+        $parser = (new ParserFactory())->createForNewestSupportedVersion();
+        $bodyAst = $parser->parse('<?php class __TEMP__ {' . "\n" . $code . "\n" . '}');
+
+        if (null === $bodyAst || !$bodyAst[0] instanceof Class_) {
+            return $this;
+        }
+
+        $property = $bodyAst[0]->stmts[0] ?? null;
+
+        if (!$property instanceof Node\Stmt\Property) {
+            return $this;
+        }
+
+        $name = $property->props[0]->name->toString();
+
+        foreach ($class->stmts as $stmt) {
+            if ($stmt instanceof Node\Stmt\Property) {
+                foreach ($stmt->props as $prop) {
+                    if ($prop->name->toString() === $name) {
+                        return $this;
+                    }
+                }
+            }
+        }
+
+        $class->stmts[] = $property;
+
+        return $this;
+    }
+
+    public function addMethod(string $code): static
+    {
+        $class = $this->findClass();
+
+        if (null === $class) {
+            return $this;
+        }
+
+        $parser = (new ParserFactory())->createForNewestSupportedVersion();
+        $bodyAst = $parser->parse('<?php class __TEMP__ {' . "\n" . $code . "\n" . '}');
+
+        if (null === $bodyAst || !$bodyAst[0] instanceof Class_) {
+            return $this;
+        }
+
+        foreach ($bodyAst[0]->stmts as $method) {
+            if (!$method instanceof ClassMethod) {
+                continue;
+            }
+
+            if ($this->hasMethod($class, $method->name->toString())) {
+                continue;
+            }
+
+            $class->stmts[] = $method;
+        }
+
+        return $this;
+    }
+
     public function appendToMethod(
         string $method,
         string $body,
@@ -391,13 +499,29 @@ final class PhpFile
                 default => null,
             },
 
-            $node instanceof Node\Expr\Array_ => array_map(
-                fn(Node\ArrayItem $item): mixed => $this->normalizeNodeValue($item->value),
-                $node->items,
-            ),
+            $node instanceof Node\Expr\Array_ => $this->normalizeArrayValue($node),
 
             default => null,
         };
+    }
+
+    private function normalizeArrayValue(Node\Expr\Array_ $node): array
+    {
+        $result = [];
+
+        foreach ($node->items as $item) {
+            $key = $item->key;
+
+            if (null === $key) {
+                $result[] = $this->normalizeNodeValue($item->value);
+
+                continue;
+            }
+
+            $result[$this->normalizeNodeValue($key)] = $this->normalizeNodeValue($item->value);
+        }
+
+        return $result;
     }
 
     /** @return array<Node\Stmt> */
@@ -473,6 +597,32 @@ final class PhpFile
             if ($stmt instanceof Use_) {
                 foreach ($stmt->uses as $use) {
                     if ($use->name->toString() === $fqcn) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function hasMethod(Class_ $class, string $name): bool
+    {
+        foreach ($class->stmts as $stmt) {
+            if ($stmt instanceof ClassMethod && $stmt->name->toString() === $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function hasClassConstant(Class_ $class, string $name): bool
+    {
+        foreach ($class->stmts as $stmt) {
+            if ($stmt instanceof Node\Stmt\ClassConst) {
+                foreach ($stmt->consts as $const) {
+                    if ($const->name->toString() === $name) {
                         return true;
                     }
                 }
