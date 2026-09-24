@@ -9,7 +9,6 @@ return App::config([
         'hooks' => [
             'sylius_shop.shared.product.card.prices' => [
                 'price' => [
-                    //'enabled' => false,
                     'props' => [
                         'template' => 'shop/product/common/price.html.twig',
                     ],
