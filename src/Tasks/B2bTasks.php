@@ -60,16 +60,14 @@ final class B2bTasks
 
     private static function hidePrices(App $app): void
     {
-        self::copyConfig($app, self::HIDE_PRICES);
-        self::copyTemplates($app, self::HIDE_PRICES);
+        self::copyResources($app, self::HIDE_PRICES);
 
         io()->success('Prices have been hidden successfully.');
     }
 
     private static function hideCheckout(App $app): void
     {
-        self::copyConfig($app, self::HIDE_CHECKOUT);
-        self::copyTemplates($app, self::HIDE_CHECKOUT);
+        self::copyResources($app, self::HIDE_CHECKOUT);
 
         io()->success('Checkout has been hidden successfully.');
     }
@@ -77,12 +75,30 @@ final class B2bTasks
     private static function enableCustomerAdminValidation(App $app): void
     {
         Yaml::import($app, 'config/packages/_sylius.yaml', '../sylius/workflows/**/**.php');
-        self::copyConfig($app, 'customer_validation');
+        self::copyResources($app, 'customer_validation');
 
         // Add the workflow on the Customer entity.
         (new PhpFile($app->directory() . '/src/Entity/Customer/Customer.php'))
             ->addImport('Doctrine\ORM\Mapping', 'ORM')
             ->addImport('Doctrine\DBAL\Types\Types')
+            ->addImport('Sylius\Resource\Metadata\ApplyStateMachineTransition')
+            ->addImport('Sylius\Resource\Metadata\AsResource')
+            ->addAttribute(<<<'PHP'
+                #[AsResource(
+                    section: 'admin',
+                    routePrefix: '/%sylius_admin.path_name%',
+                    operations: [
+                        new ApplyStateMachineTransition(
+                            redirectToRoute: 'sylius_admin_customer_update',
+                            stateMachineTransition: 'accept',
+                        ),
+                        new ApplyStateMachineTransition(
+                            redirectToRoute: 'sylius_admin_customer_update',
+                            stateMachineTransition: 'reject',
+                        ),
+                    ],
+                )]
+                PHP)
             ->addClassConstant(<<<'PHP'
                 public const string STATE_NEW = 'new';
                 public const string STATE_ACCEPTED = 'accepted';
@@ -91,6 +107,12 @@ final class B2bTasks
             ->addProperty(<<<'PHP'
                 #[ORM\Column(type: Types::STRING, length: 30, options: ['default' => self::STATE_NEW])]
                 private string $state = self::STATE_NEW;
+
+                #[ORM\Column(type: Types::STRING, length: 12, nullable: true)]
+                private ?string $localeCode = null;
+
+                #[ORM\Column(type: Types::STRING, nullable: true)]
+                private ?string $registrationChannel = null;
                 PHP)
             ->addMethod(<<<'PHP'
                 public function getState(): string
@@ -102,57 +124,64 @@ final class B2bTasks
                 {
                     $this->state = $state;
                 }
+
+                public function getLocaleCode(): ?string
+                {
+                    return $this->localeCode;
+                }
+
+                public function setLocaleCode(?string $localeCode): void
+                {
+                    $this->localeCode = $localeCode;
+                }
+
+                public function getRegistrationChannel(): ?string
+                {
+                    return $this->registrationChannel;
+                }
+
+                public function setRegistrationChannel(?string $registrationChannel): void
+                {
+                    $this->registrationChannel = $registrationChannel;
+                }
                 PHP)
             ->save()
         ;
 
-        Database::diff($app);
+        try {
+            Database::diff($app);
 
-        $latestMigration = Filesystem::latestFile($app, 'migrations');
+            $latestMigration = Filesystem::latestFile($app, 'migrations');
 
-        if (null === $latestMigration) {
-            io()->error('No latest migration found.');
+            if (null === $latestMigration) {
+                io()->error('No latest migration found.');
 
-            return;
+                return;
+            }
+
+            if (io()->confirm(\sprintf('We have created the "%s" migration file, do you want to execute it now?', $latestMigration))) {
+                Database::migrate($app);
+            } else {
+                io()->caution('Do not forget to sync your database.');
+            }
+        } catch (\Throwable) {
+            io()->info('Your database seems to be already up to date.');
         }
 
-        if (io()->confirm(\sprintf('We have created the "%s" migration file, do you want to execute it now?', $latestMigration))) {
-            Database::migrate($app);
-        } else {
-            io()->caution('Do not forget to sync your database.');
-        }
+        io()->success('Admin validation for customers has been created successfully.');
     }
 
-    private static function copyConfig(App $app, string $feature): void
+    private static function copyResources(App $app, string $feature): void
     {
-        $configDir = self::configDir($feature);
+        $resourcesDir = self::resourcesDir($feature);
 
-        foreach (finder()->files()->in($configDir)->files() as $file) {
-            fs()->copy($configDir . '/' . $file->getRelativePathname(), $app->directory() . '/config/' . $file->getRelativePathname());
-        }
-    }
-
-    private static function copyTemplates(App $app, string $feature): void
-    {
-        $templatesDir = self::templatesDir($feature);
-
-        foreach (finder()->files()->in($templatesDir)->files() as $file) {
-            fs()->copy($templatesDir . '/' . $file->getRelativePathname(), $app->directory() . '/templates/' . $file->getRelativePathname());
+        foreach (finder()->files()->in($resourcesDir) as $file) {
+            fs()->copy($resourcesDir . '/' . $file->getRelativePathname(), $app->directory() . '/' . $file->getRelativePathname());
         }
     }
 
     private static function resourcesDir(string $feature): string
     {
         return \dirname(__DIR__, 2) . '/resources/b2b/' . $feature;
-    }
-
-    private static function configDir(string $feature): string
-    {
-        return self::resourcesDir($feature) . '/config';
-    }
-
-    private static function templatesDir(string $feature): string
-    {
-        return self::resourcesDir($feature) . '/templates';
     }
 }

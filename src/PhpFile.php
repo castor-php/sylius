@@ -325,25 +325,53 @@ final class PhpFile
             return $this;
         }
 
-        $property = $bodyAst[0]->stmts[0] ?? null;
+        foreach ($bodyAst[0]->stmts as $property) {
+            if (!$property instanceof Node\Stmt\Property) {
+                continue;
+            }
 
-        if (!$property instanceof Node\Stmt\Property) {
+            $name = $property->props[0]->name->toString();
+
+            if ($this->hasProperty($class, $name)) {
+                continue;
+            }
+
+            $class->stmts[] = $property;
+        }
+
+        return $this;
+    }
+
+    public function addAttribute(string $code): static
+    {
+        $class = $this->findClass();
+
+        if (null === $class) {
             return $this;
         }
 
-        $name = $property->props[0]->name->toString();
+        $parser = (new ParserFactory())->createForNewestSupportedVersion();
+        $bodyAst = $parser->parse('<?php ' . $code . ' class __TEMP__ {}');
 
-        foreach ($class->stmts as $stmt) {
-            if ($stmt instanceof Node\Stmt\Property) {
-                foreach ($stmt->props as $prop) {
-                    if ($prop->name->toString() === $name) {
-                        return $this;
-                    }
-                }
-            }
+        if (null === $bodyAst || !$bodyAst[0] instanceof Class_) {
+            return $this;
         }
 
-        $class->stmts[] = $property;
+        foreach ($bodyAst[0]->attrGroups as $attrGroup) {
+            $alreadyAdded = false;
+
+            foreach ($attrGroup->attrs as $attr) {
+                if ($this->hasAttribute($class, $attr->name->toString())) {
+                    $alreadyAdded = true;
+
+                    break;
+                }
+            }
+
+            if (!$alreadyAdded) {
+                $class->attrGroups[] = $attrGroup;
+            }
+        }
 
         return $this;
     }
@@ -625,6 +653,34 @@ final class PhpFile
                     if ($const->name->toString() === $name) {
                         return true;
                     }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function hasProperty(Class_ $class, string $name): bool
+    {
+        foreach ($class->stmts as $stmt) {
+            if ($stmt instanceof Node\Stmt\Property) {
+                foreach ($stmt->props as $prop) {
+                    if ($prop->name->toString() === $name) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function hasAttribute(Class_ $class, string $name): bool
+    {
+        foreach ($class->attrGroups as $attrGroup) {
+            foreach ($attrGroup->attrs as $attr) {
+                if ($attr->name->toString() === $name) {
+                    return true;
                 }
             }
         }
