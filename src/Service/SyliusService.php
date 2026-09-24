@@ -8,6 +8,7 @@ use Castor\Attribute\AsRawTokens;
 use Castor\Attribute\AsTask;
 use Castor\Docker\Service\SymfonyService;
 use Castor\Sylius\App;
+use Castor\Sylius\Tasks\B2bTasks;
 use Castor\Sylius\Tasks\ImportTasks;
 use Castor\Sylius\Tasks\MenuTasks;
 use Castor\Sylius\Tasks\PaymentGatewayTasks;
@@ -37,6 +38,7 @@ class SyliusService extends SymfonyService
         yield from (new ThemeTasks($this->name, $this->getDirectory()))();
         yield from (new MenuTasks($this->name, $this->getDirectory()))();
         yield from (new ImportTasks($this->name, $this->getDirectory(), $this->getDomains()[0] ?? null))();
+        yield from (new B2bTasks($this->name, $this->getDirectory()))();
 
         yield from $this->tasks;
 
