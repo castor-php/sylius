@@ -128,7 +128,7 @@ final readonly class MediaInstaller implements PluginInstallerInterface
         // Ensure all current migrations have been executed.
         Database::migrate($app);
 
-        Docker::run($app, 'bin/console doctrine:migrations:diff --namespace=DoctrineMigrations');
+        Database::diff($app);
 
         $latestMigration = Filesystem::latestFile($app, 'migrations');
 
