@@ -19,6 +19,7 @@ your stack into a Sylius app, and gives you the tasks to drive it.
     * [☰ Remove menu items from the Admin panel](#-remove-menu-items-from-the-admin-panel)
         * [Available options](#available-options)
         * [Default menu items](#default-menu-items)
+    * [💼 Enable B2B features](#-enable-b2b-features)
 * [E-commerce import](#e-commerce-import)
     * [Prerequisites](#prerequisites)
     * [AI Generated Catalog](#ai-generated-catalog)
@@ -262,6 +263,36 @@ Sub-items (use `parent/child` syntax):
 | official_support/find_a_partner        | Find a Partner        |
 | official_support/sylius_certification  | Sylius Certification  |
 | sylius.ui.administration/roles         | Roles                 |
+
+### 💼 Enable B2B features
+
+Turn on B2B features for your Sylius shop. A single interactive command asks which features to enable (yes/no for each):
+
+```bash
+castor sylius:b2b:enable
+```
+
+> **Note:** The command asks for your choices interactively and copies the matching resources into your application.
+
+#### Hide prices for anonymous users
+
+Hides product prices (product cards and product details page) from visitors who are not logged in. Prices remain visible to logged-in customers.
+
+#### Hide checkout for anonymous users
+
+Removes the "Add to cart" button on the product details page, hides the cart from the header, and blanks the cart summary page for guests.
+
+#### Admin validation for new users
+
+New customers are created **disabled** and placed in a `customer_validation` workflow (`new` → `accepted` / `rejected`). The automatic registration email is suppressed until a decision is made.
+
+This feature:
+
+- adds `state`, `localeCode` and `registrationChannel` fields to the `Customer` entity;
+- adds **Accept** / **Reject** actions on the customer show page in the Admin panel;
+- generates a Doctrine migration for the new columns (you are prompted before it is executed);
+- when a customer is **accepted**, the user is enabled and the registration email is sent;
+- when a customer is **rejected**, the user stays disabled.
 
 The package autoloads via Composer. Do **not** `import('composer://castor-php/sylius')` — that would load the package's
 local `castor.php` and conflict with your own context. Register `SyliusService` as shown above to expose all tasks (
