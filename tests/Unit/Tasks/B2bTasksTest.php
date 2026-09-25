@@ -66,6 +66,16 @@ final class B2bTasksTest extends TestCase
         $io = $this->createMock(SymfonyStyle::class);
         $io->expects($this->once())
             ->method('choice')
+            ->with(
+                'Which B2B features would you like to enable?',
+                [
+                    'customer_validation' => 'customer_validation - Require admin approval before customers can sign in',
+                    'hide_checkout' => 'hide_checkout - Hide cart and checkout for guests',
+                    'hide_prices' => 'hide_prices - Hide product prices for guests',
+                ],
+                null,
+                true,
+            )
             ->willThrowException(new MissingInputException());
 
         $this->setUpContainer($io);
