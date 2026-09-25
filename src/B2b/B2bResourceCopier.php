@@ -13,7 +13,12 @@ final readonly class B2bResourceCopier
 {
     public static function copy(App $app, string $feature): void
     {
+        $sharedResourcesDir = self::resourcesDir('shared');
         $resourcesDir = self::resourcesDir($feature);
+
+        foreach (finder()->files()->in($sharedResourcesDir) as $file) {
+            fs()->copy($sharedResourcesDir . '/' . $file->getRelativePathname(), $app->directory() . '/' . $file->getRelativePathname());
+        }
 
         foreach (finder()->files()->in($resourcesDir) as $file) {
             fs()->copy($resourcesDir . '/' . $file->getRelativePathname(), $app->directory() . '/' . $file->getRelativePathname());
