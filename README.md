@@ -100,13 +100,13 @@ castor sylius:remove invoicing cms
 
 #### Available plugins
 
-| Plugin    | Description                                          |
-|-----------|------------------------------------------------------|
-| bugsnag   | Remove the Symfony BugSnag plugin                    |
-| cms       | Remove the Sylius CMS plugin                         |
-| gdpr      | Remove the Synolia GDPR plugin                       |
-| invoicing | Remove the Sylius Invoicing plugin                   |
-| wishlist  | Remove the Sylius Wishlist plugin                    |
+| Plugin    | Description                        |
+|-----------|------------------------------------|
+| bugsnag   | Remove the Symfony BugSnag plugin  |
+| cms       | Remove the Sylius CMS plugin       |
+| gdpr      | Remove the Synolia GDPR plugin     |
+| invoicing | Remove the Sylius Invoicing plugin |
+| wishlist  | Remove the Sylius Wishlist plugin  |
 
 ### 💳 Setup payment gateways
 
@@ -115,7 +115,8 @@ Configure which payment gateways are active in your Sylius application.
 > **Note:** Payment gateways have their own dedicated command and are not managed through
 > `sylius:add` / `sylius:remove` by design.
 
-A single command to setup which payment gateways you want to use in your Sylius application. By default, only installs the
+A single command to setup which payment gateways you want to use in your Sylius application. By default, only installs
+the
 selected gateways. Pass `--only` to also remove unselected gateways.
 
 **Example:**
@@ -296,31 +297,42 @@ If no arguments are provided, an interactive choice lets you select the features
 
 #### Available features
 
-| Feature               | Description                                      |
-|-----------------------|--------------------------------------------------|
-| `hide_prices`         | Hide prices for anonymous users                  |
-| `hide_checkout`       | Hide the checkout for anonymous users            |
-| `customer_validation` | Add admin validation for new users               |
+| Feature               | Description                                         |
+|-----------------------|-----------------------------------------------------|
+| `hide_prices`         | Hide prices for anonymous users                     |
+| `hide_checkout`       | Hide the checkout for anonymous users               |
+| `customer_validation` | Require admin approval before customers can sign in |
 
 #### Hide prices for anonymous users
 
-Hides product prices (product cards and product details page) from visitors who are not logged in. Prices remain visible to logged-in customers.
+Hides product prices (product cards and product details page) from visitors who are not logged in. Prices remain visible
+to logged-in customers.
 
 #### Hide checkout for anonymous users
 
-Removes the "Add to cart" button on the product details page, hides the cart from the header, and blanks the cart summary page for guests.
+Removes the "Add to cart" button on the product details page, hides the cart from the header, and blanks the cart
+summary page for guests.
 
 #### Admin validation for new users
 
-New customers are created **disabled** and placed in a `customer_validation` workflow (`new` → `accepted` / `rejected`). The automatic registration email is suppressed until a decision is made.
+Require an administrator to approve new customers before they can sign in. Enable the feature with:
 
-This feature:
+```bash
+castor sylius:b2b:enable customer_validation
+```
+
+New customers are created **disabled** and start in the `customer_validation` workflow (`new` → `accepted` /
+`rejected`). The automatic registration email is suppressed until a customer is accepted.
+
+In the Admin panel, this feature:
 
 - adds `state`, `localeCode` and `registrationChannel` fields to the `Customer` entity;
-- adds **Accept** / **Reject** actions on the customer show page in the Admin panel;
-- generates a Doctrine migration for the new columns (you are prompted before it is executed);
-- when a customer is **accepted**, the user is enabled and the registration email is sent;
-- when a customer is **rejected**, the user stays disabled.
+- displays the validation state in the customer grid, with a filter for `new`, `accepted` and `rejected`;
+- adds **Accept** / **Reject** actions to the customer grid and customer show page;
+- displays a count of customers waiting for validation in the dashboard pending actions;
+- generates a Doctrine migration for the new columns and prompts you to run it (you can run it later if you decline);
+- enables the user and sends the registration email when a customer is **accepted**;
+- leaves the user disabled when a customer is **rejected**.
 
 The package autoloads via Composer. Do **not** `import('composer://castor-php/sylius')` — that would load the package's
 local `castor.php` and conflict with your own context. Register `SyliusService` as shown above to expose all tasks (
