@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Castor\Sylius\Tasks;
 
+use Castor\Attribute\AsRawTokens;
 use Castor\Attribute\AsTask;
 use Castor\Sylius\App;
 use Castor\Sylius\PhpFile;
@@ -18,6 +19,8 @@ use function Castor\io;
 
 final class B2bTasks
 {
+    private const string CUSTOMER_VALIDATION = 'customer_validation';
+
     private const string HIDE_CHECKOUT = 'hide_checkout';
 
     private const string HIDE_PRICES = 'hide_prices';
@@ -33,26 +36,47 @@ final class B2bTasks
 
         yield [
             'task' => new AsTask('enable', 'sylius:b2b', 'Enable b2b features'),
-            'function' => static function () use ($app): void {
+            'function' => static function (#[AsRawTokens] array $features = []) use ($app): void {
+                $features = array_values(array_filter(
+                    $features,
+                    static fn(string $feature): bool => !str_starts_with($feature, '-'),
+                ));
+
+                $featureHandlers = [
+                    self::HIDE_CHECKOUT => static function () use ($app): void {
+                        self::hideCheckout($app);
+                    },
+                    self::HIDE_PRICES => static function () use ($app): void {
+                        self::hidePrices($app);
+                    },
+                    self::CUSTOMER_VALIDATION => static function () use ($app): void {
+                        self::enableCustomerAdminValidation($app);
+                    },
+                ];
+
+                $availableFeatures = array_keys($featureHandlers);
+                sort($availableFeatures);
+
+                if ([] === $features) {
+                    $features = io()->choice(
+                        'Which B2B features would you like to enable?',
+                        $availableFeatures,
+                        multiSelect: true,
+                    );
+                }
+
                 Yaml::import($app, 'config/packages/_sylius.yaml', '../sylius/twig_hooks/**/**.php');
 
-                $hidePrices = io()->choice('Do you want to hide prices for anonymous users?', ['yes', 'no'], 'yes');
-                $hideCheckout = io()->choice('Do you want to hide the checkout for anonymous users?', ['yes', 'no'], 'yes');
-                $customerAdminValidation = io()->choice('Do you want to add an admin validation for new users?', ['yes', 'no'], 'yes');
+                foreach ($features ?? [] as $feature) {
+                    if (!isset($featureHandlers[$feature])) {
+                        io()->warning(\sprintf('Unknown B2B feature "%s", skipping.', $feature));
 
-                if ('yes' === $hidePrices) {
-                    self::hidePrices($app);
+                        continue;
+                    }
+
+                    $featureHandlers[$feature]();
                 }
 
-                if ('yes' === $hideCheckout) {
-                    self::hideCheckout($app);
-                }
-
-                if ('yes' === $customerAdminValidation) {
-                    self::enableCustomerAdminValidation($app);
-                }
-
-                // Ensure new files on Twig hooks are detected
                 Symfony::cacheClear($app);
             },
         ];

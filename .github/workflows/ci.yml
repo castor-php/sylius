@@ -102,7 +102,7 @@ jobs:
                     -   name: Canvas theme
                         value: "castor sylius:theme:setup canvas"
                     -   name: B2B
-                        value: 'castor sylius:b2b:enable -n'
+                        value: 'castor sylius:b2b:enable -n hide_prices hide_checkout customer_validation'
                     -   name: Remove Menu items
                         value: "castor sylius:menu:remove official_support sylius.ui.administration"
                     -   name: Run Fixtures

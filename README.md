@@ -266,13 +266,23 @@ Sub-items (use `parent/child` syntax):
 
 ### 💼 Enable B2B features
 
-Turn on B2B features for your Sylius shop. A single interactive command asks which features to enable (yes/no for each):
+Turn on B2B features for your Sylius shop. Pass one or more feature identifiers as arguments:
 
 ```bash
-castor sylius:b2b:enable
+castor sylius:b2b:enable hide_prices hide_checkout customer_validation
 ```
 
-> **Note:** The command asks for your choices interactively and copies the matching resources into your application.
+If no arguments are provided, an interactive choice lets you select the features to enable.
+
+> **Note:** The command copies the matching resources into your application.
+
+#### Available features
+
+| Feature               | Description                                      |
+|-----------------------|--------------------------------------------------|
+| `hide_prices`         | Hide prices for anonymous users                  |
+| `hide_checkout`       | Hide the checkout for anonymous users            |
+| `customer_validation` | Add admin validation for new users               |
 
 #### Hide prices for anonymous users
 

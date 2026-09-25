@@ -37,7 +37,7 @@ final class MenuTasksTest extends TestCase
         $this->filesystem->remove($this->tempDir);
     }
 
-    private function setUpContainer(): void
+    private function setUpContainer(?SymfonyStyle $symfonyStyle = null): void
     {
         $container = (new \ReflectionClass(Container::class))->newInstanceWithoutConstructor();
 
@@ -47,7 +47,7 @@ final class MenuTasksTest extends TestCase
         };
 
         $setProperty($container, 'fs', $this->filesystem);
-        $setProperty($container, 'symfonyStyle', new SymfonyStyle(new ArrayInput([]), $this->output));
+        $setProperty($container, 'symfonyStyle', $symfonyStyle ?? new SymfonyStyle(new ArrayInput([]), $this->output));
 
         Container::set($container);
     }
@@ -257,6 +257,13 @@ final class MenuTasksTest extends TestCase
 
     public function testRemoveWithEmptyItemsAsksForChoice(): void
     {
+        $io = $this->createMock(SymfonyStyle::class);
+        $io->expects($this->once())
+            ->method('choice')
+            ->willThrowException(new MissingInputException());
+
+        $this->setUpContainer($io);
+
         $menuTasks = new MenuTasks('test-app', $this->tempDir);
         $remove = $this->getRemoveFunction($menuTasks);
 
