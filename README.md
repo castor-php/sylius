@@ -71,6 +71,8 @@ A single command to add all the Sylius plugins you need.
 castor sylius:add cms invoicing refund
 ```
 
+![Adding multiple Sylius plugins with the sylius add command](docs/images/sylius-add-plugins.svg)
+
 #### Available plugins
 
 | Plugin         | Description                          |
@@ -93,6 +95,8 @@ A single command to remove the Sylius plugins you do not need anymore.
 ```bash
 castor sylius:remove invoicing cms
 ```
+
+![Removing multiple Sylius plugins with the sylius remove command](docs/images/sylius-remove-plugins.svg)
 
 #### Available plugins
 
@@ -126,7 +130,11 @@ You can also pass multiple gateways:
 castor sylius:payment-gateways:setup paypal stripe
 ```
 
+![Setting up multiple Sylius payment gateways with command-line arguments](docs/images/sylius-payment-gateways-setup-arguments.svg)
+
 If no arguments are provided, an interactive prompt will ask you to choose the payment gateways.
+
+![Selecting multiple Sylius payment gateways interactively](docs/images/sylius-payment-gateways-setup-interactive.svg)
 
 **Remove unselected gateways:**
 
@@ -179,6 +187,8 @@ castor sylius:menu:remove official_support sylius.ui.administration
 castor sylius:menu:remove marketing/product_reviews
 ```
 
+![Removing multiple items from the Sylius Admin menu](docs/images/sylius-menu-remove-arguments.svg)
+
 #### Available options
 
 | Option    | Shortcut | Description                                                                        |
@@ -198,6 +208,8 @@ castor sylius:menu:remove customers orders --replace
 castor sylius:menu:remove --restore customers
 castor sylius:menu:remove -b customers orders
 ```
+
+![Restoring a removed item from the Sylius Admin menu](docs/images/sylius-menu-remove-restore.svg)
 
 **Example workflow:**
 
@@ -275,6 +287,12 @@ castor sylius:b2b:enable hide_prices hide_checkout customer_validation
 If no arguments are provided, an interactive choice lets you select the features to enable.
 
 > **Note:** The command copies the matching resources into your application.
+
+#### Examples
+
+![Castor enabling multiple B2B features from command-line arguments](docs/images/b2b-enable-arguments.svg)
+
+![Interactive multi-selection of B2B features in Castor](docs/images/b2b-enable-interactive.svg)
 
 #### Available features
 
