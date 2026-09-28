@@ -77,6 +77,7 @@ castor sylius:add cms invoicing refund
 
 | Plugin         | Description                          |
 |----------------|--------------------------------------|
+| ai_dev_tools   | Add the Sylius AI dev tools plugin   |
 | bugsnag        | Add the Symfony BugSnag plugin       |
 | cms            | Add the Sylius CMS plugin            |
 | gdpr           | Add the Synolia GDPR plugin          |
@@ -100,13 +101,14 @@ castor sylius:remove invoicing cms
 
 #### Available plugins
 
-| Plugin    | Description                        |
-|-----------|------------------------------------|
-| bugsnag   | Remove the Symfony BugSnag plugin  |
-| cms       | Remove the Sylius CMS plugin       |
-| gdpr      | Remove the Synolia GDPR plugin     |
-| invoicing | Remove the Sylius Invoicing plugin |
-| wishlist  | Remove the Sylius Wishlist plugin  |
+| Plugin       | Description                           |
+|--------------|---------------------------------------|
+| ai_dev_tools | Remove the Sylius AI dev tools plugin |
+| bugsnag      | Remove the Symfony BugSnag plugin     |
+| cms          | Remove the Sylius CMS plugin          |
+| gdpr         | Remove the Synolia GDPR plugin        |
+| invoicing    | Remove the Sylius Invoicing plugin    |
+| wishlist     | Remove the Sylius Wishlist plugin     |
 
 ### 💳 Setup payment gateways
 
