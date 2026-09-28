@@ -11,6 +11,7 @@ use Castor\Exception\FunctionConfigurationException;
 use Castor\Sylius\Attribute\AsPluginInstaller;
 use Castor\Sylius\Attribute\AsPluginRemover;
 use Castor\Sylius\Installer\SyliusInstaller;
+use Castor\Sylius\Plugin\Installer\AiDevToolsInstaller;
 use Castor\Sylius\Plugin\Installer\BugSnagInstaller;
 use Castor\Sylius\Plugin\Installer\CmsInstaller;
 use Castor\Sylius\Plugin\Installer\GdprInstaller;
@@ -21,6 +22,7 @@ use Castor\Sylius\Plugin\Installer\PluginInstallerDescriptor;
 use Castor\Sylius\Plugin\Installer\ProductBundleInstaller;
 use Castor\Sylius\Plugin\Installer\RefundInstaller;
 use Castor\Sylius\Plugin\Installer\WishlistInstaller;
+use Castor\Sylius\Plugin\Remover\AiDevToolsRemover;
 use Castor\Sylius\Plugin\Remover\BugSnagRemover;
 use Castor\Sylius\Plugin\Remover\CmsRemover;
 use Castor\Sylius\Plugin\Remover\GdprRemover;
@@ -39,6 +41,7 @@ function register_builtin_installers(RegisterServiceInstallerEvent $event): void
 #[AsListener(AfterBootEvent::class)]
 function initialize(AfterBootEvent $afterBootEvent): void
 {
+    PluginTasks::addInstaller(new AiDevToolsInstaller());
     PluginTasks::addInstaller(new BugSnagInstaller());
     PluginTasks::addInstaller(new CmsInstaller());
     PluginTasks::addInstaller(new GdprInstaller());
@@ -48,6 +51,7 @@ function initialize(AfterBootEvent $afterBootEvent): void
     PluginTasks::addInstaller(new RefundInstaller());
     PluginTasks::addInstaller(new WishlistInstaller());
 
+    PluginTasks::addRemover(new AiDevToolsRemover());
     PluginTasks::addRemover(new BugSnagRemover());
     PluginTasks::addRemover(new CmsRemover());
     PluginTasks::addRemover(new GdprRemover());
