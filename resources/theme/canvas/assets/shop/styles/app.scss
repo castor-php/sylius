@@ -5,6 +5,7 @@
 // This file only contains the Naïs customizations.
 
 @import "base";
+@import "breadcrumbs";
 @import "buttons";
 @import "forms";
 @import "cards";
@@ -22,6 +23,10 @@
 
 .bg-ivory {
   background-color: $background !important;
+}
+
+.bg-off-white {
+  background-color: $off-white !important;
 }
 
 .text-canvas {
