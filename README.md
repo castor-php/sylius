@@ -16,6 +16,7 @@ your stack into a Sylius app, and gives you the tasks to drive it.
         * [Available payment gateways](#available-payment-gateways)
     * [🎨 Setup a theme](#-setup-a-theme)
         * [Available themes](#available-themes)
+        * [Canvas theme](#canvas-theme)
     * [☰ Remove menu items from the Admin panel](#-remove-menu-items-from-the-admin-panel)
         * [Available options](#available-options)
         * [Default menu items](#default-menu-items)
@@ -173,6 +174,28 @@ castor sylius:theme:setup canvas
 |---------|---------------------------------------------------|
 | canvas  | Install the Canvas storefront theme               |
 | default | No theme applied; rebuilds the application assets |
+
+#### Canvas theme
+
+The Canvas theme gives the storefront a clean, editorial look, with warm neutral
+colors, squared corners and a refined pairing of *Jost* (body) and *Cormorant
+Garamond* (headings).
+
+![Product page rendered with the Canvas theme](docs/images/canvas-theme-product-show.png)
+
+The theme restyles the shop through SCSS overrides and Sylius Twig hooks:
+
+- **Palette** — charcoal (`#211D1B`), paper (`#F7F6F3`) and off-white (`#FAF8F6`)
+  neutrals, with a terracotta accent (`#B75D17`) for primary buttons.
+- **Layout** — squared corners everywhere (no border radius), minimal borders and
+  generous spacing; the footer is rendered in dark charcoal.
+- **Header** — the default top bar and navbar are replaced by a single taxon navigation.
+- **Homepage** — a full-width banner and a "latest products" section; the deals and
+  collection blocks are removed.
+- **Product page** — a full-width breadcrumb band, a focused content area and a
+  listing of associated products (or latest products when there are none).
+- **Login page** — a split-screen layout with a full-height image beside the
+  login/register panel.
 
 ### ☰ Remove menu items from the Admin panel
 
