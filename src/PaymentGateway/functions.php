@@ -7,6 +7,7 @@ namespace Castor\Sylius\PaymentGateway;
 use Castor\Attribute\AsListener;
 use Castor\Event\AfterBootEvent;
 use Castor\Exception\FunctionConfigurationException;
+use Castor\Sylius\App;
 use Castor\Sylius\Attribute\AsPaymentGatewayInstaller;
 use Castor\Sylius\Attribute\AsPaymentGatewayRemover;
 use Castor\Sylius\PaymentGateway\Installer\PaymentGatewayInstallerDescriptor;
@@ -96,10 +97,10 @@ function resolve_payment_gateway_installer(\ReflectionFunction|\ReflectionClass 
     }
 
     if (!\is_callable($instance)) {
-        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, $instance);
+        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, null);
     }
 
-    return new PaymentGatewayInstallerDescriptor($installerAttribute, new PluginInstaller($installerAttribute->name, static fn() => $instance()));
+    return new PaymentGatewayInstallerDescriptor($installerAttribute, new PluginInstaller($installerAttribute->name, static fn(App $app) => $instance($app)));
 }
 
 function resolve_payment_gateway_remover(\ReflectionFunction|\ReflectionClass $reflection): ?PaymentGatewayRemoverDescriptor
@@ -127,8 +128,8 @@ function resolve_payment_gateway_remover(\ReflectionFunction|\ReflectionClass $r
     }
 
     if (!\is_callable($instance)) {
-        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, $instance);
+        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, null);
     }
 
-    return new PaymentGatewayRemoverDescriptor($removerAttribute, new PluginRemover($removerAttribute->name, static fn() => $instance()));
+    return new PaymentGatewayRemoverDescriptor($removerAttribute, new PluginRemover($removerAttribute->name, static fn(App $app) => $instance($app)));
 }

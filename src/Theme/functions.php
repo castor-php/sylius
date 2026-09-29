@@ -7,6 +7,7 @@ namespace Castor\Sylius\Theme;
 use Castor\Attribute\AsListener;
 use Castor\Event\AfterBootEvent;
 use Castor\Exception\FunctionConfigurationException;
+use Castor\Sylius\App;
 use Castor\Sylius\Attribute\AsThemeInstaller;
 use Castor\Sylius\Attribute\AsThemeRemover;
 use Castor\Sylius\Plugin\Installer\PluginInstaller;
@@ -88,10 +89,10 @@ function resolve_theme_installer(\ReflectionFunction|\ReflectionClass $reflectio
     }
 
     if (!\is_callable($instance)) {
-        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, $instance);
+        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, null);
     }
 
-    return new ThemeInstallerDescriptor($installerAttribute, new PluginInstaller($installerAttribute->name, static fn() => $instance()));
+    return new ThemeInstallerDescriptor($installerAttribute, new PluginInstaller($installerAttribute->name, static fn(App $app) => $instance($app)));
 }
 
 function resolve_theme_remover(\ReflectionFunction|\ReflectionClass $reflection): ?ThemeRemoverDescriptor
@@ -119,8 +120,8 @@ function resolve_theme_remover(\ReflectionFunction|\ReflectionClass $reflection)
     }
 
     if (!\is_callable($instance)) {
-        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, $instance);
+        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, null);
     }
 
-    return new ThemeRemoverDescriptor($removerAttribute, new PluginRemover($removerAttribute->name, static fn() => $instance()));
+    return new ThemeRemoverDescriptor($removerAttribute, new PluginRemover($removerAttribute->name, static fn(App $app) => $instance($app)));
 }
