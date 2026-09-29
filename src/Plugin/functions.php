@@ -8,6 +8,7 @@ use Castor\Attribute\AsListener;
 use Castor\Docker\Event\RegisterServiceInstallerEvent;
 use Castor\Event\AfterBootEvent;
 use Castor\Exception\FunctionConfigurationException;
+use Castor\Sylius\App;
 use Castor\Sylius\Attribute\AsPluginInstaller;
 use Castor\Sylius\Attribute\AsPluginRemover;
 use Castor\Sylius\Installer\SyliusInstaller;
@@ -125,10 +126,10 @@ function resolve_plugin_installer(\ReflectionFunction|\ReflectionClass $reflecti
     }
 
     if (!\is_callable($instance)) {
-        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, $instance);
+        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, null);
     }
 
-    return new PluginInstallerDescriptor($installerAttribute, new PluginInstaller($installerAttribute->name, static fn() => $instance()));
+    return new PluginInstallerDescriptor($installerAttribute, new PluginInstaller($installerAttribute->name, static fn(App $app) => $instance($app)));
 }
 
 function resolve_plugin_remover(\ReflectionFunction|\ReflectionClass $reflection): ?PluginRemoverDescriptor
@@ -156,8 +157,8 @@ function resolve_plugin_remover(\ReflectionFunction|\ReflectionClass $reflection
     }
 
     if (!\is_callable($instance)) {
-        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, $instance);
+        throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, null);
     }
 
-    return new PluginRemoverDescriptor($removerAttribute, new PluginRemover($removerAttribute->name, static fn() => $instance()));
+    return new PluginRemoverDescriptor($removerAttribute, new PluginRemover($removerAttribute->name, static fn(App $app) => $instance($app)));
 }

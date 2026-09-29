@@ -21,6 +21,11 @@ your stack into a Sylius app, and gives you the tasks to drive it.
         * [Available options](#available-options)
         * [Default menu items](#default-menu-items)
     * [💼 Enable B2B features](#-enable-b2b-features)
+        * [Examples](#examples)
+        * [Available features](#available-features)
+        * [Hide prices for anonymous users](#hide-prices-for-anonymous-users)
+        * [Hide checkout for anonymous users](#hide-checkout-for-anonymous-users)
+        * [Admin validation for new users](#admin-validation-for-new-users)
 * [E-commerce import](#e-commerce-import)
     * [Prerequisites](#prerequisites)
     * [AI Generated Catalog](#ai-generated-catalog)
@@ -28,7 +33,15 @@ your stack into a Sylius app, and gives you the tasks to drive it.
         * [Generate the Sylius fixtures files](#generate-the-sylius-fixtures-files)
         * [Load the fixture suite](#load-the-fixture-suite)
     * [Using data from an existing website](#using-data-from-an-existing-website)
-    * [License](#license)
+* [🧩 Extending the plugin](#-extending-the-plugin)
+    * [Available attributes](#available-attributes)
+    * [Declaring a component](#declaring-a-component)
+        * [As a function](#as-a-function)
+        * [As a class](#as-a-class)
+    * [The App instance](#the-app-instance)
+    * [Helpers](#helpers)
+    * [Good to know](#good-to-know)
+* [License](#license)
 
 <!-- TOC -->
 
@@ -87,6 +100,9 @@ castor sylius:add cms invoicing refund
 | product_bundle | Add the Sylius Product Bundle plugin |
 | refund         | Add the Sylius Refund plugin         |
 | wishlist       | Add the Sylius Wishlist plugin       |
+
+> **Note:** You can [register your own plugins](#-extending-the-plugin) with the `AsPluginInstaller` and
+> `AsPluginRemover` attributes.
 
 #### ❌ Remove plugins
 
@@ -155,6 +171,9 @@ castor sylius:payment-gateways:setup --only stripe
 | paypal  | Setup Sylius Paypal payment gateway |
 | stripe  | Setup Sylius Stripe payment gateway |
 
+> **Note:** You can [register your own gateways](#-extending-the-plugin) with the `AsPaymentGatewayInstaller` and
+> `AsPaymentGatewayRemover` attributes.
+
 ### 🎨 Setup a theme
 
 Install a storefront theme in your Sylius application. Only one theme can be active:
@@ -174,6 +193,9 @@ castor sylius:theme:setup canvas
 |---------|---------------------------------------------------|
 | canvas  | Install the Canvas storefront theme               |
 | default | No theme applied; rebuilds the application assets |
+
+> **Note:** You can [register your own themes](#-extending-the-plugin) with the `AsThemeInstaller` and `AsThemeRemover`
+> attributes.
 
 #### Canvas theme
 
@@ -360,16 +382,12 @@ In the Admin panel, this feature:
 - enables the user and sends the registration email when a customer is **accepted**;
 - leaves the user disabled when a customer is **rejected**.
 
-The package autoloads via Composer. Do **not** `import('composer://castor-php/sylius')` — that would load the package's
-local `castor.php` and conflict with your own context. Register `SyliusService` as shown above to expose all tasks (
-`sylius:*`, `app:*`, `sylius:import:*`).
-
 ## E-commerce import
 
 Import products, collections, images and prices from an **AI-generated catalog**, or load YAML produced by an external
 fetch step into Sylius fixtures.
 
-#### Prerequisites
+### Prerequisites
 
 1. Make sure you have already set up your Sylius application using the `castor docker:service:install sylius` command.
 
@@ -386,9 +404,9 @@ You can also create a .castor/.env.local file for your sensitive values or local
 | `AI_BASE_URL`    | `http://127.0.0.1:11434` | Ollama URL (ignored for OpenRouter)     |
 | `AI_API_KEY`     | —                        | Required when `AI_PROVIDER=openrouter`  |
 
-#### AI Generated Catalog
+### AI Generated Catalog
 
-##### Generate a catalog from a description
+#### Generate a catalog from a description
 
 Generate a complete product catalog from a natural-language description using AI. The generated catalog is saved as YAML
 and can then be used to generate Sylius fixtures.
@@ -402,19 +420,19 @@ castor sylius:import:ai:build \
 This will generate a catalog for Organic Kids, including products and collections, based on the provided description.
 Import data is stored per project slug under `.castor/import/var/{project-slug}/`.
 
-##### Generate the Sylius fixtures files
+#### Generate the Sylius fixtures files
 
 ```bash
 castor sylius:import:fixtures:generate ai --project="Organic Kids" --limit=100
 ```
 
-##### Load the fixture suite
+#### Load the fixture suite
 
 ```bash
 castor sylius:import:fixtures:load --project="Organic Kids"
 ```
 
-#### Using data from an existing website
+### Using data from an existing website
 
 It requires a YAML import under `.castor/import/var/{project-slug}/` (products + collections). If you use the private
 `castor-php/sylius-import-fetch` plugin, run `sylius:import:existing:fetch` first; otherwise prepare the YAML yourself.
@@ -423,6 +441,211 @@ It requires a YAML import under `.castor/import/var/{project-slug}/` (products +
 castor sylius:import:fixtures:generate existing --project=example --limit=100
 castor sylius:import:fixtures:load --project=example
 ```
+
+## 🧩 Extending the plugin
+
+The lists above are not closed: you can add your own plugins, themes and payment gateways to the commands, from your
+own `castor.php` (or from any file it `import()`s), using the attributes shipped in `Castor\Sylius\Attribute`.
+
+Once registered, your component is offered in the interactive prompt of its command **and** is callable by name on the
+command line, exactly like a built-in one.
+
+### Available attributes
+
+All six attributes live in the `Castor\Sylius\Attribute` namespace, take a single required `name` argument, and can be
+put on a function or on a class.
+
+| Attribute                                  | Command                                                | Called when                              |
+|--------------------------------------------|--------------------------------------------------------|------------------------------------------|
+| `#[AsPluginInstaller(name: '…')]`           | `castor sylius:add <name>`                             | `sylius:add` picks the plugin            |
+| `#[AsPluginRemover(name: '…')]`             | `castor sylius:remove <name>`                          | `sylius:remove` picks the plugin         |
+| `#[AsPaymentGatewayInstaller(name: '…')]`   | `castor sylius:payment-gateways:setup <name>`         | the gateway is selected                  |
+| `#[AsPaymentGatewayRemover(name: '…')]`     | `castor sylius:payment-gateways:setup --only <name>`  | `--only` drops the unselected gateways  |
+| `#[AsThemeInstaller(name: '…')]`            | `castor sylius:theme:setup <name>`                     | the theme is selected                    |
+| `#[AsThemeRemover(name: '…')]`              | `castor sylius:theme:setup <another-theme>`            | another theme gets selected              |
+
+`name` is the identifier you type on the command line, so keep it shell friendly: lowercase letters and underscores.
+
+### Declaring a component
+
+#### As a function
+
+The most direct option, and a good fit for a component living in your `castor.php`:
+
+```php
+<?php
+
+use Castor\Sylius\App;
+use Castor\Sylius\Attribute\AsPluginInstaller;
+use Castor\Sylius\Attribute\AsPluginRemover;
+use Castor\Sylius\Util\Assets;
+use Castor\Sylius\Util\Composer;
+use Castor\Sylius\Util\Database;
+use Castor\Sylius\Util\Docker;
+use Castor\Sylius\Util\Symfony;
+
+use function Castor\io;
+
+#[AsPluginInstaller(name: 'acme_loyalty')]
+function install_acme_loyalty(App $app): void
+{
+    io()->title('Adding the Acme Loyalty plugin');
+
+    Composer::allowContribRecipes($app);
+    Docker::run($app, 'composer require acme/sylius-loyalty-plugin');
+    Docker::run($app, 'yarn install');
+    Database::migrate($app);
+    Assets::build($app);
+    Symfony::cacheClear($app);
+}
+
+#[AsPluginRemover(name: 'acme_loyalty')]
+function remove_acme_loyalty(App $app): void
+{
+    io()->title('Removing the Acme Loyalty plugin');
+
+    Composer::allowContribRecipes($app);
+    Database::rollbackPluginMigrations($app, 'Acme\SyliusLoyaltyPlugin\Migrations');
+    Docker::run($app, 'composer remove acme/sylius-loyalty-plugin');
+    Assets::build($app);
+    Symfony::cacheClear($app);
+}
+```
+
+It is now part of the plugin commands:
+
+```bash
+castor sylius:add acme_loyalty
+castor sylius:remove acme_loyalty
+```
+
+#### As a class
+
+Handy when the component needs a bit of logic, or when you would rather not pollute the global function namespace. The
+class is instantiated once, without arguments, and called on install/remove:
+
+```php
+<?php
+
+use Castor\Sylius\App;
+use Castor\Sylius\Attribute\AsThemeInstaller;
+use Castor\Sylius\Attribute\AsThemeRemover;
+use Castor\Sylius\Util\Assets;
+use Castor\Sylius\Util\Javascript;
+use Castor\Sylius\Util\Symfony;
+
+#[AsThemeInstaller(name: 'acme')]
+final class AcmeThemeInstaller
+{
+    public function __invoke(App $app): void
+    {
+        Symfony::addBundle($app, 'AcmeShopBundle', ['all' => true]);
+        Javascript::addImport($app, 'assets/shop/entrypoint.js', './styles/acme.scss');
+        Assets::install($app);
+        Assets::build($app);
+        Symfony::cacheClear($app);
+    }
+}
+
+#[AsThemeRemover(name: 'acme')]
+final class AcmeThemeRemover
+{
+    public function __invoke(App $app): void
+    {
+        Javascript::removeImport($app, 'assets/shop/entrypoint.js', './styles/acme.scss');
+        Assets::build($app);
+        Symfony::cacheClear($app);
+    }
+}
+```
+
+Themes and payment gateways work exactly the same way; the attribute is what changes:
+
+```php
+#[AsPaymentGatewayInstaller(name: 'adyen')]
+function install_adyen(App $app): void
+{
+    Composer::allowContribRecipes($app);
+    Docker::run($app, 'composer require adyen/sylius-adyen-plugin');
+    Symfony::cacheClear($app);
+}
+
+#[AsPaymentGatewayRemover(name: 'adyen')]
+function remove_adyen(App $app): void
+{
+    Composer::allowContribRecipes($app);
+    Database::rollbackPluginMigrations($app, 'Adyen\SyliusAdyenPlugin\Migrations');
+    Docker::run($app, 'composer remove adyen/sylius-adyen-plugin');
+    Assets::build($app);
+    Symfony::cacheClear($app);
+}
+```
+
+### The App instance
+
+Both forms receive the targeted Sylius application as a `Castor\Sylius\App` instance:
+
+| Method        | Returns                                            |
+|---------------|----------------------------------------------------|
+| `name()`      | The Castor service name, e.g. `app`                |
+| `directory()` | The absolute path to the application directory     |
+| `domain()`    | The application domain, `null` when not configured |
+
+> **Note:** The `sylius:*` tasks build the `App` with the service name and the application directory only, so
+> `domain()` currently returns `null`.
+
+### Helpers
+
+The installers built into the plugin rely on a small toolbox, which you can use as well — all helpers take the `App`
+as their first argument:
+
+| Helper                                                            | What it does                                            |
+|-------------------------------------------------------------------|---------------------------------------------------------|
+| `Docker::run($app, $command)`                                     | Runs a command in the application container              |
+| `Composer::allowContribRecipes($app)`                             | Allows contrib recipes before installing a package       |
+| `Composer::removeDevDependency($app, $package)`                   | Removes a `require-dev` dependency                       |
+| `Database::migrate($app)`                                         | Runs the Doctrine migrations                             |
+| `Database::diff($app, $namespace)`                                | Generates a migration diff                               |
+| `Database::rollbackPluginMigrations($app, $namespace)`            | Rolls back the migrations of a plugin namespace          |
+| `Assets::install($app)` / `Assets::build($app)`                   | Installs the JS dependencies / builds the front assets   |
+| `Symfony::addBundle($app, $bundle, $envs)`                        | Registers a bundle in `config/bundles.php`               |
+| `Symfony::addJsController($app, $package, $controller, $config)` | Registers a JS controller                                |
+| `Symfony::removeJsController($app, $package, $controller)`        | Unregisters a JS controller                              |
+| `Symfony::cacheClear($app)`                                       | Clears (and warms up) the Symfony cache                  |
+| `Javascript::addImport($app, $file, $resource)`                   | Adds an `import` to a JS entrypoint                      |
+| `Javascript::removeImport($app, $file, $resource)`                | Removes it                                               |
+| `Yaml::import($app, $file, $resource)`                            | Adds an `imports:` entry to a YAML file, if missing      |
+| `Yaml::addImport($app, $file, $resource)`                         | Same as `Yaml::import()`                                 |
+| `Yaml::addImportWithOptions($app, $file, $resource, $ignore)`     | Same, with `ignore_errors: not_found` on the import      |
+| `Yaml::appendToSection($app, $file, $section, $block)`            | Appends a block to a YAML section                        |
+| `Yaml::uncommentBlock($app, $file, $block)`                       | Uncomments a block in a YAML file                        |
+| `Filesystem::createFile($app, $file, $body)`                      | Writes a file in the application                         |
+| `Filesystem::hasFile($app, $file)`                                | Tells whether a file exists                              |
+| `Filesystem::latestFile($app, $directory)`                        | Returns the most recent file of a directory              |
+| `Fixtures::load($app, ...$args)`                                  | Loads a fixture suite                                    |
+| `Fixtures::createSuite($app, $name)`                              | Generates a new fixture suite                            |
+| `Fixtures::createDefaultChannel($app, $suite, $currency)`         | Creates the default channel                              |
+
+Castor's own helpers (`io()`, `fs()`, `finder()`) are available too, and are the way to go for anything the toolbox
+does not cover.
+
+### Good to know
+
+- **Components are discovered at boot.** Castor scans the functions and classes it has loaded, once, when the
+  application starts. Put them in your `castor.php`, or in a file added with `import(__DIR__ . '/…')`: a class living in
+  a file nobody imports is never seen.
+- **Names are unique per family.** The `name` is the CLI argument and the label of the interactive prompt. Registering
+  it twice, or reusing a built-in name, replaces the previous component.
+- **Pair your installers with removers.** `sylius:remove` and `sylius:payment-gateways:setup --only` simply warn when
+  the remover is missing, but `sylius:theme:setup` runs the remover of every *other* registered theme: a theme without
+  one makes every single theme switch print an `Unknown theme remover` warning.
+- **Only one theme is active at a time.** Installing a theme removes the others first, then installs it. Keep the
+  remover of your theme idempotent, and reverse exactly what the installer did.
+- **Classes must be constructible and callable.** They are instantiated with no arguments and must expose an
+  `__invoke()` method; a constructor with required arguments, or a class without `__invoke()`, fails at boot with a
+  configuration error.
+- **A component can also be a task.** Nothing prevents you from adding `#[AsTask]` next to the attribute, if you want
+  the very same code to be reachable as a standalone command.
 
 ## License
 
