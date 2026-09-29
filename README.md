@@ -101,14 +101,15 @@ castor sylius:remove invoicing cms
 
 #### Available plugins
 
-| Plugin       | Description                           |
-|--------------|---------------------------------------|
-| ai_dev_tools | Remove the Sylius AI dev tools plugin |
-| bugsnag      | Remove the Symfony BugSnag plugin     |
-| cms          | Remove the Sylius CMS plugin          |
-| gdpr         | Remove the Synolia GDPR plugin        |
-| invoicing    | Remove the Sylius Invoicing plugin    |
-| wishlist     | Remove the Sylius Wishlist plugin     |
+| Plugin       | Description                                |
+|--------------|--------------------------------------------|
+| ai_dev_tools | Remove the Sylius AI dev tools plugin      |
+| api          | Remove the Sylius API and its test tooling |
+| bugsnag      | Remove the Symfony BugSnag plugin          |
+| cms          | Remove the Sylius CMS plugin               |
+| gdpr         | Remove the Synolia GDPR plugin             |
+| invoicing    | Remove the Sylius Invoicing plugin         |
+| wishlist     | Remove the Sylius Wishlist plugin          |
 
 ### 💳 Setup payment gateways
 

@@ -23,6 +23,7 @@ use Castor\Sylius\Plugin\Installer\ProductBundleInstaller;
 use Castor\Sylius\Plugin\Installer\RefundInstaller;
 use Castor\Sylius\Plugin\Installer\WishlistInstaller;
 use Castor\Sylius\Plugin\Remover\AiDevToolsRemover;
+use Castor\Sylius\Plugin\Remover\ApiRemover;
 use Castor\Sylius\Plugin\Remover\BugSnagRemover;
 use Castor\Sylius\Plugin\Remover\CmsRemover;
 use Castor\Sylius\Plugin\Remover\GdprRemover;
@@ -52,6 +53,7 @@ function initialize(AfterBootEvent $afterBootEvent): void
     PluginTasks::addInstaller(new WishlistInstaller());
 
     PluginTasks::addRemover(new AiDevToolsRemover());
+    PluginTasks::addRemover(new ApiRemover());
     PluginTasks::addRemover(new BugSnagRemover());
     PluginTasks::addRemover(new CmsRemover());
     PluginTasks::addRemover(new GdprRemover());

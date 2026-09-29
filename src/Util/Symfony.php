@@ -103,4 +103,43 @@ final readonly class Symfony
             ) . \PHP_EOL,
         );
     }
+
+    public static function removeJsController(
+        App $app,
+        string $package,
+        string $controller,
+        string $file = 'assets/controllers.json',
+    ): void {
+        $realFile = $app->directory() . '/' . $file;
+
+        if (!file_exists($realFile)) {
+            throw new \RuntimeException(\sprintf('File "%s" not found.', $file));
+        }
+
+        $content = fs()->readFile($realFile);
+
+        $data = json_decode($content, true, flags: \JSON_THROW_ON_ERROR);
+
+        $controllers = $data['controllers'] ?? [];
+
+        if (!\is_array($controllers) || !isset($controllers[$package][$controller])) {
+            return;
+        }
+
+        unset($controllers[$package][$controller]);
+
+        if ([] === $controllers[$package]) {
+            unset($controllers[$package]);
+        }
+
+        $data['controllers'] = $controllers;
+
+        fs()->dumpFile(
+            $realFile,
+            json_encode(
+                $data,
+                \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES,
+            ) . \PHP_EOL,
+        );
+    }
 }
