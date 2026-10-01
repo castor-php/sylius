@@ -7,7 +7,6 @@ namespace Castor\Sylius\Theme\Remover;
 use Castor\Sylius\App;
 use Castor\Sylius\Plugin\Installer\PluginInstallerInterface;
 use Castor\Sylius\Plugin\Remover\PluginRemoverInterface;
-use Castor\Sylius\Util\Assets;
 use Castor\Sylius\Util\Javascript;
 
 use function Castor\finder;
@@ -33,7 +32,5 @@ final class CanvasRemover implements PluginRemoverInterface
             fs()->remove($app->directory() . '/' . $file->getRelativePathname());
         }
         Javascript::removeImport($app, 'assets/shop/entrypoint.js', './styles/app.scss');
-
-        Assets::build($app);
     }
 }
