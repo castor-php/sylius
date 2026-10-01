@@ -162,7 +162,55 @@ final class UpsunTasksTest extends TestCase
 
         $this->runCheck();
 
-        static::assertStringContainsString('Unable to determine the Upsun database service', $this->output->fetch());
+        static::assertStringContainsString('Invalid Upsun database configuration (unsupported_service)', $this->output->fetch());
+    }
+
+    public function testReportsWhenDatabaseRelationshipIsMissing(): void
+    {
+        $this->writeUpsunConfig(content: <<<'YAML'
+            applications:
+              app:
+                type: php:8.4
+                relationships: {}
+            YAML);
+        $this->writeDoctrineConfig("driver: 'pdo_mysql'");
+
+        $this->runCheck();
+
+        $output = $this->normalizedOutput();
+        static::assertStringContainsString('Invalid Upsun database configuration (missing_relationship)', $output);
+        static::assertStringContainsString('has no database relationship', $output);
+    }
+
+    public function testReportsWhenDatabaseRelationshipReferencesMissingService(): void
+    {
+        $this->writeUpsunConfig(content: <<<'YAML'
+            applications:
+              app:
+                type: php:8.4
+                relationships:
+                    database: "missing:mysql"
+            YAML);
+        $this->writeDoctrineConfig("driver: 'pdo_mysql'");
+
+        $this->runCheck();
+
+        $output = $this->normalizedOutput();
+        static::assertStringContainsString('Invalid Upsun database configuration (missing_service)', $output);
+        static::assertStringContainsString('service "missing", which is not defined', $output);
+    }
+
+    public function testReportsWhenDatabaseEndpointDoesNotMatchServiceType(): void
+    {
+        $this->writeUpsunConfig(databaseType: 'mysql:11.8', relationship: 'db:postgresql');
+        $this->writeDoctrineConfig("driver: 'pdo_pgsql'");
+
+        $this->runCheck();
+
+        $output = $this->normalizedOutput();
+        static::assertStringContainsString('Invalid Upsun database configuration (inconsistent)', $output);
+        static::assertStringContainsString('endpoint "postgresql" is incompatible with service "db" of type "mysql:11.8"', $output);
+        static::assertStringNotContainsString('database engines are inconsistent', $output);
     }
 
     public function testUsesEnvironmentSpecificDoctrineDriver(): void
@@ -237,8 +285,13 @@ final class UpsunTasksTest extends TestCase
         return preg_replace('/\s+/', ' ', $this->output->fetch()) ?? '';
     }
 
-    private function writeUpsunConfig(?string $content = null, string $databaseType = 'mysql:11.8'): void
-    {
+    private function writeUpsunConfig(
+        ?string $content = null,
+        string $databaseType = 'mysql:11.8',
+        ?string $relationship = null,
+    ): void {
+        $relationship ??= 'db:' . strtok($databaseType, ':');
+
         $content ??= <<<'YAML'
             applications:
               sylius:
@@ -247,12 +300,10 @@ final class UpsunTasksTest extends TestCase
                     env:
                         APP_ENV: prod
                 relationships:
-                    database: "db:mysql"
+                    database: "db:MYSQL_ENDPOINT"
             YAML;
 
-        if ('mysql:11.8' !== $databaseType) {
-            $content = str_replace('database: "db:mysql"', 'database: "db:' . strtok($databaseType, ':') . '"', $content);
-        }
+        $content = str_replace('db:MYSQL_ENDPOINT', $relationship, $content);
 
         $content .= "\nservices:\n    db:\n        type: {$databaseType}\n";
         $this->write('.upsun/config.yaml', $content);
