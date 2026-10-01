@@ -17,6 +17,7 @@ your stack into a Sylius app, and gives you the tasks to drive it.
     * [🎨 Setup a theme](#-setup-a-theme)
         * [Available themes](#available-themes)
         * [Canvas theme](#canvas-theme)
+        * [Volt theme](#volt-theme)
     * [☰ Remove menu items from the Admin panel](#-remove-menu-items-from-the-admin-panel)
         * [Available options](#available-options)
         * [Default menu items](#default-menu-items)
@@ -194,6 +195,7 @@ castor sylius:theme:setup canvas
 | Theme   | Description                                       |
 |---------|---------------------------------------------------|
 | canvas  | Install the Canvas storefront theme               |
+| volt    | Install the bold, electric Volt storefront theme   |
 | default | No theme applied; rebuilds the application assets |
 
 > **Note:** You can [register your own themes](#-extending-the-plugin) with the `AsThemeInstaller` and `AsThemeRemover`
@@ -220,6 +222,40 @@ The theme restyles the shop through SCSS overrides and Sylius Twig hooks:
   listing of associated products (or latest products when there are none).
 - **Login page** — a split-screen layout with a full-height image beside the
   login/register panel.
+
+Install it with `castor sylius:theme:setup canvas`.
+
+#### Volt theme
+
+The Volt theme takes the opposite route: a high-energy, sport-tech storefront
+with electric violet, soft-lavender accents, rounded components and bold Jost
+typography. Its custom homepage banner uses layered CSS artwork, so it needs no
+additional image assets.
+
+- **Palette** — plum ink (`#302B43`), electric violet (`#6554B8`) and soft
+  lavender (`#E9E5F4`) over a subtle, near-white background.
+- **Components** — pill-shaped buttons, soft rounded cards, pale high-contrast
+  breadcrumbs, a custom Volt logo and a responsive category menu in the header,
+  a dark footer with white links, and no default header top bar.
+- **Homepage** — an oversized, responsive graphic hero with a direct link to
+  the latest products; new collection blocks are hidden.
+
+Here are three snapshots of the Volt storefront:
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <a href="docs/images/volt-homepage.png"><img src="docs/images/volt-homepage.png" alt="Volt storefront homepage" width="100%"></a><br>
+      <strong>Homepage</strong>
+    </td>
+    <td align="center" width="50%">
+      <a href="docs/images/volt-comet-pulse-product.png"><img src="docs/images/volt-comet-pulse-product.png" alt="Comet Pulse T-Shirt product page in Volt" width="100%"></a><br>
+      <strong>Comet Pulse T-Shirt</strong>
+    </td>
+  </tr>
+</table>
+
+Install it with `castor sylius:theme:setup volt`.
 
 ### ☰ Remove menu items from the Admin panel
 
