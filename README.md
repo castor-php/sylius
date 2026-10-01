@@ -27,6 +27,7 @@ your stack into a Sylius app, and gives you the tasks to drive it.
         * [Hide prices for anonymous users](#hide-prices-for-anonymous-users)
         * [Hide checkout for anonymous users](#hide-checkout-for-anonymous-users)
         * [Admin validation for new users](#admin-validation-for-new-users)
+    * [☁️ Check Upsun configuration](#️-check-upsun-configuration)
 * [E-commerce import](#e-commerce-import)
     * [Prerequisites](#prerequisites)
     * [AI Generated Catalog](#ai-generated-catalog)
@@ -440,6 +441,20 @@ In the Admin panel, this feature:
 - generates a Doctrine migration for the new columns and prompts you to run it (you can run it later if you decline);
 - enables the user and sends the standard Sylius registration email when a customer is **accepted**;
 - leaves the user disabled when a customer is **rejected**.
+
+### ☁️ Check Upsun configuration
+
+Sylius Standard already ships an official `.upsun/config.yaml`. This read-only check validates that the file is present and
+defines Upsun applications, then compares the locally linked Castor database, the application's Doctrine DBAL driver,
+and the declared Upsun database service. It checks explicit Doctrine drivers first and supports the standard
+`DATABASE_URL` configuration as a fallback. If an engine cannot be determined, it reports that instead of guessing.
+
+```bash
+castor sylius:upsun:check
+```
+
+The check uses the configured Symfony environment, does not generate or modify Upsun or Doctrine configuration, and does
+not run Upsun or Symfony CLI commands.
 
 ## E-commerce import
 
