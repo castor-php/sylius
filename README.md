@@ -212,7 +212,7 @@ Here are two snapshots of the Canvas storefront:
 <table>
   <tr>
     <td align="center" width="50%">
-      <a href="docs/images/canvas-theme-homepage.png"><img src="docs/images/canvas-theme-homepage.png" alt="Canvas storefront homepage" width="100%"></a><br>
+      <a href="docs/images/canvas-homepage.png"><img src="docs/images/canvas-homepage.png" alt="Canvas storefront homepage" width="100%"></a><br>
       <strong>Homepage</strong>
     </td>
     <td align="center" width="50%">
@@ -233,8 +233,9 @@ The theme restyles the shop through SCSS overrides and Sylius Twig hooks:
   and breadcrumbs stay text-only.
 - **Homepage** — a full-width banner and a "latest products" section; the deals and
   collection blocks are removed.
-- **Product page** — a full-width breadcrumb band, a focused content area and a
-  listing of associated products (or latest products when there are none).
+- **Product page** — a full-width breadcrumb band, the price directly below the
+  product name and before reviews, a full-width add-to-cart button, and a listing
+  of associated products (or latest products when there are none).
 - **Login page** — a split-screen layout with a full-height image beside the
   login/register panel.
 
@@ -251,7 +252,9 @@ additional image assets.
   lavender (`#E9E5F4`) over a subtle, near-white background.
 - **Components** — pill-shaped buttons, soft rounded cards, pale high-contrast
   breadcrumbs, a custom Volt logo and a responsive category menu in the header,
-  a dark footer with white links, and no default header top bar.
+  a dark footer with white links and light-backed payment logos, a full-width
+  add-to-cart button, and no default header top bar.
+- **Product page** — the price sits directly below the product name, before reviews.
 - **Homepage** — an oversized, responsive graphic hero with a direct link to
   the latest products; new collection blocks are hidden.
 
