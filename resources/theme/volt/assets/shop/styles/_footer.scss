@@ -57,6 +57,11 @@ footer {
   }
 }
 
+footer .row.g-2.mb-4 > div > a {
+  border-color: rgba($white, 0.35) !important;
+  background-color: $white;
+}
+
 .volt-footer__brand {
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
