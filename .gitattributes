@@ -6,3 +6,4 @@
 /castor.php export-ignore
 /compose.yaml export-ignore
 /phpunit.xml.dist export-ignore
+/scripts export-ignore

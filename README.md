@@ -195,7 +195,7 @@ castor sylius:theme:setup canvas
 | Theme   | Description                                       |
 |---------|---------------------------------------------------|
 | canvas  | Install the Canvas storefront theme               |
-| volt    | Install the bold, electric Volt storefront theme   |
+| volt    | Install the bold, electric Volt storefront theme  |
 | default | No theme applied; rebuilds the application assets |
 
 > **Note:** You can [register your own themes](#-extending-the-plugin) with the `AsThemeInstaller` and `AsThemeRemover`
@@ -207,7 +207,20 @@ The Canvas theme gives the storefront a clean, editorial look, with warm neutral
 colors, squared corners and a refined pairing of *Jost* (body) and *Cormorant
 Garamond* (headings).
 
-![Product page rendered with the Canvas theme](docs/images/canvas-theme-product-show.png)
+Here are two snapshots of the Canvas storefront:
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <a href="docs/images/canvas-theme-homepage.png"><img src="docs/images/canvas-theme-homepage.png" alt="Canvas storefront homepage" width="100%"></a><br>
+      <strong>Homepage</strong>
+    </td>
+    <td align="center" width="50%">
+      <a href="docs/images/canvas-comet-pulse-product.png"><img src="docs/images/canvas-comet-pulse-product.png" alt="Comet Pulse T-Shirt product page in Canvas" width="100%"></a><br>
+      <strong>Comet Pulse T-Shirt</strong>
+    </td>
+  </tr>
+</table>
 
 The theme restyles the shop through SCSS overrides and Sylius Twig hooks:
 
@@ -216,6 +229,8 @@ The theme restyles the shop through SCSS overrides and Sylius Twig hooks:
 - **Layout** — squared corners everywhere (no border radius), minimal borders and
   generous spacing; the footer is rendered in dark charcoal.
 - **Header** — the default top bar and navbar are replaced by a single taxon navigation.
+- **Branding** — a dedicated Canvas wordmark appears in the header; the footer has no logo,
+  and breadcrumbs stay text-only.
 - **Homepage** — a full-width banner and a "latest products" section; the deals and
   collection blocks are removed.
 - **Product page** — a full-width breadcrumb band, a focused content area and a
@@ -240,7 +255,7 @@ additional image assets.
 - **Homepage** — an oversized, responsive graphic hero with a direct link to
   the latest products; new collection blocks are hidden.
 
-Here are three snapshots of the Volt storefront:
+Here are two snapshots of the Volt storefront:
 
 <table>
   <tr>
@@ -643,32 +658,32 @@ Both forms receive the targeted Sylius application as a `Castor\Sylius\App` inst
 The installers built into the plugin rely on a small toolbox, which you can use as well — all helpers take the `App`
 as their first argument:
 
-| Helper                                                            | What it does                                            |
-|-------------------------------------------------------------------|---------------------------------------------------------|
-| `Docker::run($app, $command)`                                     | Runs a command in the application container              |
-| `Composer::allowContribRecipes($app)`                             | Allows contrib recipes before installing a package       |
-| `Composer::removeDevDependency($app, $package)`                   | Removes a `require-dev` dependency                       |
-| `Database::migrate($app)`                                         | Runs the Doctrine migrations                             |
-| `Database::diff($app, $namespace)`                                | Generates a migration diff                               |
-| `Database::rollbackPluginMigrations($app, $namespace)`            | Rolls back the migrations of a plugin namespace          |
-| `Assets::install($app)` / `Assets::build($app)`                   | Installs the JS dependencies / builds the front assets   |
-| `Symfony::addBundle($app, $bundle, $envs)`                        | Registers a bundle in `config/bundles.php`               |
-| `Symfony::addJsController($app, $package, $controller, $config)` | Registers a JS controller                                |
-| `Symfony::removeJsController($app, $package, $controller)`        | Unregisters a JS controller                              |
-| `Symfony::cacheClear($app)`                                       | Clears (and warms up) the Symfony cache                  |
-| `Javascript::addImport($app, $file, $resource)`                   | Adds an `import` to a JS entrypoint                      |
-| `Javascript::removeImport($app, $file, $resource)`                | Removes it                                               |
-| `Yaml::import($app, $file, $resource)`                            | Adds an `imports:` entry to a YAML file, if missing      |
-| `Yaml::addImport($app, $file, $resource)`                         | Same as `Yaml::import()`                                 |
-| `Yaml::addImportWithOptions($app, $file, $resource, $ignore)`     | Same, with `ignore_errors: not_found` on the import      |
-| `Yaml::appendToSection($app, $file, $section, $block)`            | Appends a block to a YAML section                        |
-| `Yaml::uncommentBlock($app, $file, $block)`                       | Uncomments a block in a YAML file                        |
-| `Filesystem::createFile($app, $file, $body)`                      | Writes a file in the application                         |
-| `Filesystem::hasFile($app, $file)`                                | Tells whether a file exists                              |
-| `Filesystem::latestFile($app, $directory)`                        | Returns the most recent file of a directory              |
-| `Fixtures::load($app, ...$args)`                                  | Loads a fixture suite                                    |
-| `Fixtures::createSuite($app, $name)`                              | Generates a new fixture suite                            |
-| `Fixtures::createDefaultChannel($app, $suite, $currency)`         | Creates the default channel                              |
+| Helper                                                           | What it does                                           |
+|------------------------------------------------------------------|--------------------------------------------------------|
+| `Docker::run($app, $command)`                                    | Runs a command in the application container            |
+| `Composer::allowContribRecipes($app)`                            | Allows contrib recipes before installing a package     |
+| `Composer::removeDevDependency($app, $package)`                  | Removes a `require-dev` dependency                     |
+| `Database::migrate($app)`                                        | Runs the Doctrine migrations                           |
+| `Database::diff($app, $namespace)`                               | Generates a migration diff                             |
+| `Database::rollbackPluginMigrations($app, $namespace)`           | Rolls back the migrations of a plugin namespace        |
+| `Assets::install($app)` / `Assets::build($app)`                  | Installs the JS dependencies / builds the front assets |
+| `Symfony::addBundle($app, $bundle, $envs)`                       | Registers a bundle in `config/bundles.php`             |
+| `Symfony::addJsController($app, $package, $controller, $config)` | Registers a JS controller                              |
+| `Symfony::removeJsController($app, $package, $controller)`       | Unregisters a JS controller                            |
+| `Symfony::cacheClear($app)`                                      | Clears (and warms up) the Symfony cache                |
+| `Javascript::addImport($app, $file, $resource)`                  | Adds an `import` to a JS entrypoint                    |
+| `Javascript::removeImport($app, $file, $resource)`               | Removes it                                             |
+| `Yaml::import($app, $file, $resource)`                           | Adds an `imports:` entry to a YAML file, if missing    |
+| `Yaml::addImport($app, $file, $resource)`                        | Same as `Yaml::import()`                               |
+| `Yaml::addImportWithOptions($app, $file, $resource, $ignore)`    | Same, with `ignore_errors: not_found` on the import    |
+| `Yaml::appendToSection($app, $file, $section, $block)`           | Appends a block to a YAML section                      |
+| `Yaml::uncommentBlock($app, $file, $block)`                      | Uncomments a block in a YAML file                      |
+| `Filesystem::createFile($app, $file, $body)`                     | Writes a file in the application                       |
+| `Filesystem::hasFile($app, $file)`                               | Tells whether a file exists                            |
+| `Filesystem::latestFile($app, $directory)`                       | Returns the most recent file of a directory            |
+| `Fixtures::load($app, ...$args)`                                 | Loads a fixture suite                                  |
+| `Fixtures::createSuite($app, $name)`                             | Generates a new fixture suite                          |
+| `Fixtures::createDefaultChannel($app, $suite, $currency)`        | Creates the default channel                            |
 
 Castor's own helpers (`io()`, `fs()`, `finder()`) are available too, and are the way to go for anything the toolbox
 does not cover.

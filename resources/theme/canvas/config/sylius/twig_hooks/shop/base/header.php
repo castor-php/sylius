@@ -17,6 +17,9 @@ return App::config([
             ],
 
             'sylius_shop.base.header.content' => [
+                'logo' => [
+                    'template' => 'shop/shared/layout/header/logo.html.twig',
+                ],
                 'taxon_menu' => [
                     'component' => 'sylius_shop:common:taxon_menu',
                     'props' => [

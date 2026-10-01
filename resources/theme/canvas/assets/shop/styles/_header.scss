@@ -20,6 +20,52 @@ header .navbar-brand {
   font-weight: 500;
 }
 
+.canvas-logo {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.7rem;
+  color: $black;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    color: $black-hover;
+    text-decoration: none;
+  }
+}
+
+.canvas-logo--header {
+  margin-inline-start: -0.75rem;
+}
+
+.canvas-logo__mark {
+  display: block;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: 0 0 auto;
+}
+
+.canvas-logo__mark-bg {
+  fill: $black;
+}
+
+.canvas-logo__mark-letter {
+  fill: none;
+  stroke: $white;
+  stroke-linecap: square;
+  stroke-width: 3;
+}
+
+.canvas-logo__name {
+  color: currentColor;
+  font-family: $font-family-base;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1;
+}
+
 header .nav-link {
   color: $text;
 
