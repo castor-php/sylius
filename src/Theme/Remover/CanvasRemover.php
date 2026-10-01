@@ -20,6 +20,11 @@ final class CanvasRemover implements PluginRemoverInterface
         return 'canvas';
     }
 
+    public function description(): ?string
+    {
+        return null;
+    }
+
     public function __invoke(App $app): void
     {
         $resourcesDir = \dirname(__DIR__, 3) . '/resources/theme/canvas';

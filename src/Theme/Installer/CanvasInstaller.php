@@ -22,6 +22,11 @@ final class CanvasInstaller implements PluginInstallerInterface
         return 'canvas';
     }
 
+    public function description(): ?string
+    {
+        return null;
+    }
+
     public function __invoke(App $app): void
     {
         Yaml::import($app, 'config/packages/_sylius.yaml', '../sylius/twig_hooks/**/**.php');

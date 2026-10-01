@@ -36,13 +36,10 @@ final class PluginTasks
                     self::$installers,
                 );
 
-                $keys = array_keys($installers);
-                sort($keys);
-
                 if ([] === $plugins) {
                     $plugins = io()->choice(
                         'Which plugins would you like to install?',
-                        $keys,
+                        self::choices(self::$installers),
                         multiSelect: true,
                     );
                 }
@@ -67,12 +64,9 @@ final class PluginTasks
                 );
 
                 if ([] === $plugins) {
-                    $keys = array_keys($removers);
-                    sort($keys);
-
                     $plugins = io()->choice(
                         'Which plugins would you like to remove?',
-                        $keys,
+                        self::choices(self::$removers),
                         multiSelect: true,
                     );
                 }
@@ -87,6 +81,28 @@ final class PluginTasks
                 }
             },
         ];
+    }
+
+    /**
+     * @param array<string, PluginInstallerInterface|PluginRemoverInterface> $components
+     *
+     * @return array<string, string>
+     */
+    public static function choices(array $components): array
+    {
+        $choices = [];
+
+        foreach ($components as $name => $component) {
+            $description = $component->description();
+
+            $choices[$name] = null === $description || '' === $description
+                ? $name
+                : \sprintf('%s - %s', $name, $description);
+        }
+
+        ksort($choices);
+
+        return $choices;
     }
 
     public static function addInstaller(PluginInstallerInterface $installer): void

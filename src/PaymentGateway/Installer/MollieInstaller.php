@@ -21,6 +21,11 @@ final readonly class MollieInstaller implements PluginInstallerInterface
         return 'mollie';
     }
 
+    public function description(): ?string
+    {
+        return null;
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Mollie plugin');

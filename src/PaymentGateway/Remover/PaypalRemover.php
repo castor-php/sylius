@@ -19,6 +19,11 @@ final readonly class PaypalRemover implements PluginRemoverInterface
         return 'paypal';
     }
 
+    public function description(): ?string
+    {
+        return null;
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing Paypal plugin');

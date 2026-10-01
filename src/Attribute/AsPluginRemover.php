@@ -9,5 +9,6 @@ class AsPluginRemover
 {
     public function __construct(
         public string $name,
+        public ?string $description = null,
     ) {}
 }

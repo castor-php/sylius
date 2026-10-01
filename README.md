@@ -89,17 +89,19 @@ castor sylius:add cms invoicing refund
 
 #### Available plugins
 
-| Plugin         | Description                          |
-|----------------|--------------------------------------|
-| ai_dev_tools   | Add the Sylius AI dev tools plugin   |
-| bugsnag        | Add the Symfony BugSnag plugin       |
-| cms            | Add the Sylius CMS plugin            |
-| gdpr           | Add the Synolia GDPR plugin          |
-| invoicing      | Add the Sylius Invoicing plugin      |
-| media          | Add the Jolicode Media plugin        |
-| product_bundle | Add the Sylius Product Bundle plugin |
-| refund         | Add the Sylius Refund plugin         |
-| wishlist       | Add the Sylius Wishlist plugin       |
+| Plugin         | Description                                        |
+|----------------|----------------------------------------------------|
+| ai_dev_tools   | Dev-only AI tooling for Sylius                     |
+| bugsnag        | Official BugSnag notifier for Symfony applications |
+| cms            | CMS plugin for Sylius applications                 |
+| gdpr           | Synolia sylius GDPR plugin                         |
+| invoicing      | Invoicing plugin for Sylius                        |
+| media          | Media management bundle for Symfony applications   |
+| product_bundle | Product bundle for Sylius                          |
+| refund         | Basic refunds functionality for Sylius             |
+| wishlist       | Wishlist plugin for Sylius                         |
+
+> **Note:** these descriptions are the ones displayed next to each plugin in the interactive prompt.
 
 > **Note:** You can [register your own plugins](#-extending-the-plugin) with the `AsPluginInstaller` and
 > `AsPluginRemover` attributes.
@@ -118,15 +120,15 @@ castor sylius:remove invoicing cms
 
 #### Available plugins
 
-| Plugin       | Description                                |
-|--------------|--------------------------------------------|
-| ai_dev_tools | Remove the Sylius AI dev tools plugin      |
-| api          | Remove the Sylius API and its test tooling |
-| bugsnag      | Remove the Symfony BugSnag plugin          |
-| cms          | Remove the Sylius CMS plugin               |
-| gdpr         | Remove the Synolia GDPR plugin             |
-| invoicing    | Remove the Sylius Invoicing plugin         |
-| wishlist     | Remove the Sylius Wishlist plugin          |
+| Plugin       | Description                                        |
+|--------------|----------------------------------------------------|
+| ai_dev_tools | Dev-only AI tooling for Sylius                     |
+| api          | Sylius API and its test tooling                    |
+| bugsnag      | Official BugSnag notifier for Symfony applications |
+| cms          | CMS plugin for Sylius applications                 |
+| gdpr         | Synolia sylius GDPR plugin                         |
+| invoicing    | Invoicing plugin for Sylius                        |
+| wishlist     | Wishlist plugin for Sylius                         |
 
 ### 💳 Setup payment gateways
 
@@ -452,19 +454,22 @@ command line, exactly like a built-in one.
 
 ### Available attributes
 
-All six attributes live in the `Castor\Sylius\Attribute` namespace, take a single required `name` argument, and can be
+All six attributes live in the `Castor\Sylius\Attribute` namespace, take a required `name` argument, and can be
 put on a function or on a class.
 
-| Attribute                                  | Command                                                | Called when                              |
-|--------------------------------------------|--------------------------------------------------------|------------------------------------------|
-| `#[AsPluginInstaller(name: '…')]`           | `castor sylius:add <name>`                             | `sylius:add` picks the plugin            |
-| `#[AsPluginRemover(name: '…')]`             | `castor sylius:remove <name>`                          | `sylius:remove` picks the plugin         |
-| `#[AsPaymentGatewayInstaller(name: '…')]`   | `castor sylius:payment-gateways:setup <name>`         | the gateway is selected                  |
-| `#[AsPaymentGatewayRemover(name: '…')]`     | `castor sylius:payment-gateways:setup --only <name>`  | `--only` drops the unselected gateways  |
-| `#[AsThemeInstaller(name: '…')]`            | `castor sylius:theme:setup <name>`                     | the theme is selected                    |
-| `#[AsThemeRemover(name: '…')]`              | `castor sylius:theme:setup <another-theme>`            | another theme gets selected              |
+| Attribute                                           | Command                                              | Called when                            |
+|-----------------------------------------------------|------------------------------------------------------|----------------------------------------|
+| `#[AsPluginInstaller(name: '…', description: '…')]` | `castor sylius:add <name>`                           | `sylius:add` picks the plugin          |
+| `#[AsPluginRemover(name: '…', description: '…')]`   | `castor sylius:remove <name>`                        | `sylius:remove` picks the plugin       |
+| `#[AsPaymentGatewayInstaller(name: '…')]`           | `castor sylius:payment-gateways:setup <name>`        | the gateway is selected                |
+| `#[AsPaymentGatewayRemover(name: '…')]`             | `castor sylius:payment-gateways:setup --only <name>` | `--only` drops the unselected gateways |
+| `#[AsThemeInstaller(name: '…')]`                    | `castor sylius:theme:setup <name>`                   | the theme is selected                  |
+| `#[AsThemeRemover(name: '…')]`                      | `castor sylius:theme:setup <another-theme>`          | another theme gets selected            |
 
 `name` is the identifier you type on the command line, so keep it shell friendly: lowercase letters and underscores.
+
+The two plugin attributes also accept an optional `description`, displayed next to the name in the interactive prompt
+of `sylius:add` and `sylius:remove`. Omit it and the plugin is listed by its name alone.
 
 ### Declaring a component
 
@@ -486,7 +491,7 @@ use Castor\Sylius\Util\Symfony;
 
 use function Castor\io;
 
-#[AsPluginInstaller(name: 'acme_loyalty')]
+#[AsPluginInstaller(name: 'acme_loyalty', description: 'Acme loyalty programme for Sylius')]
 function install_acme_loyalty(App $app): void
 {
     io()->title('Adding the Acme Loyalty plugin');
@@ -499,7 +504,7 @@ function install_acme_loyalty(App $app): void
     Symfony::cacheClear($app);
 }
 
-#[AsPluginRemover(name: 'acme_loyalty')]
+#[AsPluginRemover(name: 'acme_loyalty', description: 'Acme loyalty programme for Sylius')]
 function remove_acme_loyalty(App $app): void
 {
     io()->title('Removing the Acme Loyalty plugin');

@@ -20,6 +20,11 @@ final readonly class BugSnagInstaller implements PluginInstallerInterface
         return 'bugsnag';
     }
 
+    public function description(): string
+    {
+        return 'Official BugSnag notifier for Symfony applications';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding BugSnag Plugin');

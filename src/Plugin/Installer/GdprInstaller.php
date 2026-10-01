@@ -19,6 +19,11 @@ final readonly class GdprInstaller implements PluginInstallerInterface
         return 'gdpr';
     }
 
+    public function description(): string
+    {
+        return 'Synolia sylius GDPR plugin';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding GDPR plugin');

@@ -24,6 +24,11 @@ final readonly class MediaInstaller implements PluginInstallerInterface
         return 'media';
     }
 
+    public function description(): string
+    {
+        return 'Media management bundle for Symfony applications';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Media plugin');

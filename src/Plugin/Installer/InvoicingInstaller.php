@@ -20,6 +20,11 @@ final readonly class InvoicingInstaller implements PluginInstallerInterface
         return 'invoicing';
     }
 
+    public function description(): string
+    {
+        return 'Invoicing plugin for Sylius';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Invoicing Plugin');

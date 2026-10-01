@@ -18,6 +18,11 @@ final readonly class ApiRemover implements PluginRemoverInterface
         return 'api';
     }
 
+    public function description(): string
+    {
+        return 'Sylius API and its test tooling';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing Sylius API');

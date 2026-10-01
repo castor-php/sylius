@@ -20,6 +20,11 @@ final readonly class StripeInstaller implements PluginInstallerInterface
         return 'stripe';
     }
 
+    public function description(): ?string
+    {
+        return null;
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Stripe Plugin');

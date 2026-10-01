@@ -18,6 +18,11 @@ final readonly class AiDevToolsRemover implements PluginRemoverInterface
         return 'ai_dev_tools';
     }
 
+    public function description(): string
+    {
+        return 'Dev-only AI tooling for Sylius';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing AI dev tools plugin');

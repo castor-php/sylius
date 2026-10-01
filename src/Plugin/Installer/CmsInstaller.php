@@ -20,6 +20,11 @@ final readonly class CmsInstaller implements PluginInstallerInterface
         return 'cms';
     }
 
+    public function description(): string
+    {
+        return 'CMS plugin for Sylius applications';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding CMS plugin');
