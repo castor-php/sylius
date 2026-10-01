@@ -21,6 +21,11 @@ final readonly class ProductBundleInstaller implements PluginInstallerInterface
         return 'product_bundle';
     }
 
+    public function description(): string
+    {
+        return 'Product bundle for Sylius';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Product Bundle plugin');

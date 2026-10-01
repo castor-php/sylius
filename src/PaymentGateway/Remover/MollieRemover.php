@@ -20,6 +20,11 @@ final readonly class MollieRemover implements PluginRemoverInterface
         return 'mollie';
     }
 
+    public function description(): ?string
+    {
+        return null;
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing Mollie plugin');

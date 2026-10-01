@@ -18,6 +18,11 @@ final readonly class InvoicingRemover implements PluginRemoverInterface
         return 'invoicing';
     }
 
+    public function description(): string
+    {
+        return 'Invoicing plugin for Sylius';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing Invoicing plugin');

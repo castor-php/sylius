@@ -17,6 +17,11 @@ final readonly class BugSnagRemover implements PluginRemoverInterface
         return 'bugsnag';
     }
 
+    public function description(): string
+    {
+        return 'Official BugSnag notifier for Symfony applications';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing BugSnag plugin');

@@ -21,6 +21,11 @@ final readonly class WishlistInstaller implements PluginInstallerInterface
         return 'wishlist';
     }
 
+    public function description(): string
+    {
+        return 'Wishlist plugin for Sylius';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Wishlist Plugin');

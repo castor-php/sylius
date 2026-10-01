@@ -20,6 +20,11 @@ final readonly class WishlistRemover implements PluginRemoverInterface
         return 'wishlist';
     }
 
+    public function description(): string
+    {
+        return 'Wishlist plugin for Sylius';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing Wishlist plugin');

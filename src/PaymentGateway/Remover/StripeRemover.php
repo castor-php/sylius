@@ -20,6 +20,11 @@ final readonly class StripeRemover implements PluginRemoverInterface
         return 'stripe';
     }
 
+    public function description(): ?string
+    {
+        return null;
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Removing Stripe plugin');

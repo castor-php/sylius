@@ -20,6 +20,11 @@ final readonly class PaypalInstaller implements PluginInstallerInterface
         return 'paypal';
     }
 
+    public function description(): ?string
+    {
+        return null;
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Paypal plugin');

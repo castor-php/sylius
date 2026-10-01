@@ -69,7 +69,7 @@ function initialize(AfterBootEvent $afterBootEvent): void
         $descriptor = resolve_plugin_installer($reflectionFunction);
 
         if (null !== $descriptor) {
-            $installer = new PluginInstaller($descriptor->attribute->name, $descriptor->installer->getClosure());
+            $installer = new PluginInstaller($descriptor->attribute->name, $descriptor->installer->getClosure(), $descriptor->attribute->description);
             PluginTasks::addInstaller($installer);
         }
 
@@ -79,7 +79,7 @@ function initialize(AfterBootEvent $afterBootEvent): void
             continue;
         }
 
-        $remover = new PluginRemover($descriptor->attribute->name, $descriptor->remover->getClosure());
+        $remover = new PluginRemover($descriptor->attribute->name, $descriptor->remover->getClosure(), $descriptor->attribute->description);
         PluginTasks::addRemover($remover);
     }
 
@@ -129,7 +129,7 @@ function resolve_plugin_installer(\ReflectionFunction|\ReflectionClass $reflecti
         throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, null);
     }
 
-    return new PluginInstallerDescriptor($installerAttribute, new PluginInstaller($installerAttribute->name, static fn(App $app) => $instance($app)));
+    return new PluginInstallerDescriptor($installerAttribute, new PluginInstaller($installerAttribute->name, static fn(App $app) => $instance($app), $installerAttribute->description));
 }
 
 function resolve_plugin_remover(\ReflectionFunction|\ReflectionClass $reflection): ?PluginRemoverDescriptor
@@ -160,5 +160,5 @@ function resolve_plugin_remover(\ReflectionFunction|\ReflectionClass $reflection
         throw new FunctionConfigurationException(\sprintf('"%s" is not callable.', $reflection->name), $reflection, null);
     }
 
-    return new PluginRemoverDescriptor($removerAttribute, new PluginRemover($removerAttribute->name, static fn(App $app) => $instance($app)));
+    return new PluginRemoverDescriptor($removerAttribute, new PluginRemover($removerAttribute->name, static fn(App $app) => $instance($app), $removerAttribute->description));
 }

@@ -10,5 +10,7 @@ interface PluginRemoverInterface
 {
     public function name(): string;
 
+    public function description(): ?string;
+
     public function __invoke(App $app): void;
 }

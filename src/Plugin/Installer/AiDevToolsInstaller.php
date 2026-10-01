@@ -17,6 +17,11 @@ final readonly class AiDevToolsInstaller implements PluginInstallerInterface
         return 'ai_dev_tools';
     }
 
+    public function description(): string
+    {
+        return 'Dev-only AI tooling for Sylius';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding AI dev tools plugin');

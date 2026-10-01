@@ -61,6 +61,20 @@ final class CustomComponentAttributesTest extends TestCase
         static::assertSame($this->app, SpiedComponent::$app);
     }
 
+    public function testItForwardsTheInstallerDescriptionFromTheAttribute(): void
+    {
+        $descriptor = resolve_plugin_installer(new \ReflectionClass(SpiedInstaller::class));
+
+        static::assertSame('Custom installer for Sylius', $descriptor?->installer->description());
+    }
+
+    public function testItForwardsANullDescriptionWhenTheAttributeOmitsIt(): void
+    {
+        $descriptor = resolve_plugin_installer(new \ReflectionClass(UndescribedInstaller::class));
+
+        static::assertNull($descriptor?->installer->description());
+    }
+
     public function testItResolvesAClassRemoverAndForwardsTheApp(): void
     {
         $descriptor = resolve_plugin_remover(new \ReflectionClass(SpiedRemover::class));
@@ -70,6 +84,13 @@ final class CustomComponentAttributesTest extends TestCase
         ($descriptor->remover)($this->app);
 
         static::assertSame($this->app, SpiedComponent::$app);
+    }
+
+    public function testItForwardsTheRemoverDescriptionFromTheAttribute(): void
+    {
+        $descriptor = resolve_plugin_remover(new \ReflectionClass(SpiedRemover::class));
+
+        static::assertSame('Custom remover for Sylius', $descriptor?->remover->description());
     }
 
     public function testItResolvesAThemeInstallerAndForwardsTheApp(): void
@@ -126,7 +147,7 @@ function spied_installer(App $app): void
 
 function unrelated_function(): void {}
 
-#[AsPluginInstaller(name: 'spied_installer_class')]
+#[AsPluginInstaller(name: 'spied_installer_class', description: 'Custom installer for Sylius')]
 final class SpiedInstaller
 {
     public function __invoke(App $app): void
@@ -135,7 +156,16 @@ final class SpiedInstaller
     }
 }
 
-#[AsPluginRemover(name: 'spied_remover_class')]
+#[AsPluginInstaller(name: 'undescribed_installer_class')]
+final class UndescribedInstaller
+{
+    public function __invoke(App $app): void
+    {
+        SpiedComponent::$app = $app;
+    }
+}
+
+#[AsPluginRemover(name: 'spied_remover_class', description: 'Custom remover for Sylius')]
 final class SpiedRemover
 {
     public function __invoke(App $app): void

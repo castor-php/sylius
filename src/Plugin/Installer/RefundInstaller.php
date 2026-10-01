@@ -20,6 +20,11 @@ final readonly class RefundInstaller implements PluginInstallerInterface
         return 'refund';
     }
 
+    public function description(): string
+    {
+        return 'Basic refunds functionality for Sylius';
+    }
+
     public function __invoke(App $app): void
     {
         io()->title('Adding Refund Plugin');
