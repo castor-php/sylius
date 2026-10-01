@@ -37,59 +37,82 @@ final readonly class Upsun
 
     /**
      * @param array<string, mixed> $config
+     *
+     * @return array{status: 'valid'|'missing_relationship'|'invalid_relationship'|'missing_service'|'unsupported_service'|'inconsistent', engine: ?string, message: ?string}
      */
-    public static function databaseEngine(array $config): ?string
+    public static function databaseConfiguration(array $config, string $applicationName): array
     {
+        $applications = $config['applications'] ?? [];
+        $application = \is_array($applications)
+            ? ($applications[$applicationName] ?? (1 === \count($applications) ? reset($applications) : null))
+            : null;
+
+        if (!\is_array($application)) {
+            return self::databaseResult('missing_relationship', null, 'No matching Upsun application was found.');
+        }
+
+        $relationships = $application['relationships'] ?? [];
+        $relationship = \is_array($relationships) ? ($relationships['database'] ?? null) : null;
+
+        if (null === $relationship || '' === $relationship) {
+            return self::databaseResult('missing_relationship', null, 'The Upsun application has no database relationship.');
+        }
+
+        if (!\is_string($relationship) || 1 !== preg_match('/^([A-Za-z0-9_-]+):([A-Za-z0-9_-]+)$/', $relationship, $matches)) {
+            return self::databaseResult('invalid_relationship', null, 'The database relationship must reference a service and endpoint, for example "db:mysql".');
+        }
+
+        [, $serviceName, $endpoint] = $matches;
         $services = $config['services'] ?? [];
 
         if (!\is_array($services)) {
-            return null;
+            return self::databaseResult('missing_service', null, \sprintf('The database relationship references service "%s", but no services are defined.', $serviceName));
         }
 
-        $engines = [];
+        $service = $services[$serviceName] ?? null;
 
-        foreach ($services as $serviceName => $service) {
-            if (!\is_string($serviceName) || !\is_array($service) || !\is_string($service['type'] ?? null)) {
-                continue;
-            }
-
-            $engine = self::engineFromType($service['type']);
-
-            if (null !== $engine) {
-                $engines[$serviceName] = $engine;
-            }
+        if (!\is_array($service)) {
+            return self::databaseResult('missing_service', null, \sprintf('The database relationship references service "%s", which is not defined under "services".', $serviceName));
         }
 
-        if ([] === $engines) {
-            return null;
+        $type = $service['type'] ?? null;
+
+        if (!\is_string($type) || null === ($serviceEngine = self::engineFromType($type))) {
+            return self::databaseResult('unsupported_service', null, \sprintf('Upsun service "%s" does not declare a supported MySQL or PostgreSQL type.', $serviceName));
         }
 
-        $relatedServices = [];
+        $endpointEngine = self::engineFromEndpoint($endpoint);
 
-        foreach ($config['applications'] as $application) {
-            $relationships = \is_array($application) ? ($application['relationships'] ?? []) : [];
-
-            if (!\is_array($relationships)) {
-                continue;
-            }
-
-            foreach ($relationships as $relationship) {
-                if (!\is_string($relationship)) {
-                    continue;
-                }
-
-                $serviceName = explode(':', $relationship, 2)[0];
-
-                if (isset($engines[$serviceName])) {
-                    $relatedServices[$serviceName] = $engines[$serviceName];
-                }
-            }
+        if (null === $endpointEngine) {
+            return self::databaseResult('inconsistent', null, \sprintf('Database endpoint "%s" is not a recognized MySQL or PostgreSQL endpoint.', $endpoint));
         }
 
-        $candidateEngines = [] !== $relatedServices ? $relatedServices : $engines;
-        $distinctEngines = array_unique(array_values($candidateEngines));
+        if ($endpointEngine !== $serviceEngine) {
+            return self::databaseResult(
+                'inconsistent',
+                null,
+                \sprintf('Database relationship endpoint "%s" is incompatible with service "%s" of type "%s".', $endpoint, $serviceName, $type),
+            );
+        }
 
-        return 1 === \count($distinctEngines) ? reset($distinctEngines) : null;
+        return self::databaseResult('valid', $serviceEngine, null);
+    }
+
+    /**
+     * @param 'valid'|'missing_relationship'|'invalid_relationship'|'missing_service'|'unsupported_service'|'inconsistent' $status
+     *
+     * @return array{status: 'valid'|'missing_relationship'|'invalid_relationship'|'missing_service'|'unsupported_service'|'inconsistent', engine: ?string, message: ?string}
+     */
+    private static function databaseResult(
+        string $status,
+        ?string $engine,
+        ?string $message,
+    ): array {
+        return [
+            'status' => $status,
+            'engine' => $engine,
+            'message' => $message,
+        ];
     }
 
     private static function engineFromType(string $type): ?string
@@ -103,5 +126,14 @@ final readonly class Upsun
         }
 
         return null;
+    }
+
+    private static function engineFromEndpoint(string $endpoint): ?string
+    {
+        return match (strtolower($endpoint)) {
+            'mysql', 'mariadb' => 'MySQL',
+            'postgres', 'postgresql' => 'PostgreSQL',
+            default => null,
+        };
     }
 }

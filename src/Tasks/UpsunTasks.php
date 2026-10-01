@@ -83,12 +83,34 @@ final class UpsunTasks
             return;
         }
 
-        $upsunEngine = Upsun::databaseEngine($config);
+        $upsunDatabase = Upsun::databaseConfiguration($config, $app->name());
+
+        if ('valid' !== $upsunDatabase['status']) {
+            io()->section('Database');
+            io()->writeln(self::databaseStatusLine(
+                'Local environment',
+                $localDatabaseEngine,
+                null === $localDatabaseEngine ? '?' : '✓',
+            ));
+            io()->writeln(self::databaseStatusLine(
+                'Symfony application',
+                $applicationEngine,
+                null === $applicationEngine ? '?' : '✓',
+            ));
+            io()->writeln(self::databaseStatusLine('Upsun', null, '✗'));
+            io()->error(\sprintf(
+                'Invalid Upsun database configuration (%s): %s',
+                $upsunDatabase['status'],
+                $upsunDatabase['message'] ?? 'Unable to validate the database relationship.',
+            ));
+
+            return;
+        }
 
         self::reportDatabaseConfiguration(
             $localDatabaseEngine,
             $applicationEngine,
-            $upsunEngine,
+            $upsunDatabase['engine'],
         );
     }
 
