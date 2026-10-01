@@ -370,7 +370,10 @@ castor sylius:b2b:enable customer_validation
 ```
 
 New customers are created **disabled** and start in the `customer_validation` workflow (`new` → `accepted` /
-`rejected`). The automatic registration email is suppressed until a customer is accepted.
+`rejected`). After registration, customers receive an email explaining that their account is awaiting administrator
+approval. The same message is shown on the registration confirmation page and as the registration success notification.
+These messages are available in English and French. The standard Sylius registration email remains suppressed until a
+customer is accepted.
 
 In the Admin panel, this feature:
 
@@ -379,7 +382,7 @@ In the Admin panel, this feature:
 - adds **Accept** / **Reject** actions to the customer grid and customer show page;
 - displays a count of customers waiting for validation in the dashboard pending actions;
 - generates a Doctrine migration for the new columns and prompts you to run it (you can run it later if you decline);
-- enables the user and sends the registration email when a customer is **accepted**;
+- enables the user and sends the standard Sylius registration email when a customer is **accepted**;
 - leaves the user disabled when a customer is **rejected**.
 
 ## E-commerce import

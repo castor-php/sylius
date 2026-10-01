@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Castor\Sylius\B2b;
 
 use Castor\Sylius\App;
+use Symfony\Component\Yaml\Yaml;
 
 use function Castor\finder;
 use function Castor\fs;
@@ -17,12 +18,32 @@ final readonly class B2bResourceCopier
         $resourcesDir = self::resourcesDir($feature);
 
         foreach (finder()->files()->in($sharedResourcesDir) as $file) {
-            fs()->copy($sharedResourcesDir . '/' . $file->getRelativePathname(), $app->directory() . '/' . $file->getRelativePathname());
+            self::copyResource($sharedResourcesDir, $file->getRelativePathname(), $app->directory());
         }
 
         foreach (finder()->files()->in($resourcesDir) as $file) {
-            fs()->copy($resourcesDir . '/' . $file->getRelativePathname(), $app->directory() . '/' . $file->getRelativePathname());
+            self::copyResource($resourcesDir, $file->getRelativePathname(), $app->directory());
         }
+    }
+
+    private static function copyResource(string $sourceDir, string $relativePath, string $destinationDir): void
+    {
+        $source = $sourceDir . '/' . $relativePath;
+        $destination = $destinationDir . '/' . $relativePath;
+
+        if (preg_match('/^translations\/(?:messages|flashes)\.[a-zA-Z_]+\.yaml$/', $relativePath) && fs()->exists($destination)) {
+            $resourceTranslations = Yaml::parseFile($source);
+            $existingTranslations = Yaml::parseFile($destination);
+
+            fs()->dumpFile(
+                $destination,
+                Yaml::dump(array_replace_recursive($resourceTranslations, $existingTranslations), 8, 4),
+            );
+
+            return;
+        }
+
+        fs()->copy($source, $destination);
     }
 
     private static function resourcesDir(string $feature): string

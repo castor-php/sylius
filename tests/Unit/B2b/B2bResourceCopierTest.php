@@ -47,4 +47,47 @@ final class B2bResourceCopierTest extends TestCase
         static::assertFileExists($this->tempDir . '/templates/shop/product/common/price.html.twig');
         static::assertFileExists($this->tempDir . '/templates/shop/product/show/content/info/summary/prices/price.html.twig');
     }
+
+    public function testCopiesCustomerValidationEmailResources(): void
+    {
+        $existingTranslations = $this->tempDir . '/translations/messages.en.yaml';
+        $this->filesystem->dumpFile($existingTranslations, "existing:\n    key: Preserve this translation\n");
+        $existingFlashTranslations = $this->tempDir . '/translations/flashes.en.yaml';
+        $this->filesystem->dumpFile($existingFlashTranslations, "existing:\n    key: Preserve this flash translation\n");
+
+        B2bResourceCopier::copy(new App('test-app', $this->tempDir), 'customer_validation');
+
+        static::assertFileExists($this->tempDir . '/config/packages/sylius_mailer.yaml');
+        static::assertFileExists($this->tempDir . '/src/EventListener/SendPendingRegistrationEmailListener.php');
+        static::assertFileExists($this->tempDir . '/templates/email/customer_validation_registration.html.twig');
+        static::assertFileExists($this->tempDir . '/config/sylius/twig_hooks/shop/account/register_thank_you.php');
+        static::assertFileExists($this->tempDir . '/templates/shop/account/register/thank_you/title.html.twig');
+        static::assertFileExists($this->tempDir . '/templates/shop/account/register/thank_you/subtitle.html.twig');
+        static::assertFileExists($this->tempDir . '/translations/messages.fr.yaml');
+        static::assertFileExists($this->tempDir . '/translations/flashes.fr.yaml');
+        static::assertStringContainsString(
+            '{% block subject %}',
+            $this->filesystem->readFile($this->tempDir . '/templates/email/customer_validation_registration.html.twig'),
+        );
+        static::assertStringContainsString(
+            '{% block body %}',
+            $this->filesystem->readFile($this->tempDir . '/templates/email/customer_validation_registration.html.twig'),
+        );
+
+        $translations = \Symfony\Component\Yaml\Yaml::parseFile($existingTranslations);
+
+        static::assertSame('Preserve this translation', $translations['existing']['key']);
+        static::assertSame(
+            'Thank you for registering',
+            $translations['sylius']['email']['customer_validation']['registration']['title'],
+        );
+
+        $flashTranslations = \Symfony\Component\Yaml\Yaml::parseFile($existingFlashTranslations);
+
+        static::assertSame('Preserve this flash translation', $flashTranslations['existing']['key']);
+        static::assertSame(
+            'Your account is awaiting approval by an administrator. You will be able to sign in once it has been approved.',
+            $flashTranslations['sylius']['customer']['register'],
+        );
+    }
 }
