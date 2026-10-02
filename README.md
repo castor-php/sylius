@@ -19,7 +19,8 @@ your stack into a Sylius app, and gives you the tasks to drive it.
         * [Available themes](#available-themes)
         * [Canvas theme](#canvas-theme)
         * [Blush theme](#blush-theme)
-        * [Prompt theme](#prompt-theme)
+        * [Prompt Dark theme](#prompt-dark-theme)
+        * [Prompt Light theme](#prompt-light-theme)
         * [Volt theme](#volt-theme)
     * [☰ Remove menu items from the Admin panel](#-remove-menu-items-from-the-admin-panel)
         * [Available options](#available-options)
@@ -54,13 +55,20 @@ your stack into a Sylius app, and gives you the tasks to drive it.
 
 Castor Sylius provides a higher-level interface for building, configuring and operating a Sylius application.
 
-It goes beyond Symfony Flex recipes: instead of only installing and configuring packages, it can orchestrate complete project workflows — from setting up payment gateways and storefront themes to enabling B2B features, customizing the Admin panel, running Doctrine migrations, building assets, managing Docker services, or importing a catalog.
+It goes beyond Symfony Flex recipes: instead of only installing and configuring packages, it can orchestrate complete
+project workflows — from setting up payment gateways and storefront themes to enabling B2B features, customizing the
+Admin panel, running Doctrine migrations, building assets, managing Docker services, or importing a catalog.
 
-It can also safely modify the application itself when needed, using AST-based transformations for PHP files and dedicated helpers for YAML, JavaScript and Symfony configuration.
+It can also safely modify the application itself when needed, using AST-based transformations for PHP files and
+dedicated helpers for YAML, JavaScript and Symfony configuration.
 
-For example, removing a payment gateway such as Mollie may require more than a `composer remove`: Doctrine entities may need to be updated, the plugin's migrations rolled back, assets rebuilt and the application cache cleared. Castor Sylius can encode this entire workflow as a single, deterministic command.
+For example, removing a payment gateway such as Mollie may require more than a `composer remove`: Doctrine entities may
+need to be updated, the plugin's migrations rolled back, assets rebuilt and the application cache cleared. Castor Sylius
+can encode this entire workflow as a single, deterministic command.
 
-This becomes particularly valuable when working with AI. Instead of asking Claude or Codex to discover all the required steps, inspect the project and modify multiple files, Castor provides the AI with a known, high-level interface for operating a Sylius application.
+This becomes particularly valuable when working with AI. Instead of asking Claude or Codex to discover all the required
+steps, inspect the project and modify multiple files, Castor provides the AI with a known, high-level interface for
+operating a Sylius application.
 
 The result is less guesswork, fewer tokens spent on repetitive tasks, and more reliable changes to the project.
 
@@ -210,13 +218,14 @@ castor sylius:theme:setup canvas
 
 #### Available themes
 
-| Theme   | Description                                       |
-|---------|---------------------------------------------------|
-| canvas  | Install the Canvas storefront theme                    |
-| blush   | Install the Blush storefront theme                     |
-| prompt  | Install the terminal-inspired Prompt storefront theme  |
-| volt    | Install the bold, electric Volt storefront theme       |
-| default | No theme applied; rebuilds the application assets     |
+| Theme        | Description                                                 |
+|--------------|-------------------------------------------------------------|
+| canvas       | Install the Canvas storefront theme                         |
+| blush        | Install the Blush storefront theme                          |
+| prompt_dark  | Install the dark terminal-inspired Prompt storefront theme  |
+| prompt_light | Install the light terminal-inspired Prompt storefront theme |
+| volt         | Install the bold, electric Volt storefront theme            |
+| default      | No theme applied; rebuilds the application assets           |
 
 > **Note:** You can [register your own themes](#-extending-the-plugin) with the `AsThemeInstaller` and `AsThemeRemover`
 > attributes.
@@ -303,26 +312,26 @@ Here are snapshots of the Blush storefront, including its cart with a product:
   </tr>
 </table>
 
-#### Prompt theme
+#### Prompt Dark theme
 
-Prompt is a separate terminal-inspired storefront direction: a dark workspace,
+Prompt Dark is the terminal-inspired storefront direction: a dark workspace,
 terminal-green accents, monospaced typography and a command-inspired homepage
 panel.
 
-Here are snapshots of the Prompt storefront, including its cart with a product:
+Here are snapshots of the Prompt Dark storefront, including its cart with a product:
 
 <table>
   <tr>
     <td align="center" width="33%">
-      <a href="docs/images/prompt-homepage.png"><img src="docs/images/prompt-homepage.png" alt="Prompt storefront homepage" width="100%"></a><br>
+      <a href="docs/images/prompt-dark-homepage.png"><img src="docs/images/prompt-dark-homepage.png" alt="Prompt Dark storefront homepage" width="100%"></a><br>
       <strong>Homepage</strong>
     </td>
     <td align="center" width="33%">
-      <a href="docs/images/prompt-comet-pulse-product.png"><img src="docs/images/prompt-comet-pulse-product.png" alt="Comet Pulse T-Shirt product page in Prompt" width="100%"></a><br>
+      <a href="docs/images/prompt-dark-comet-pulse-product.png"><img src="docs/images/prompt-dark-comet-pulse-product.png" alt="Comet Pulse T-Shirt product page in Prompt Dark" width="100%"></a><br>
       <strong>Comet Pulse T-Shirt</strong>
     </td>
     <td align="center" width="33%">
-      <a href="docs/images/prompt-cart.png"><img src="docs/images/prompt-cart.png" alt="Prompt cart containing the Comet Pulse T-Shirt" width="100%"></a><br>
+      <a href="docs/images/prompt-dark-cart.png"><img src="docs/images/prompt-dark-cart.png" alt="Prompt Dark cart containing the Comet Pulse T-Shirt" width="100%"></a><br>
       <strong>Cart</strong>
     </td>
   </tr>
@@ -338,7 +347,42 @@ Here are snapshots of the Prompt storefront, including its cart with a product:
   summary panels for contrast.
 - **Checkout** — the checkout header uses the Prompt wordmark and category navigation.
 
-Install it with `castor sylius:theme:setup prompt`.
+Install it with `castor sylius:theme:setup prompt_dark`.
+
+#### Prompt Light theme
+
+The Prompt Light theme keeps the same terminal-inspired layout and compact visual
+language as Prompt, but swaps its dark workspace for a brighter palette: soft
+green paper, crisp dark typography and calmer contrast.
+
+- **Palette** — pale moss backgrounds, forest-green accents and warm neutral text.
+- **Components** — the same monospaced terminal framing, but with airy light panels,
+  bright callouts and high-contrast controls.
+- **Homepage** — a lighter command-console hero that keeps the direct link to the
+  latest products, without losing the terminal aesthetic.
+- **Shopping flow** — matching cart, checkout and product cards with calmer contrast
+  for better readability.
+
+Install it with `castor sylius:theme:setup prompt_light`.
+
+Here are snapshots of the Prompt Light storefront, including its cart with a product:
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <a href="docs/images/prompt-light-homepage.png"><img src="docs/images/prompt-light-homepage.png" alt="Prompt Light storefront homepage" width="100%"></a><br>
+      <strong>Homepage</strong>
+    </td>
+    <td align="center" width="33%">
+      <a href="docs/images/prompt-light-comet-pulse-product.png"><img src="docs/images/prompt-light-comet-pulse-product.png" alt="Comet Pulse T-Shirt product page in Prompt Light" width="100%"></a><br>
+      <strong>Comet Pulse T-Shirt</strong>
+    </td>
+    <td align="center" width="33%">
+      <a href="docs/images/prompt-light-cart.png"><img src="docs/images/prompt-light-cart.png" alt="Prompt Light cart containing the Comet Pulse T-Shirt" width="100%"></a><br>
+      <strong>Cart</strong>
+    </td>
+  </tr>
+</table>
 
 #### Volt theme
 
@@ -548,7 +592,8 @@ In the Admin panel, this feature:
 
 ### ☁️ Check Upsun configuration
 
-Sylius Standard already ships an official `.upsun/config.yaml`. This read-only check validates that the file is present and
+Sylius Standard already ships an official `.upsun/config.yaml`. This read-only check validates that the file is present
+and
 defines Upsun applications, then compares the locally linked Castor database, the application's Doctrine DBAL driver,
 and the declared Upsun database service. It checks explicit Doctrine drivers first and supports the standard
 `DATABASE_URL` configuration as a fallback. If an engine cannot be determined, it reports that instead of guessing.

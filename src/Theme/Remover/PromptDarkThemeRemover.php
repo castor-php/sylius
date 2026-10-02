@@ -11,11 +11,11 @@ use Castor\Sylius\Util\Javascript;
 use function Castor\finder;
 use function Castor\fs;
 
-final class PromptRemover implements PluginRemoverInterface
+final class PromptDarkThemeRemover implements PluginRemoverInterface
 {
     public function name(): string
     {
-        return 'prompt';
+        return 'prompt_dark';
     }
 
     public function description(): ?string
@@ -25,7 +25,7 @@ final class PromptRemover implements PluginRemoverInterface
 
     public function __invoke(App $app): void
     {
-        $resourcesDir = \dirname(__DIR__, 3) . '/resources/theme/prompt';
+        $resourcesDir = \dirname(__DIR__, 3) . '/resources/theme/prompt_dark';
 
         foreach (finder()->files()->in($resourcesDir)->files() as $file) {
             fs()->remove($app->directory() . '/' . $file->getRelativePathname());

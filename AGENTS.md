@@ -12,7 +12,8 @@ To refresh the full-page homepage and Comet Pulse T-Shirt screenshots for a them
 ```bash
 node scripts/capture-theme-screenshots.mjs canvas
 node scripts/capture-theme-screenshots.mjs blush
-node scripts/capture-theme-screenshots.mjs prompt
+node scripts/capture-theme-screenshots.mjs prompt_dark
+node scripts/capture-theme-screenshots.mjs prompt_light
 node scripts/capture-theme-screenshots.mjs volt
 ```
 
@@ -23,7 +24,8 @@ Add `--include-cart` to also put the Comet Pulse T-Shirt in a fresh browser cart
 ```bash
 node scripts/capture-theme-screenshots.mjs canvas --include-cart
 node scripts/capture-theme-screenshots.mjs blush --include-cart
-node scripts/capture-theme-screenshots.mjs prompt --include-cart
+node scripts/capture-theme-screenshots.mjs prompt_dark --include-cart
+node scripts/capture-theme-screenshots.mjs prompt_light --include-cart
 node scripts/capture-theme-screenshots.mjs volt --include-cart
 ```
 
