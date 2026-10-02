@@ -14,7 +14,8 @@ soft rose panels and a deep plum footer.
 - **Components** — rounded buttons and product cards, a custom wordmark and
   responsive taxon navigation.
 - **Homepage** — a French editorial hero with a CSS illustration and a direct
-  link to the latest products; the new-collection block is hidden.
+  link to the latest products, followed by four latest products; the latest
+  deals and new-collection blocks are hidden.
 - **Shopping flow** — matching buttons, forms and checkout branding, including
   the Blush wordmark and category navigation in the checkout header.
 
