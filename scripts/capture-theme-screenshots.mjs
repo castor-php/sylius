@@ -15,7 +15,8 @@ const pages = [
 ];
 const themeSelectors = {
   canvas: '.canvas-logo',
-  prompt: '.prompt-logo',
+  prompt_dark: '.prompt-logo',
+  prompt_light: '.prompt-logo',
   blush: '.blush-logo',
   volt: '.volt-logo',
 };
@@ -259,7 +260,8 @@ async function main() {
         fromSurface: true,
         clip: { x: 0, y: 0, width: size.width, height: size.height, scale: 1 },
       });
-      const path = join(outputDir, `${theme}-${page.name}.png`);
+      const outputTheme = theme.replace(/_/g, '-');
+      const path = join(outputDir, `${outputTheme}-${page.name}.png`);
       mkdirSync(outputDir, { recursive: true });
       writeFileSync(path, Buffer.from(capture.data, 'base64'));
       console.log(`${url.href} -> ${path} (${size.width}x${size.height})`);
@@ -319,7 +321,8 @@ async function main() {
         fromSurface: true,
         clip: { x: 0, y: 0, width: size.width, height: size.height, scale: 1 },
       });
-      const path = join(outputDir, `${theme}-cart.png`);
+      const outputTheme = theme.replace(/_/g, '-');
+      const path = join(outputDir, `${outputTheme}-cart.png`);
       writeFileSync(path, Buffer.from(capture.data, 'base64'));
       console.log(`${cartUrl.href} -> ${path} (${size.width}x${size.height})`);
     }

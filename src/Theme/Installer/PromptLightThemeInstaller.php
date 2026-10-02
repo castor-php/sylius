@@ -14,23 +14,23 @@ use Castor\Sylius\Util\Yaml;
 use function Castor\finder;
 use function Castor\fs;
 
-final class PromptInstaller implements PluginInstallerInterface
+final class PromptLightThemeInstaller implements PluginInstallerInterface
 {
     public function name(): string
     {
-        return 'prompt';
+        return 'prompt_light';
     }
 
     public function description(): ?string
     {
-        return 'Install the terminal-inspired Prompt storefront theme';
+        return 'Install the light terminal-inspired Prompt storefront theme';
     }
 
     public function __invoke(App $app): void
     {
         Yaml::import($app, 'config/packages/_sylius.yaml', '../sylius/twig_hooks/**/**.php');
 
-        $resourcesDir = \dirname(__DIR__, 3) . '/resources/theme/prompt';
+        $resourcesDir = \dirname(__DIR__, 3) . '/resources/theme/prompt_light';
 
         foreach (finder()->files()->in($resourcesDir)->files() as $file) {
             fs()->copy($resourcesDir . '/' . $file->getRelativePathname(), $app->directory() . '/' . $file->getRelativePathname());

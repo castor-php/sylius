@@ -105,8 +105,10 @@ jobs:
                         value: "castor sylius:theme:setup canvas"
                     -   name: Blush theme
                         value: "castor sylius:theme:setup blush"
-                    -   name: Prompt theme
-                        value: "castor sylius:theme:setup prompt"
+                    -   name: Prompt Dark theme
+                        value: "castor sylius:theme:setup prompt_dark"
+                    -   name: Prompt Light theme
+                        value: "castor sylius:theme:setup prompt_light"
                     -   name: Volt theme
                         value: "castor sylius:theme:setup volt"
                     -   name: B2B

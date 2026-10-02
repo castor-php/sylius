@@ -13,12 +13,14 @@ use Castor\Sylius\Attribute\AsThemeRemover;
 use Castor\Sylius\Plugin\Installer\PluginInstaller;
 use Castor\Sylius\Plugin\Remover\PluginRemover;
 use Castor\Sylius\Theme\Installer\CanvasInstaller;
-use Castor\Sylius\Theme\Installer\PromptInstaller;
+use Castor\Sylius\Theme\Installer\PromptDarkThemeInstaller;
+use Castor\Sylius\Theme\Installer\PromptLightThemeInstaller;
 use Castor\Sylius\Theme\Installer\BlushInstaller;
 use Castor\Sylius\Theme\Installer\ThemeInstallerDescriptor;
 use Castor\Sylius\Theme\Installer\VoltInstaller;
 use Castor\Sylius\Theme\Remover\CanvasRemover;
-use Castor\Sylius\Theme\Remover\PromptRemover;
+use Castor\Sylius\Theme\Remover\PromptDarkThemeRemover;
+use Castor\Sylius\Theme\Remover\PromptLightThemeRemover;
 use Castor\Sylius\Theme\Remover\BlushRemover;
 use Castor\Sylius\Theme\Remover\ThemeRemoverDescriptor;
 use Castor\Sylius\Theme\Remover\VoltRemover;
@@ -27,12 +29,14 @@ use Castor\Sylius\Theme\Remover\VoltRemover;
 function initialize(AfterBootEvent $afterBootEvent): void
 {
     Themes::addInstaller(new CanvasInstaller());
-    Themes::addInstaller(new PromptInstaller());
+    Themes::addInstaller(new PromptDarkThemeInstaller());
+    Themes::addInstaller(new PromptLightThemeInstaller());
     Themes::addInstaller(new BlushInstaller());
     Themes::addInstaller(new VoltInstaller());
 
     Themes::addRemover(new CanvasRemover());
-    Themes::addRemover(new PromptRemover());
+    Themes::addRemover(new PromptDarkThemeRemover());
+    Themes::addRemover(new PromptLightThemeRemover());
     Themes::addRemover(new BlushRemover());
     Themes::addRemover(new VoltRemover());
 
