@@ -163,6 +163,11 @@ header .navbar-brand {
   }
 }
 
+.prompt-cart-button .badge {
+  background-color: $green !important;
+  color: $white !important;
+}
+
 @media (max-width: 991.98px) {
   .prompt-category-nav__menu {
     position: fixed;
