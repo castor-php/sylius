@@ -18,6 +18,7 @@ your stack into a Sylius app, and gives you the tasks to drive it.
     * [🎨 Setup a theme](#-setup-a-theme)
         * [Available themes](#available-themes)
         * [Canvas theme](#canvas-theme)
+        * [Prompt theme](#prompt-theme)
         * [Volt theme](#volt-theme)
     * [☰ Remove menu items from the Admin panel](#-remove-menu-items-from-the-admin-panel)
         * [Available options](#available-options)
@@ -210,9 +211,10 @@ castor sylius:theme:setup canvas
 
 | Theme   | Description                                       |
 |---------|---------------------------------------------------|
-| canvas  | Install the Canvas storefront theme               |
-| volt    | Install the bold, electric Volt storefront theme  |
-| default | No theme applied; rebuilds the application assets |
+| canvas  | Install the Canvas storefront theme                    |
+| prompt  | Install the terminal-inspired Prompt storefront theme  |
+| volt    | Install the bold, electric Volt storefront theme       |
+| default | No theme applied; rebuilds the application assets     |
 
 > **Note:** You can [register your own themes](#-extending-the-plugin) with the `AsThemeInstaller` and `AsThemeRemover`
 > attributes.
@@ -223,17 +225,21 @@ The Canvas theme gives the storefront a clean, editorial look, with warm neutral
 colors, squared corners and a refined pairing of *Jost* (body) and *Cormorant
 Garamond* (headings).
 
-Here are two snapshots of the Canvas storefront:
+Here are snapshots of the Canvas storefront, including its cart with a product:
 
 <table>
   <tr>
-    <td align="center" width="50%">
+    <td align="center" width="33%">
       <a href="docs/images/canvas-homepage.png"><img src="docs/images/canvas-homepage.png" alt="Canvas storefront homepage" width="100%"></a><br>
       <strong>Homepage</strong>
     </td>
-    <td align="center" width="50%">
+    <td align="center" width="33%">
       <a href="docs/images/canvas-comet-pulse-product.png"><img src="docs/images/canvas-comet-pulse-product.png" alt="Comet Pulse T-Shirt product page in Canvas" width="100%"></a><br>
       <strong>Comet Pulse T-Shirt</strong>
+    </td>
+    <td align="center" width="33%">
+      <a href="docs/images/canvas-cart.png"><img src="docs/images/canvas-cart.png" alt="Canvas cart containing the Comet Pulse T-Shirt" width="100%"></a><br>
+      <strong>Cart</strong>
     </td>
   </tr>
 </table>
@@ -257,6 +263,54 @@ The theme restyles the shop through SCSS overrides and Sylius Twig hooks:
 
 Install it with `castor sylius:theme:setup canvas`.
 
+Capture its screenshots, including the cart with a test product, using:
+
+```bash
+node scripts/capture-theme-screenshots.mjs canvas --include-cart
+```
+
+#### Prompt theme
+
+Prompt turns the [JoliCode Sylius Starter](https://jolicode.github.io/sylius-starter/en/)'s
+command-line aesthetic into a storefront: a dark workspace, terminal-green
+accents, monospaced typography and a command-inspired homepage panel.
+
+Here are snapshots of the Prompt storefront, including its cart with a product:
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <a href="docs/images/prompt-homepage.png"><img src="docs/images/prompt-homepage.png" alt="Prompt storefront homepage" width="100%"></a><br>
+      <strong>Homepage</strong>
+    </td>
+    <td align="center" width="33%">
+      <a href="docs/images/prompt-comet-pulse-product.png"><img src="docs/images/prompt-comet-pulse-product.png" alt="Comet Pulse T-Shirt product page in Prompt" width="100%"></a><br>
+      <strong>Comet Pulse T-Shirt</strong>
+    </td>
+    <td align="center" width="33%">
+      <a href="docs/images/prompt-cart.png"><img src="docs/images/prompt-cart.png" alt="Prompt cart containing the Comet Pulse T-Shirt" width="100%"></a><br>
+      <strong>Cart</strong>
+    </td>
+  </tr>
+</table>
+
+- **Palette** — deep green-black surfaces, terminal green highlights and muted
+  neutral text.
+- **Components** — compact square-edged controls, a responsive category menu,
+  dark product cards, an accessible off-canvas cart and a matching footer.
+- **Homepage** — a two-column introduction with a terminal-style panel and a
+  direct link to the latest products.
+- **Shopping flow** — matching cart and checkout styling, with light sage
+  summary panels for contrast.
+
+Install it with `castor sylius:theme:setup prompt`.
+
+Refresh its screenshots and capture the cart with a test product using:
+
+```bash
+node scripts/capture-theme-screenshots.mjs prompt --include-cart
+```
+
 #### Volt theme
 
 The Volt theme takes the opposite route: a high-energy, sport-tech storefront
@@ -274,22 +328,32 @@ additional image assets.
 - **Homepage** — an oversized, responsive graphic hero with a direct link to
   the latest products; new collection blocks are hidden.
 
-Here are two snapshots of the Volt storefront:
+Here are snapshots of the Volt storefront, including its cart with a product:
 
 <table>
   <tr>
-    <td align="center" width="50%">
+    <td align="center" width="33%">
       <a href="docs/images/volt-homepage.png"><img src="docs/images/volt-homepage.png" alt="Volt storefront homepage" width="100%"></a><br>
       <strong>Homepage</strong>
     </td>
-    <td align="center" width="50%">
+    <td align="center" width="33%">
       <a href="docs/images/volt-comet-pulse-product.png"><img src="docs/images/volt-comet-pulse-product.png" alt="Comet Pulse T-Shirt product page in Volt" width="100%"></a><br>
       <strong>Comet Pulse T-Shirt</strong>
+    </td>
+    <td align="center" width="33%">
+      <a href="docs/images/volt-cart.png"><img src="docs/images/volt-cart.png" alt="Volt cart containing the Comet Pulse T-Shirt" width="100%"></a><br>
+      <strong>Cart</strong>
     </td>
   </tr>
 </table>
 
 Install it with `castor sylius:theme:setup volt`.
+
+Capture its screenshots, including the cart with a test product, using:
+
+```bash
+node scripts/capture-theme-screenshots.mjs volt --include-cart
+```
 
 ### ☰ Remove menu items from the Admin panel
 
