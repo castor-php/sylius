@@ -58,3 +58,20 @@ h3 {
   outline: 3px solid $electric;
   outline-offset: 3px;
 }
+
+.volt-checkout-brand,
+.volt-checkout-account {
+  color: $ink;
+}
+
+.volt-checkout-brand a,
+.volt-checkout-account a,
+.volt-checkout-account .btn {
+  color: $electric;
+}
+
+.volt-checkout-brand a:hover,
+.volt-checkout-account a:hover,
+.volt-checkout-account .btn:hover {
+  color: $ink;
+}

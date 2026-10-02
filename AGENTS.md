@@ -11,6 +11,7 @@ To refresh the full-page homepage and Comet Pulse T-Shirt screenshots for a them
 
 ```bash
 node scripts/capture-theme-screenshots.mjs canvas
+node scripts/capture-theme-screenshots.mjs blush
 node scripts/capture-theme-screenshots.mjs prompt
 node scripts/capture-theme-screenshots.mjs volt
 ```
@@ -21,6 +22,7 @@ Add `--include-cart` to also put the Comet Pulse T-Shirt in a fresh browser cart
 
 ```bash
 node scripts/capture-theme-screenshots.mjs canvas --include-cart
+node scripts/capture-theme-screenshots.mjs blush --include-cart
 node scripts/capture-theme-screenshots.mjs prompt --include-cart
 node scripts/capture-theme-screenshots.mjs volt --include-cart
 ```
@@ -28,3 +30,25 @@ node scripts/capture-theme-screenshots.mjs volt --include-cart
 The cart uses an isolated temporary browser profile and does not alter another browser session's cart.
 
 The script requires Node.js 22+ and Google Chrome or Chromium. Set `CHROME_BIN` if the browser executable is not detected automatically. The selected theme must be active on the storefront.
+
+## Running commands in the Sylius app
+
+Run Symfony console commands through the Castor app container from the repository
+root:
+
+```bash
+castor app:bash -- php bin/console cache:clear --env=dev
+castor app:bash -- php bin/console lint:twig templates --env=test
+```
+
+To switch the active storefront theme, use:
+
+```bash
+castor sylius:theme:setup <theme>
+```
+
+## Theme styling
+
+Never rely on `data-test-*` attributes in CSS selectors. They are testing
+helpers and may not be present in the production storefront; target stable
+classes or semantic structure instead.

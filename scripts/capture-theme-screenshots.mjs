@@ -16,6 +16,7 @@ const pages = [
 const themeSelectors = {
   canvas: '.canvas-logo',
   prompt: '.prompt-logo',
+  blush: '.blush-logo',
   volt: '.volt-logo',
 };
 

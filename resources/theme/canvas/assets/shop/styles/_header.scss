@@ -75,6 +75,48 @@ header .nav-link {
   }
 }
 
+.canvas-checkout-brand,
+.canvas-checkout-account {
+  color: $text;
+}
+
+.canvas-checkout-brand a,
+.canvas-checkout-account a,
+.canvas-checkout-account .btn {
+  color: $text;
+
+  &:hover,
+  &:focus-visible {
+    color: $black-hover;
+  }
+}
+
+.canvas-checkout-nav .nav-link {
+  color: $text;
+
+  &:hover,
+  &:focus {
+    color: $black;
+  }
+}
+
+.canvas-checkout-nav .dropdown-menu {
+  border-radius: 0;
+  border-color: $border;
+  background-color: $white;
+  box-shadow: 0 8px 24px rgba($black, 0.08);
+}
+
+.canvas-checkout-nav .dropdown-item {
+  color: $text;
+
+  &:hover,
+  &:focus {
+    background-color: $surface-soft;
+    color: $black;
+  }
+}
+
 header .dropdown-menu {
   border-radius: 0;
   border-color: $border;
