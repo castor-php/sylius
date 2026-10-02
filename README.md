@@ -50,13 +50,17 @@ your stack into a Sylius app, and gives you the tasks to drive it.
 
 ## Why Castor Sylius?
 
-Castor Sylius goes beyond Symfony Flex recipes. Flex mainly handles package installation and configuration, while Castor Sylius provides higher-level commands for the whole project lifecycle: installing and removing features, running Doctrine migrations and rollbacks, building assets, configuring Docker services, and more.
+Castor Sylius provides a higher-level interface for building, configuring and operating a Sylius application.
 
-For example, removing Mollie isn't just a `composer remove`: it may require modifying Doctrine entities, rolling back related migrations, and then removing the package. Castor Sylius handles this workflow and uses AST to safely modify PHP files in your project.
+It goes beyond Symfony Flex recipes: instead of only installing and configuring packages, it can orchestrate complete project workflows — from setting up payment gateways and storefront themes to enabling B2B features, customizing the Admin panel, running Doctrine migrations, building assets, managing Docker services, or importing a catalog.
 
-This is particularly useful when working with AI. Instead of asking Claude or Codex to figure out all the required steps, inspect the project, and edit multiple files, Castor Sylius provides a known, deterministic workflow that the AI can invoke.
+It can also safely modify the application itself when needed, using AST-based transformations for PHP files and dedicated helpers for YAML, JavaScript and Symfony configuration.
 
-The result is less guesswork, fewer tokens spent on repetitive tasks, and a higher-level interface for AI to operate a Sylius project.
+For example, removing a payment gateway such as Mollie may require more than a `composer remove`: Doctrine entities may need to be updated, the plugin's migrations rolled back, assets rebuilt and the application cache cleared. Castor Sylius can encode this entire workflow as a single, deterministic command.
+
+This becomes particularly valuable when working with AI. Instead of asking Claude or Codex to discover all the required steps, inspect the project and modify multiple files, Castor provides the AI with a known, high-level interface for operating a Sylius application.
+
+The result is less guesswork, fewer tokens spent on repetitive tasks, and more reliable changes to the project.
 
 ## Installation
 
