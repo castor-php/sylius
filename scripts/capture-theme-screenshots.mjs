@@ -15,6 +15,7 @@ const pages = [
 ];
 const themeSelectors = {
   canvas: '.canvas-logo',
+  prompt: '.prompt-logo',
   volt: '.volt-logo',
 };
 
@@ -26,6 +27,7 @@ Screenshots are saved as docs/images/<theme>-homepage.png and
 docs/images/<theme>-comet-pulse-product.png.
 
 Options:
+  --include-cart       Add the Comet Pulse T-Shirt and capture the cart page
   --base-url <url>    Storefront base URL (default: https://app.test/en_US/)
   --output-dir <dir>  Screenshot output directory (default: docs/images)
   --help              Show this help
@@ -36,6 +38,7 @@ specific browser executable.`);
 
 function parseArguments(args) {
   let theme;
+  let includeCart = false;
   let baseUrl = 'https://app.test/en_US/';
   let outputDir = 'docs/images';
 
@@ -44,6 +47,11 @@ function parseArguments(args) {
     if (argument === '--help' || argument === '-h') {
       printUsage();
       process.exit(0);
+    }
+
+    if (argument === '--include-cart') {
+      includeCart = true;
+      continue;
     }
 
     if (argument === '--base-url' || argument === '--output-dir') {
@@ -70,7 +78,7 @@ function parseArguments(args) {
   }
   parsedBaseUrl.pathname = `${parsedBaseUrl.pathname.replace(/\/+$/, '')}/`;
 
-  return { theme, baseUrl: parsedBaseUrl, outputDir: resolve(outputDir) };
+  return { theme, includeCart, baseUrl: parsedBaseUrl, outputDir: resolve(outputDir) };
 }
 
 function findChrome() {
@@ -139,7 +147,7 @@ async function waitForEvent(events, method) {
 }
 
 async function main() {
-  const { theme, baseUrl, outputDir } = parseArguments(process.argv.slice(2));
+  const { theme, includeCart, baseUrl, outputDir } = parseArguments(process.argv.slice(2));
   const chrome = findChrome();
   if (!chrome) throw new Error('Could not find Chrome or Chromium; set CHROME_BIN to its executable');
 
@@ -254,6 +262,65 @@ async function main() {
       mkdirSync(outputDir, { recursive: true });
       writeFileSync(path, Buffer.from(capture.data, 'base64'));
       console.log(`${url.href} -> ${path} (${size.width}x${size.height})`);
+    }
+
+    if (includeCart) {
+      const addToCart = await send('Runtime.evaluate', {
+        expression: `(() => {
+          const button = document.querySelector('#add-to-cart-button');
+          if (!button) throw new Error('The Comet Pulse T-Shirt add-to-cart button was not found');
+          button.click();
+          return true;
+        })()`,
+        returnByValue: true,
+      });
+      if (addToCart.exceptionDetails) {
+        throw new Error(addToCart.exceptionDetails.exception?.description ?? 'Could not add the Comet Pulse T-Shirt to the cart');
+      }
+
+      let cartHasProduct = false;
+      for (let attempt = 0; attempt < 30 && !cartHasProduct; attempt++) {
+        const result = await send('Runtime.evaluate', {
+          expression: `fetch(new URL('cart/', document.baseURI), { credentials: 'same-origin' })
+            .then(response => response.text())
+            .then(html => html.includes('Comet Pulse T-Shirt'))`,
+          awaitPromise: true,
+          returnByValue: true,
+        });
+        cartHasProduct = result.result.value === true;
+        if (!cartHasProduct) await delay(500);
+      }
+      if (!cartHasProduct) throw new Error('The Comet Pulse T-Shirt did not appear in the cart after adding it');
+
+      const cartUrl = new URL('cart/', baseUrl);
+      const loaded = waitForEvent(events, 'Page.loadEventFired');
+      const navigation = await send('Page.navigate', { url: cartUrl.href });
+      if (navigation.errorText) throw new Error(`Could not open ${cartUrl.href}: ${navigation.errorText}`);
+      await loaded;
+      await send('Runtime.evaluate', {
+        expression: 'document.fonts.ready',
+        awaitPromise: true,
+        returnByValue: true,
+      });
+      await delay(500);
+
+      const cartPageHasProduct = await send('Runtime.evaluate', {
+        expression: "document.body.innerText.includes('Comet Pulse T-Shirt')",
+        returnByValue: true,
+      });
+      if (!cartPageHasProduct.result.value) throw new Error('The cart page did not render the Comet Pulse T-Shirt');
+
+      const metrics = await send('Page.getLayoutMetrics');
+      const size = metrics.cssContentSize;
+      const capture = await send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+        fromSurface: true,
+        clip: { x: 0, y: 0, width: size.width, height: size.height, scale: 1 },
+      });
+      const path = join(outputDir, `${theme}-cart.png`);
+      writeFileSync(path, Buffer.from(capture.data, 'base64'));
+      console.log(`${cartUrl.href} -> ${path} (${size.width}x${size.height})`);
     }
   } finally {
     ws?.close();
