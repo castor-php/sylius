@@ -218,14 +218,13 @@ castor sylius:theme:setup canvas
 
 #### Available themes
 
-| Theme        | Description                                                 | Documentation                               |
-|--------------|-------------------------------------------------------------|---------------------------------------------|
-| canvas       | Install the Canvas storefront theme                         | [Canvas](docs/themes/canvas.md)             |
-| blush        | Install the Blush storefront theme                          | [Blush](docs/themes/blush.md)               |
-| prompt_dark  | Install the dark terminal-inspired Prompt storefront theme  | [Prompt Dark](docs/themes/prompt_dark.md)   |
-| prompt_light | Install the light terminal-inspired Prompt storefront theme | [Prompt Light](docs/themes/prompt_light.md) |
-| volt         | Install the bold, electric Volt storefront theme            | [Volt](docs/themes/volt.md)                 |
-| default      | No theme applied; rebuilds the application assets           | —                                           |
+| Preview                                                                                                                                        | Theme                                       | Description                                                                                |
+|------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------|--------------------------------------------------------------------------------------------|
+| <a href="docs/themes/canvas.md"><img src="docs/images/canvas-homepage.png" alt="Canvas storefront homepage" width="140"></a>                   | [Canvas](docs/themes/canvas.md)             | [Install the Canvas storefront theme](docs/themes/canvas.md)                               |
+| <a href="docs/themes/blush.md"><img src="docs/images/blush-homepage.png" alt="Blush storefront homepage" width="140"></a>                      | [Blush](docs/themes/blush.md)               | [Install the Blush storefront theme](docs/themes/blush.md)                                 |
+| <a href="docs/themes/prompt_dark.md"><img src="docs/images/prompt-dark-homepage.png" alt="Prompt Dark storefront homepage" width="140"></a>    | [Prompt Dark](docs/themes/prompt_dark.md)   | [Install the dark terminal-inspired Prompt storefront theme](docs/themes/prompt_dark.md)   |
+| <a href="docs/themes/prompt_light.md"><img src="docs/images/prompt-light-homepage.png" alt="Prompt Light storefront homepage" width="140"></a> | [Prompt Light](docs/themes/prompt_light.md) | [Install the light terminal-inspired Prompt storefront theme](docs/themes/prompt_light.md) |
+| —                                                                                                                                              | default                                     | No theme applied; rebuilds the application assets                                          |
 
 > **Note:** You can [register your own themes](#-extending-the-plugin) with the `AsThemeInstaller` and `AsThemeRemover`
 > attributes.
