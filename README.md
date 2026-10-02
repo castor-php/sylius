@@ -5,6 +5,7 @@ your stack into a Sylius app, and gives you the tasks to drive it.
 
 <!-- TOC -->
 
+* [Why Castor Sylius?](#why-castor-sylius)
 * [Installation](#installation)
 * [🦫 Available commands](#-available-commands)
     * [Add or Remove plugins](#add-or-remove-plugins)
@@ -46,6 +47,16 @@ your stack into a Sylius app, and gives you the tasks to drive it.
 * [License](#license)
 
 <!-- TOC -->
+
+## Why Castor Sylius?
+
+Castor Sylius goes beyond Symfony Flex recipes. Flex mainly handles package installation and configuration, while Castor Sylius provides higher-level commands for the whole project lifecycle: installing and removing features, running Doctrine migrations and rollbacks, building assets, configuring Docker services, and more.
+
+For example, removing Mollie isn't just a `composer remove`: it may require modifying Doctrine entities, rolling back related migrations, and then removing the package. Castor Sylius handles this workflow and uses AST to safely modify PHP files in your project.
+
+This is particularly useful when working with AI. Instead of asking Claude or Codex to figure out all the required steps, inspect the project, and edit multiple files, Castor Sylius provides a known, deterministic workflow that the AI can invoke.
+
+The result is less guesswork, fewer tokens spent on repetitive tasks, and a higher-level interface for AI to operate a Sylius project.
 
 ## Installation
 
