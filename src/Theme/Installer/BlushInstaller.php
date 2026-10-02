@@ -23,7 +23,7 @@ final class BlushInstaller implements PluginInstallerInterface
 
     public function description(): ?string
     {
-        return 'Install the Blush storefront theme';
+        return 'https://github.com/castor-php/sylius/blob/main/docs/themes/blush.md';
     }
 
     public function __invoke(App $app): void

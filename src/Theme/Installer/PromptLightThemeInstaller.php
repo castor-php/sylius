@@ -23,7 +23,7 @@ final class PromptLightThemeInstaller implements PluginInstallerInterface
 
     public function description(): ?string
     {
-        return 'Install the light terminal-inspired Prompt storefront theme';
+        return 'https://github.com/castor-php/sylius/blob/main/docs/themes/prompt_light.md';
     }
 
     public function __invoke(App $app): void

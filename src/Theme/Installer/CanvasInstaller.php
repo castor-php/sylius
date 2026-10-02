@@ -24,7 +24,7 @@ final class CanvasInstaller implements PluginInstallerInterface
 
     public function description(): ?string
     {
-        return null;
+        return 'https://github.com/castor-php/sylius/blob/main/docs/themes/canvas.md';
     }
 
     public function __invoke(App $app): void

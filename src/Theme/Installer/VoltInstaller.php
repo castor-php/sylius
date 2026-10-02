@@ -23,7 +23,7 @@ final class VoltInstaller implements PluginInstallerInterface
 
     public function description(): ?string
     {
-        return null;
+        return 'https://github.com/castor-php/sylius/blob/main/docs/themes/volt.md';
     }
 
     public function __invoke(App $app): void

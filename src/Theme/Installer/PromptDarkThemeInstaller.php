@@ -23,7 +23,7 @@ final class PromptDarkThemeInstaller implements PluginInstallerInterface
 
     public function description(): ?string
     {
-        return 'Install the dark terminal-inspired Prompt storefront theme';
+        return 'https://github.com/castor-php/sylius/blob/main/docs/themes/prompt_dark.md';
     }
 
     public function __invoke(App $app): void

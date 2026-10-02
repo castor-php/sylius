@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Castor\Sylius\Tasks;
 
 use Castor\Attribute\AsArgument;
-use Castor\Attribute\AsOption;
-use Castor\Attribute\AsRawTokens;
 use Castor\Attribute\AsTask;
 use Castor\Sylius\App;
-use Castor\Sylius\PaymentGateway\PaymentGateways;
+use Castor\Sylius\Plugin\Installer\PluginInstallerInterface;
 use Castor\Sylius\Theme\Themes;
 use Castor\Sylius\Util\Assets;
 
@@ -29,18 +27,29 @@ final class ThemeTasks
         yield [
             'task' => new AsTask('setup', 'sylius:theme', 'Setup themes', ['setup-theme']),
             'function' => static function (#[AsArgument] ?string $theme = null) use ($app): void {
-                $availableThemes = array_keys(Themes::installers());
+                $themeInstallers = Themes::installers();
+                $availableThemes = array_keys($themeInstallers);
                 $availableThemes[] = 'default';
                 sort($availableThemes);
 
                 $installers = array_map(
                     static fn(callable $installer): callable => static fn() => $installer($app),
-                    Themes::installers(),
+                    $themeInstallers,
                 );
 
                 $installers['default'] = static function () use ($app): void {
                     Assets::build($app);
                 };
+
+                $choices = [];
+                foreach ($themeInstallers as $name => $installer) {
+                    $description = $installer instanceof PluginInstallerInterface ? $installer->description() : null;
+                    $choices[$name] = null === $description || '' === $description
+                        ? $name
+                        : \sprintf('%s - %s', $name, $description);
+                }
+                $choices['default'] = 'default';
+                ksort($choices);
 
                 $removers = array_map(
                     static fn(callable $remover): callable => static fn() => $remover($app),
@@ -52,7 +61,7 @@ final class ThemeTasks
                 if (null === $theme) {
                     $theme = io()->choice(
                         'Which theme would you like to use?',
-                        $availableThemes,
+                        $choices,
                     );
                 }
 
