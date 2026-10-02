@@ -103,6 +103,8 @@ jobs:
                         value: "castor sylius:payment-gateways:setup stripe"
                     -   name: Canvas theme
                         value: "castor sylius:theme:setup canvas"
+                    -   name: Blush theme
+                        value: "castor sylius:theme:setup blush"
                     -   name: Prompt theme
                         value: "castor sylius:theme:setup prompt"
                     -   name: Volt theme

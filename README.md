@@ -18,6 +18,7 @@ your stack into a Sylius app, and gives you the tasks to drive it.
     * [🎨 Setup a theme](#-setup-a-theme)
         * [Available themes](#available-themes)
         * [Canvas theme](#canvas-theme)
+        * [Blush theme](#blush-theme)
         * [Prompt theme](#prompt-theme)
         * [Volt theme](#volt-theme)
     * [☰ Remove menu items from the Admin panel](#-remove-menu-items-from-the-admin-panel)
@@ -212,6 +213,7 @@ castor sylius:theme:setup canvas
 | Theme   | Description                                       |
 |---------|---------------------------------------------------|
 | canvas  | Install the Canvas storefront theme                    |
+| blush   | Install the Blush storefront theme                     |
 | prompt  | Install the terminal-inspired Prompt storefront theme  |
 | volt    | Install the bold, electric Volt storefront theme       |
 | default | No theme applied; rebuilds the application assets     |
@@ -251,6 +253,7 @@ The theme restyles the shop through SCSS overrides and Sylius Twig hooks:
 - **Layout** — squared corners everywhere (no border radius), minimal borders and
   generous spacing; the footer is rendered in dark charcoal.
 - **Header** — the default top bar and navbar are replaced by a single taxon navigation.
+- **Checkout** — the checkout header uses the Canvas wordmark and category navigation.
 - **Branding** — a dedicated Canvas wordmark appears in the header; the footer has no logo,
   and breadcrumbs stay text-only.
 - **Homepage** — a full-width banner and a "latest products" section; the deals and
@@ -263,17 +266,48 @@ The theme restyles the shop through SCSS overrides and Sylius Twig hooks:
 
 Install it with `castor sylius:theme:setup canvas`.
 
-Capture its screenshots, including the cart with a test product, using:
+#### Blush theme
 
-```bash
-node scripts/capture-theme-screenshots.mjs canvas --include-cart
-```
+The Blush theme adapts the visual language of the
+[JoliCode Sylius Starter](https://jolicode.github.io/sylius-starter/fr/) landing
+page into a storefront: a crisp white canvas, expressive raspberry accents,
+soft rose panels and a deep plum footer.
+
+- **Palette** — white and pale rose surfaces (`#FFFFFF`, `#FBF6F8`), raspberry
+  (`#B54878`) accents and plum (`#2D141F`) typography and footer.
+- **Components** — rounded buttons and product cards, a custom wordmark and
+  responsive taxon navigation.
+- **Homepage** — a French editorial hero with a CSS illustration and a direct
+  link to the latest products; the new-collection block is hidden.
+- **Shopping flow** — matching buttons, forms and checkout branding, including
+  the Blush wordmark and category navigation in the checkout header.
+
+Install it with `castor sylius:theme:setup blush`.
+
+Here are snapshots of the Blush storefront, including its cart with a product:
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <a href="docs/images/blush-homepage.png"><img src="docs/images/blush-homepage.png" alt="Blush storefront homepage" width="100%"></a><br>
+      <strong>Homepage</strong>
+    </td>
+    <td align="center" width="33%">
+      <a href="docs/images/blush-comet-pulse-product.png"><img src="docs/images/blush-comet-pulse-product.png" alt="Comet Pulse T-Shirt product page in Blush" width="100%"></a><br>
+      <strong>Comet Pulse T-Shirt</strong>
+    </td>
+    <td align="center" width="33%">
+      <a href="docs/images/blush-cart.png"><img src="docs/images/blush-cart.png" alt="Blush cart containing the Comet Pulse T-Shirt" width="100%"></a><br>
+      <strong>Cart</strong>
+    </td>
+  </tr>
+</table>
 
 #### Prompt theme
 
-Prompt turns the [JoliCode Sylius Starter](https://jolicode.github.io/sylius-starter/en/)'s
-command-line aesthetic into a storefront: a dark workspace, terminal-green
-accents, monospaced typography and a command-inspired homepage panel.
+Prompt is a separate terminal-inspired storefront direction: a dark workspace,
+terminal-green accents, monospaced typography and a command-inspired homepage
+panel.
 
 Here are snapshots of the Prompt storefront, including its cart with a product:
 
@@ -302,14 +336,9 @@ Here are snapshots of the Prompt storefront, including its cart with a product:
   direct link to the latest products.
 - **Shopping flow** — matching cart and checkout styling, with light sage
   summary panels for contrast.
+- **Checkout** — the checkout header uses the Prompt wordmark and category navigation.
 
 Install it with `castor sylius:theme:setup prompt`.
-
-Refresh its screenshots and capture the cart with a test product using:
-
-```bash
-node scripts/capture-theme-screenshots.mjs prompt --include-cart
-```
 
 #### Volt theme
 
@@ -327,6 +356,8 @@ additional image assets.
 - **Product page** — the price sits directly below the product name, before reviews.
 - **Homepage** — an oversized, responsive graphic hero with a direct link to
   the latest products; new collection blocks are hidden.
+- **Checkout** — the checkout header uses the Volt wordmark and responsive
+  category navigation.
 
 Here are snapshots of the Volt storefront, including its cart with a product:
 
@@ -348,12 +379,6 @@ Here are snapshots of the Volt storefront, including its cart with a product:
 </table>
 
 Install it with `castor sylius:theme:setup volt`.
-
-Capture its screenshots, including the cart with a test product, using:
-
-```bash
-node scripts/capture-theme-screenshots.mjs volt --include-cart
-```
 
 ### ☰ Remove menu items from the Admin panel
 
