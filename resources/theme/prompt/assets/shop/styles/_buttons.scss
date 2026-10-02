@@ -17,7 +17,8 @@
   }
 }
 
-.btn-primary {
+.btn-primary,
+.btn-success {
   --bs-btn-color: #{$black};
   --bs-btn-bg: #{$green};
   --bs-btn-border-color: #{$green};

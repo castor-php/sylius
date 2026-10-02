@@ -8,7 +8,15 @@
   letter-spacing: 0.02em;
 
   .breadcrumb-item a {
-    color: $green;
+    color: $green !important;
+  }
+
+  .breadcrumb-item:not(.active) .text-body-tertiary {
+    color: $white !important;
+  }
+
+  .breadcrumb-item.active .text-body-tertiary {
+    color: $white !important;
   }
 
   .breadcrumb-item.active {
