@@ -283,14 +283,21 @@ async function main() {
 
       let cartHasProduct = false;
       for (let attempt = 0; attempt < 30 && !cartHasProduct; attempt++) {
-        const result = await send('Runtime.evaluate', {
-          expression: `fetch(new URL('cart/', document.baseURI), { credentials: 'same-origin' })
-            .then(response => response.text())
-            .then(html => html.includes('Comet Pulse T-Shirt'))`,
-          awaitPromise: true,
-          returnByValue: true,
-        });
-        cartHasProduct = result.result.value === true;
+        try {
+          const result = await send('Runtime.evaluate', {
+            expression: `fetch(new URL('cart/', document.baseURI), { credentials: 'same-origin' })
+              .then(response => response.text())
+              .then(html => html.includes('Comet Pulse T-Shirt'))`,
+            awaitPromise: true,
+            returnByValue: true,
+          });
+          cartHasProduct = result.result.value === true;
+        } catch {
+          // Adding to cart redirects to the cart page, which destroys the
+          // context being evaluated: retry once the new document is loaded.
+          await delay(1000);
+          continue;
+        }
         if (!cartHasProduct) await delay(500);
       }
       if (!cartHasProduct) throw new Error('The Comet Pulse T-Shirt did not appear in the cart after adding it');
