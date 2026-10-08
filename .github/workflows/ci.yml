@@ -79,6 +79,8 @@ jobs:
             fail-fast: false
             matrix:
                 command:
+                    -   name: Google Recaptcha Plugin
+                    -   value: "castor sylius:add recaptcha && castor sylius:remove recaptcha"
                     -   name: Sylius API
                         value: "castor sylius:remove api"
                     -   name: Symfony BugSnag Plugin

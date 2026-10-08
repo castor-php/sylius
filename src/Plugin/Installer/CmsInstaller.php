@@ -43,6 +43,7 @@ final readonly class CmsInstaller implements PluginInstallerInterface
             ],
         );
 
+        Assets::install($app);
         Assets::build($app);
         Database::migrate($app);
         Symfony::cacheClear($app);

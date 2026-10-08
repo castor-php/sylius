@@ -21,6 +21,8 @@ use Castor\Sylius\Plugin\Installer\MediaInstaller;
 use Castor\Sylius\Plugin\Installer\PluginInstaller;
 use Castor\Sylius\Plugin\Installer\PluginInstallerDescriptor;
 use Castor\Sylius\Plugin\Installer\ProductBundleInstaller;
+use Castor\Sylius\Plugin\Installer\RecaptchaInstaller;
+use Castor\Sylius\Plugin\Installer\RecaptchaRemover;
 use Castor\Sylius\Plugin\Installer\RefundInstaller;
 use Castor\Sylius\Plugin\Installer\WishlistInstaller;
 use Castor\Sylius\Plugin\Remover\AiDevToolsRemover;
@@ -50,6 +52,7 @@ function initialize(AfterBootEvent $afterBootEvent): void
     PluginTasks::addInstaller(new InvoicingInstaller());
     PluginTasks::addInstaller(new MediaInstaller());
     PluginTasks::addInstaller(new ProductBundleInstaller());
+    PluginTasks::addInstaller(new RecaptchaInstaller());
     PluginTasks::addInstaller(new RefundInstaller());
     PluginTasks::addInstaller(new WishlistInstaller());
 
@@ -59,6 +62,7 @@ function initialize(AfterBootEvent $afterBootEvent): void
     PluginTasks::addRemover(new CmsRemover());
     PluginTasks::addRemover(new GdprRemover());
     PluginTasks::addRemover(new InvoicingRemover());
+    PluginTasks::addRemover(new RecaptchaRemover());
     PluginTasks::addRemover(new WishlistRemover());
 
     $currentFunctions = get_defined_functions()['user'];
